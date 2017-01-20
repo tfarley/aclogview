@@ -1,0 +1,23 @@
+# Build directory
+[Bb]in/
+[Oo]bj/
+
+# *nix
+*~
+
+# OSX
+.DS_Store
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+*.aps
+
+# Visual Studio
+.vs/
+*.VC.db
+*.VC.opendb
+*.suo
