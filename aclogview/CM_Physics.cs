@@ -327,30 +327,65 @@ public class CM_Physics : MessageProcessor {
         public void contributeToTreeNode(TreeNode node) {
             node.Nodes.Add("bitfield = " + bitfield);
             node.Nodes.Add("state = " + state);
-            node.Nodes.Add("movement_buffer = " + movement_buffer);
-            node.Nodes.Add("autonomous_movement = " + autonomous_movement);
-            node.Nodes.Add("animframe_id = " + animframe_id);
-            TreeNode posNode = node.Nodes.Add("pos = ");
-            pos.contributeToTreeNode(posNode);
-            node.Nodes.Add("mtable_id = " + mtable_id);
-            node.Nodes.Add("stable_id = " + stable_id);
-            node.Nodes.Add("phstable_id = " + phstable_id);
-            node.Nodes.Add("setup_id = " + setup_id);
-            node.Nodes.Add("parent_id = " + parent_id);
-            node.Nodes.Add("location_id = " + location_id);
-            TreeNode childrenNode = node.Nodes.Add("children = ");
-            foreach (ChildInfo childInfo in children) {
-                childInfo.contributeToTreeNode(childrenNode);
+            if ((bitfield & (uint)PhysicsDescInfo.MOVEMENT) != 0) {
+                node.Nodes.Add("movement_buffer = " + movement_buffer);
+                node.Nodes.Add("autonomous_movement = " + autonomous_movement);
+            } else if ((bitfield & (uint)PhysicsDescInfo.ANIMFRAME_ID) != 0) {
+                node.Nodes.Add("animframe_id = " + animframe_id);
             }
-            node.Nodes.Add("object_scale = " + object_scale);
-            node.Nodes.Add("friction = " + friction);
-            node.Nodes.Add("elasticity = " + elasticity);
-            node.Nodes.Add("translucency = " + translucency);
-            node.Nodes.Add("velocity = " + velocity);
-            node.Nodes.Add("acceleration = " + acceleration);
-            node.Nodes.Add("omega = " + omega);
-            node.Nodes.Add("default_script = " + default_script);
-            node.Nodes.Add("default_script_intensity = " + default_script_intensity);
+            if ((bitfield & (uint)PhysicsDescInfo.POSITION) != 0) {
+                TreeNode posNode = node.Nodes.Add("pos = ");
+                pos.contributeToTreeNode(posNode);
+            }
+            if ((bitfield & (uint)PhysicsDescInfo.MTABLE) != 0) {
+                node.Nodes.Add("mtable_id = " + mtable_id);
+            }
+            if ((bitfield & (uint)PhysicsDescInfo.STABLE) != 0) {
+                node.Nodes.Add("stable_id = " + stable_id);
+            }
+            if ((bitfield & (uint)PhysicsDescInfo.PETABLE) != 0) {
+                node.Nodes.Add("phstable_id = " + phstable_id);
+            }
+            if ((bitfield & (uint)PhysicsDescInfo.CSetup) != 0) {
+                node.Nodes.Add("setup_id = " + setup_id);
+            }
+            if ((bitfield & (uint)PhysicsDescInfo.PARENT) != 0) {
+                node.Nodes.Add("parent_id = " + parent_id);
+                node.Nodes.Add("location_id = " + location_id);
+            }
+            if ((bitfield & (uint)PhysicsDescInfo.CHILDREN) != 0) {
+                TreeNode childrenNode = node.Nodes.Add("children = ");
+                foreach (ChildInfo childInfo in children) {
+                    childInfo.contributeToTreeNode(childrenNode);
+                }
+            }
+            if ((bitfield & (uint)PhysicsDescInfo.OBJSCALE) != 0) {
+                node.Nodes.Add("object_scale = " + object_scale);
+            }
+            if ((bitfield & (uint)PhysicsDescInfo.FRICTION) != 0) {
+                node.Nodes.Add("friction = " + friction);
+            }
+            if ((bitfield & (uint)PhysicsDescInfo.ELASTICITY) != 0) {
+                node.Nodes.Add("elasticity = " + elasticity);
+            }
+            if ((bitfield & (uint)PhysicsDescInfo.TRANSLUCENCY) != 0) {
+                node.Nodes.Add("translucency = " + translucency);
+            }
+            if ((bitfield & (uint)PhysicsDescInfo.VELOCITY) != 0) {
+                node.Nodes.Add("velocity = " + velocity);
+            }
+            if ((bitfield & (uint)PhysicsDescInfo.ACCELERATION) != 0) {
+                node.Nodes.Add("acceleration = " + acceleration);
+            }
+            if ((bitfield & (uint)PhysicsDescInfo.OMEGA) != 0) {
+                node.Nodes.Add("omega = " + omega);
+            }
+            if ((bitfield & (uint)PhysicsDescInfo.DEFAULT_SCRIPT) != 0) {
+                node.Nodes.Add("default_script = " + default_script);
+            }
+            if ((bitfield & (uint)PhysicsDescInfo.DEFAULT_SCRIPT_INTENSITY) != 0) {
+                node.Nodes.Add("default_script_intensity = " + default_script_intensity);
+            }
             TreeNode timestampsNode = node.Nodes.Add("timestamps = ");
             for (int i = 0; i < timestamps.Length; ++i) {
                 timestampsNode.Nodes.Add(timestamps[i].ToString());
@@ -480,7 +515,7 @@ public class CM_Physics : MessageProcessor {
         public ITEM_TYPE _hook_type;
         public uint _iconOverlayID;
         public uint _iconUnderlayID;
-        public uint _material_type;
+        public MaterialType _material_type;
         public uint _cooldown_id;
         public double _cooldown_duration;
         public uint _pet_owner;
@@ -624,12 +659,12 @@ public class CM_Physics : MessageProcessor {
                 newObj._iconOverlayID = Util.readDataIDOfKnownType(0x6000000, binaryReader);
             }
 
-            if ((newObj.header & unchecked((uint)PublicWeenieDescPackHeader.PWD_Packed_MaterialType)) != 0) {
-                newObj._material_type = binaryReader.ReadUInt32();
-            }
-
             if ((newObj.header2 & (uint)PublicWeenieDescPackHeader2.PWD2_Packed_IconUnderlay) != 0) {
                 newObj._iconUnderlayID = Util.readDataIDOfKnownType(0x6000000, binaryReader);
+            }
+
+            if ((newObj.header & unchecked((uint)PublicWeenieDescPackHeader.PWD_Packed_MaterialType)) != 0) {
+                newObj._material_type = (MaterialType)binaryReader.ReadUInt32();
             }
 
             if ((newObj.header2 & (uint)PublicWeenieDescPackHeader2.PWD2_Packed_CooldownID) != 0) {
@@ -651,48 +686,122 @@ public class CM_Physics : MessageProcessor {
 
         public void contributeToTreeNode(TreeNode node) {
             node.Nodes.Add("header = " + header);
-            node.Nodes.Add("header2 = " + header2);
             node.Nodes.Add("_name = " + _name.m_buffer);
             node.Nodes.Add("_wcid = " + _wcid);
             node.Nodes.Add("_iconID = " + _iconID);
             node.Nodes.Add("_type = " + _type);
             node.Nodes.Add("_bitfield = " + _bitfield);
-            node.Nodes.Add("_plural_name = " + _plural_name);
-            node.Nodes.Add("_itemsCapacity = " + _itemsCapacity);
-            node.Nodes.Add("_containersCapacity = " + _containersCapacity);
-            node.Nodes.Add("_ammoType = " + _ammoType);
-            node.Nodes.Add("_value = " + _value);
-            node.Nodes.Add("_useability = " + _useability);
-            node.Nodes.Add("_useRadius = " + _useRadius);
-            node.Nodes.Add("_targetType = " + _targetType);
-            node.Nodes.Add("_effects = " + _effects);
-            node.Nodes.Add("_combatUse = " + _combatUse);
-            node.Nodes.Add("_structure = " + _structure);
-            node.Nodes.Add("_maxStructure = " + _maxStructure);
-            node.Nodes.Add("_stackSize = " + _stackSize);
-            node.Nodes.Add("_maxStackSize = " + _maxStackSize);
-            node.Nodes.Add("_containerID = " + _containerID);
-            node.Nodes.Add("_wielderID = " + _wielderID);
-            node.Nodes.Add("_valid_locations = " + _valid_locations);
-            node.Nodes.Add("_location = " + _location);
-            node.Nodes.Add("_priority = " + _priority);
-            node.Nodes.Add("_blipColor = " + _blipColor);
-            node.Nodes.Add("_radar_enum = " + _radar_enum);
-            node.Nodes.Add("_pscript = " + _pscript);
-            node.Nodes.Add("_workmanship = " + _workmanship);
-            node.Nodes.Add("_burden = " + _burden);
-            node.Nodes.Add("_spellID = " + _spellID);
-            node.Nodes.Add("_house_owner_iid = " + _house_owner_iid);
-            //node.Nodes.Add("_db = " + _db); // TODO: Add once implemented
-            node.Nodes.Add("_hook_item_types = " + _hook_item_types);
-            node.Nodes.Add("_monarch = " + _monarch);
-            node.Nodes.Add("_hook_type = " + _hook_type);
-            node.Nodes.Add("_iconOverlayID = " + _iconOverlayID);
-            node.Nodes.Add("_iconUnderlayID = " + _iconUnderlayID);
-            node.Nodes.Add("_material_type = " + _material_type);
-            node.Nodes.Add("_cooldown_id = " + _cooldown_id);
-            node.Nodes.Add("_cooldown_duration = " + _cooldown_duration);
-            node.Nodes.Add("_pet_owner = " + _pet_owner);
+            if ((_bitfield & (uint)BitfieldIndex.BF_INCLUDES_SECOND_HEADER) != 0) {
+                node.Nodes.Add("header2 = " + header2);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_PluralName) != 0) {
+                node.Nodes.Add("_plural_name = " + _plural_name);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_ItemsCapacity) != 0) {
+                node.Nodes.Add("_itemsCapacity = " + _itemsCapacity);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_ContainersCapacity) != 0) {
+                node.Nodes.Add("_containersCapacity = " + _containersCapacity);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_AmmoType) != 0) {
+                node.Nodes.Add("_ammoType = " + _ammoType);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_Value) != 0) {
+                node.Nodes.Add("_value = " + _value);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_Useability) != 0) {
+                node.Nodes.Add("_useability = " + _useability);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_UseRadius) != 0) {
+                node.Nodes.Add("_useRadius = " + _useRadius);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_TargetType) != 0) {
+                node.Nodes.Add("_targetType = " + _targetType);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_UIEffects) != 0) {
+                node.Nodes.Add("_effects = " + _effects);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_CombatUse) != 0) {
+                node.Nodes.Add("_combatUse = " + _combatUse);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_Structure) != 0) {
+                node.Nodes.Add("_structure = " + _structure);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_MaxStructure) != 0) {
+                node.Nodes.Add("_maxStructure = " + _maxStructure);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_StackSize) != 0) {
+                node.Nodes.Add("_stackSize = " + _stackSize);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_MaxStackSize) != 0) {
+                node.Nodes.Add("_maxStackSize = " + _maxStackSize);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_ContainerID) != 0) {
+                node.Nodes.Add("_containerID = " + _containerID);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_WielderID) != 0) {
+                node.Nodes.Add("_wielderID = " + _wielderID);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_ValidLocations) != 0) {
+                node.Nodes.Add("_valid_locations = " + _valid_locations);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_Location) != 0) {
+                node.Nodes.Add("_location = " + _location);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_Priority) != 0) {
+                node.Nodes.Add("_priority = " + _priority);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_BlipColor) != 0) {
+                node.Nodes.Add("_blipColor = " + _blipColor);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_RadarEnum) != 0) {
+                node.Nodes.Add("_radar_enum = " + _radar_enum);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_PScript) != 0) {
+                node.Nodes.Add("_pscript = " + _pscript);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_Workmanship) != 0) {
+                node.Nodes.Add("_workmanship = " + _workmanship);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_Burden) != 0) {
+                node.Nodes.Add("_burden = " + _burden);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_SpellID) != 0) {
+                node.Nodes.Add("_spellID = " + _spellID);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_HouseOwner) != 0) {
+                node.Nodes.Add("_house_owner_iid = " + _house_owner_iid);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_HouseRestrictions) != 0) {
+                //node.Nodes.Add("_db = " + _db); // TODO: Add once implemented
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_HookItemTypes) != 0) {
+                node.Nodes.Add("_hook_item_types = " + _hook_item_types);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_Monarch) != 0) {
+                node.Nodes.Add("_monarch = " + _monarch);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_HookType) != 0) {
+                node.Nodes.Add("_hook_type = " + _hook_type);
+            }
+            if ((header & (uint)PublicWeenieDescPackHeader.PWD_Packed_IconOverlay) != 0) {
+                node.Nodes.Add("_iconOverlayID = " + _iconOverlayID);
+            }
+            if ((header2 & (uint)PublicWeenieDescPackHeader2.PWD2_Packed_IconUnderlay) != 0) {
+                node.Nodes.Add("_iconUnderlayID = " + _iconUnderlayID);
+            }
+            if ((header & unchecked((uint)PublicWeenieDescPackHeader.PWD_Packed_MaterialType)) != 0) {
+                node.Nodes.Add("_material_type = " + _material_type);
+            }
+            if ((header2 & (uint)PublicWeenieDescPackHeader2.PWD2_Packed_CooldownID) != 0) {
+                node.Nodes.Add("_cooldown_id = " + _cooldown_id);
+            }
+            if ((header2 & (uint)PublicWeenieDescPackHeader2.PWD2_Packed_CooldownDuration) != 0) {
+                node.Nodes.Add("_cooldown_duration = " + _cooldown_duration);
+            }
+            if ((header2 & (uint)PublicWeenieDescPackHeader2.PWD2_Packed_PetOwner) != 0) {
+                node.Nodes.Add("_pet_owner = " + _pet_owner);
+            }
         }
     }
 
