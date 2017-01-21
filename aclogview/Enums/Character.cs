@@ -158,3 +158,32 @@ namespace ACCharGenResult {
         SizeOfChecksum = 4
     }
 }
+
+public enum CG_VERIFICATION_RESPONSE {
+    UNDEF_CG_VERIFICATION_RESPONSE,
+    CG_VERIFICATION_RESPONSE_OK,
+    CG_VERIFICATION_RESPONSE_PENDING,
+    CG_VERIFICATION_RESPONSE_NAME_IN_USE,
+    CG_VERIFICATION_RESPONSE_NAME_BANNED,
+    CG_VERIFICATION_RESPONSE_CORRUPT,
+    CG_VERIFICATION_RESPONSE_DATABASE_DOWN,
+    CG_VERIFICATION_RESPONSE_ADMIN_PRIVILEGE_DENIED,
+    NUM_CG_VERIFICATION_RESPONSES
+}
+
+public enum HeritageGroup {
+    Invalid_HeritageGroup,
+    Aluvian_HeritageGroup,
+    Gharundim_HeritageGroup,
+    Sho_HeritageGroup,
+    Viamontian_HeritageGroup,
+    Shadowbound_HeritageGroup,
+    Gearknight_HeritageGroup,
+    Tumerok_HeritageGroup,
+    Lugian_HeritageGroup,
+    Empyrean_HeritageGroup,
+    Penumbraen_HeritageGroup,
+    Undead_HeritageGroup,
+    Olthoi_HeritageGroup,
+    OlthoiAcid_HeritageGroup
+}
