@@ -13,8 +13,26 @@ class CM_Movement : MessageProcessor {
 
         PacketOpcode opcode = Util.readOpcode(messageDataReader);
         switch (opcode) {
+            // TODO: PacketOpcode.Evt_Movement__PositionAndMovement_ID
+            case PacketOpcode.Evt_Movement__Jump_ID: {
+                    Jump message = Jump.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Movement__MoveToState_ID: {
                     MoveToState message = MoveToState.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Movement__DoMovementCommand_ID: {
+                    DoMovementCommand message = DoMovementCommand.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            // TODO: PacketOpcode.Evt_Movement__TurnEvent_ID
+            // TODO: PacketOpcode.Evt_Movement__TurnToEvent_ID
+            case PacketOpcode.Evt_Movement__StopMovementCommand_ID: {
+                    StopMovementCommand message = StopMovementCommand.read(messageDataReader);
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }
@@ -28,8 +46,18 @@ class CM_Movement : MessageProcessor {
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }
+            case PacketOpcode.Evt_Movement__AutonomyLevel_ID: {
+                    AutonomyLevel message = AutonomyLevel.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Movement__AutonomousPosition_ID: {
                     AutonomousPosition message = AutonomousPosition.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Movement__Jump_NonAutonomous_ID: {
+                    Jump_NonAutonomous message = Jump_NonAutonomous.read(messageDataReader);
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }
@@ -40,6 +68,51 @@ class CM_Movement : MessageProcessor {
         }
 
         return handled;
+    }
+
+    public class JumpPack {
+        public Vector3 velocity;
+        public ushort instance_timestamp;
+        public ushort server_control_timestamp;
+        public ushort teleport_timestamp;
+        public ushort force_position_ts;
+
+        public static JumpPack read(BinaryReader binaryReader) {
+            JumpPack newObj = new JumpPack();
+            newObj.velocity = Vector3.read(binaryReader);
+            newObj.instance_timestamp = binaryReader.ReadUInt16();
+            newObj.server_control_timestamp = binaryReader.ReadUInt16();
+            newObj.teleport_timestamp = binaryReader.ReadUInt16();
+            newObj.force_position_ts = binaryReader.ReadUInt16();
+            Util.readToAlign(binaryReader);
+            return newObj;
+        }
+
+        public void contributeToTreeNode(TreeNode node) {
+            node.Nodes.Add("velocity = " + velocity);
+            node.Nodes.Add("instance_timestamp = " + instance_timestamp);
+            node.Nodes.Add("server_control_timestamp = " + server_control_timestamp);
+            node.Nodes.Add("teleport_timestamp = " + teleport_timestamp);
+            node.Nodes.Add("force_position_ts = " + force_position_ts);
+        }
+    }
+
+    public class Jump : Message {
+        public JumpPack i_jp;
+
+        public static Jump read(BinaryReader binaryReader) {
+            Jump newObj = new Jump();
+            newObj.i_jp = JumpPack.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            TreeNode jumpNode = rootNode.Nodes.Add("i_jp = ");
+            i_jp.contributeToTreeNode(jumpNode);
+            treeView.Nodes.Add(rootNode);
+        }
     }
 
     public class MoveToState : Message {
@@ -84,6 +157,54 @@ class CM_Movement : MessageProcessor {
             rootNode.Nodes.Add("force_position_ts = " + force_position_ts);
             rootNode.Nodes.Add("contact = " + contact);
             rootNode.Nodes.Add("longjump_mode = " + longjump_mode);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class DoMovementCommand : Message {
+        public uint i_motion;
+        public float i_speed;
+        public HoldKey i_hold_key;
+
+        public static DoMovementCommand read(BinaryReader binaryReader) {
+            DoMovementCommand newObj = new DoMovementCommand();
+            newObj.i_motion = binaryReader.ReadUInt32();
+            Util.readToAlign(binaryReader);
+            newObj.i_speed = binaryReader.ReadSingle();
+            Util.readToAlign(binaryReader);
+            newObj.i_hold_key = (HoldKey)binaryReader.ReadUInt32();
+            Util.readToAlign(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("i_motion = " + i_motion);
+            rootNode.Nodes.Add("i_speed = " + i_speed);
+            rootNode.Nodes.Add("i_hold_key = " + i_hold_key);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class StopMovementCommand : Message {
+        public uint i_motion;
+        public HoldKey i_hold_key;
+
+        public static StopMovementCommand read(BinaryReader binaryReader) {
+            StopMovementCommand newObj = new StopMovementCommand();
+            newObj.i_motion = binaryReader.ReadUInt32();
+            Util.readToAlign(binaryReader);
+            newObj.i_hold_key = (HoldKey)binaryReader.ReadUInt32();
+            Util.readToAlign(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("i_motion = " + i_motion);
+            rootNode.Nodes.Add("i_hold_key = " + i_hold_key);
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -372,6 +493,24 @@ class CM_Movement : MessageProcessor {
         }
     }
 
+    public class AutonomyLevel : Message {
+        public uint i_autonomy_level;
+
+        public static AutonomyLevel read(BinaryReader binaryReader) {
+            AutonomyLevel newObj = new AutonomyLevel();
+            newObj.i_autonomy_level = binaryReader.ReadUInt32();
+            Util.readToAlign(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("i_autonomy_level = " + i_autonomy_level);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
     public class RawMotionState {
         public enum PackBitfield {
             current_holdkey = (1 << 0),
@@ -388,23 +527,23 @@ class CM_Movement : MessageProcessor {
         }
 
         public uint bitfield;
-        public uint current_holdkey;
+        public HoldKey current_holdkey;
         public MotionStyle current_style = MotionStyle.Motion_NonCombat;
         public MotionStyle forward_command = MotionStyle.Motion_Ready;
-        public uint forward_holdkey;
+        public HoldKey forward_holdkey;
         public float forward_speed = 1.0f;
         public MotionStyle sidestep_command;
-        public uint sidestep_holdkey;
+        public HoldKey sidestep_holdkey;
         public float sidestep_speed = 1.0f;
         public MotionStyle turn_command;
-        public uint turn_holdkey;
+        public HoldKey turn_holdkey;
         public float turn_speed = 1.0f;
 
         public static RawMotionState read(BinaryReader binaryReader) {
             RawMotionState newObj = new RawMotionState();
             newObj.bitfield = binaryReader.ReadUInt32();
             if ((newObj.bitfield & (uint)PackBitfield.current_holdkey) != 0) {
-                newObj.current_holdkey = binaryReader.ReadUInt32();
+                newObj.current_holdkey = (HoldKey)binaryReader.ReadUInt32();
             }
             if ((newObj.bitfield & (uint)PackBitfield.current_style) != 0) {
                 newObj.current_style = (MotionStyle)binaryReader.ReadUInt32();
@@ -413,7 +552,7 @@ class CM_Movement : MessageProcessor {
                 newObj.forward_command = (MotionStyle)binaryReader.ReadUInt32();
             }
             if ((newObj.bitfield & (uint)PackBitfield.forward_holdkey) != 0) {
-                newObj.forward_holdkey = binaryReader.ReadUInt32();
+                newObj.forward_holdkey = (HoldKey)binaryReader.ReadUInt32();
             }
             if ((newObj.bitfield & (uint)PackBitfield.forward_speed) != 0) {
                 newObj.forward_speed = binaryReader.ReadSingle();
@@ -422,7 +561,7 @@ class CM_Movement : MessageProcessor {
                 newObj.sidestep_command = (MotionStyle)binaryReader.ReadUInt32();
             }
             if ((newObj.bitfield & (uint)PackBitfield.sidestep_holdkey) != 0) {
-                newObj.sidestep_holdkey = binaryReader.ReadUInt32();
+                newObj.sidestep_holdkey = (HoldKey)binaryReader.ReadUInt32();
             }
             if ((newObj.bitfield & (uint)PackBitfield.sidestep_speed) != 0) {
                 newObj.sidestep_speed = binaryReader.ReadSingle();
@@ -431,7 +570,7 @@ class CM_Movement : MessageProcessor {
                 newObj.turn_command = (MotionStyle)binaryReader.ReadUInt32();
             }
             if ((newObj.bitfield & (uint)PackBitfield.turn_holdkey) != 0) {
-                newObj.turn_holdkey = binaryReader.ReadUInt32();
+                newObj.turn_holdkey = (HoldKey)binaryReader.ReadUInt32();
             }
             if ((newObj.bitfield & (uint)PackBitfield.turn_speed) != 0) {
                 newObj.turn_speed = binaryReader.ReadSingle();
@@ -501,6 +640,24 @@ class CM_Movement : MessageProcessor {
             rootNode.Nodes.Add("teleport_timestamp = " + teleport_timestamp);
             rootNode.Nodes.Add("force_position_timestamp = " + force_position_timestamp);
             rootNode.Nodes.Add("contact = " + contact);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class Jump_NonAutonomous : Message {
+        public float i_extent;
+
+        public static Jump_NonAutonomous read(BinaryReader binaryReader) {
+            Jump_NonAutonomous newObj = new Jump_NonAutonomous();
+            newObj.i_extent = binaryReader.ReadSingle();
+            Util.readToAlign(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("i_extent = " + i_extent);
             treeView.Nodes.Add(rootNode);
         }
     }

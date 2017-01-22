@@ -431,3 +431,10 @@ namespace MovementTypes {
         TurnToHeading
     }
 }
+
+public enum HoldKey {
+    HoldKey_Invalid,
+    HoldKey_None,
+    HoldKey_Run,
+    Num_HoldKeys
+}
