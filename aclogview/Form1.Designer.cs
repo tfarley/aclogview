@@ -34,7 +34,7 @@
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.splitContainer_Bottom = new System.Windows.Forms.SplitContainer();
-            this.textBox_PacketData = new System.Windows.Forms.TextBox();
+            this.textBox_PacketData = new System.Windows.Forms.RichTextBox();
             this.treeView_ParsedData = new System.Windows.Forms.TreeView();
             this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
             this.menuItem_File = new System.Windows.Forms.MenuItem();
@@ -47,6 +47,7 @@
             this.pictureBox_Search = new System.Windows.Forms.PictureBox();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.checkBox_HideHeaderOnly = new System.Windows.Forms.CheckBox();
+            this.checkBox_useHighlighting = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -160,10 +161,10 @@
             this.textBox_PacketData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox_PacketData.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox_PacketData.Location = new System.Drawing.Point(0, 0);
-            this.textBox_PacketData.Multiline = true;
             this.textBox_PacketData.Name = "textBox_PacketData";
             this.textBox_PacketData.Size = new System.Drawing.Size(1126, 487);
             this.textBox_PacketData.TabIndex = 0;
+            this.textBox_PacketData.Text = "";
             // 
             // treeView_ParsedData
             // 
@@ -172,6 +173,7 @@
             this.treeView_ParsedData.Name = "treeView_ParsedData";
             this.treeView_ParsedData.Size = new System.Drawing.Size(382, 487);
             this.treeView_ParsedData.TabIndex = 0;
+            this.treeView_ParsedData.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_ParsedData_AfterSelect);
             // 
             // mainMenu
             // 
@@ -255,11 +257,24 @@
             this.checkBox_HideHeaderOnly.Visible = false;
             this.checkBox_HideHeaderOnly.CheckedChanged += new System.EventHandler(this.checkBox_HideHeaderOnly_CheckedChanged);
             // 
+            // checkBox_useHighlighting
+            // 
+            this.checkBox_useHighlighting.Checked = true;
+            this.checkBox_useHighlighting.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_useHighlighting.Location = new System.Drawing.Point(949, 2);
+            this.checkBox_useHighlighting.Name = "checkBox_useHighlighting";
+            this.checkBox_useHighlighting.Size = new System.Drawing.Size(156, 17);
+            this.checkBox_useHighlighting.TabIndex = 4;
+            this.checkBox_useHighlighting.Text = "Use Highlighting (Slower!)";
+            this.checkBox_useHighlighting.UseVisualStyleBackColor = true;
+            this.checkBox_useHighlighting.CheckedChanged += new System.EventHandler(this.checkBox_useHighlighting_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1520, 964);
+            this.Controls.Add(this.checkBox_useHighlighting);
             this.Controls.Add(this.checkBox_HideHeaderOnly);
             this.Controls.Add(this.splitContainer_Main);
             this.Controls.Add(this.textBox_Search);
@@ -276,7 +291,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).EndInit();
             this.splitContainer_Main.ResumeLayout(false);
             this.splitContainer_Bottom.Panel1.ResumeLayout(false);
-            this.splitContainer_Bottom.Panel1.PerformLayout();
             this.splitContainer_Bottom.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Bottom)).EndInit();
             this.splitContainer_Bottom.ResumeLayout(false);
@@ -301,7 +315,7 @@
         private System.Windows.Forms.TextBox textBox_Search;
         private System.Windows.Forms.PictureBox pictureBox_Search;
         private System.Windows.Forms.StatusStrip statusStrip;
-        private System.Windows.Forms.TextBox textBox_PacketData;
+        private System.Windows.Forms.RichTextBox textBox_PacketData;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
@@ -311,6 +325,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.TreeView treeView_ParsedData;
         private System.Windows.Forms.CheckBox checkBox_HideHeaderOnly;
+        private System.Windows.Forms.CheckBox checkBox_useHighlighting;
     }
 }
 
