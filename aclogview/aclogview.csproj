@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CM_Admin.cs" />
+    <Compile Include="CM_Advocate.cs" />
     <Compile Include="CM_Allegiance.cs" />
     <Compile Include="CM_Combat.cs" />
     <Compile Include="CM_Fellowship.cs" />
