@@ -253,6 +253,14 @@ public class Vector3 {
     public float y;
     public float z;
 
+    public static Vector3 read(BinaryReader binaryReader) {
+        Vector3 newObj = new Vector3();
+        newObj.x = binaryReader.ReadSingle();
+        newObj.y = binaryReader.ReadSingle();
+        newObj.z = binaryReader.ReadSingle();
+        return newObj;
+    }
+
     public override string ToString() {
         StringBuilder builder = new StringBuilder();
 
@@ -282,12 +290,12 @@ public class Mat3x3 {
 }
 
 public class Frame {
+    public Vector3 m_fOrigin;
     public float qw = 1.0f;
     public float qx;
     public float qy;
     public float qz;
     public Mat3x3 m_fl2gv = new Mat3x3(); // Local-to-global matrix?
-    public Vector3 m_fOrigin = new Vector3();
 
     public void cache() {
         // TODO: Clean this up
@@ -317,9 +325,7 @@ public class Frame {
 
     public static Frame read(BinaryReader binaryReader) {
         Frame newObj = new Frame();
-        newObj.m_fOrigin.x = binaryReader.ReadSingle();
-        newObj.m_fOrigin.y = binaryReader.ReadSingle();
-        newObj.m_fOrigin.z = binaryReader.ReadSingle();
+        newObj.m_fOrigin = Vector3.read(binaryReader);
         newObj.qw = binaryReader.ReadSingle();
         newObj.qx = binaryReader.ReadSingle();
         newObj.qy = binaryReader.ReadSingle();
@@ -329,12 +335,12 @@ public class Frame {
     }
 
     public void contributeToTreeNode(TreeNode node) {
+        node.Nodes.Add("m_fOrigin = " + m_fOrigin);
         node.Nodes.Add("qw = " + qw);
         node.Nodes.Add("qx = " + qx);
         node.Nodes.Add("qy = " + qy);
         node.Nodes.Add("qz = " + qz);
         node.Nodes.Add("m_fl2gv = " + m_fl2gv);
-        node.Nodes.Add("m_fOrigin = " + m_fOrigin);
     }
 }
 

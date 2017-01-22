@@ -13,6 +13,11 @@ public class CM_Physics : MessageProcessor {
 
         PacketOpcode opcode = Util.readOpcode(messageDataReader);
         switch (opcode) {
+            case PacketOpcode.Evt_Physics__ObjDescEvent_ID: {
+                    ObjDescEvent message = ObjDescEvent.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Physics__CreateObject_ID: {
                     CreateObject message = CreateObject.read(messageDataReader);
                     message.contributeToTreeView(outputTreeView);
@@ -23,6 +28,56 @@ public class CM_Physics : MessageProcessor {
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }
+            case PacketOpcode.Evt_Physics__DeleteObject_ID: {
+                    DeleteObject message = DeleteObject.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Physics__ParentEvent_ID: {
+                    ParentEvent message = ParentEvent.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Physics__PickupEvent_ID: {
+                    PickupEvent message = PickupEvent.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Physics__SetState_ID: {
+                    SetState message = SetState.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Physics__VectorUpdate_ID: {
+                    VectorUpdate message = VectorUpdate.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Physics__SoundEvent_ID: {
+                    SoundEvent message = SoundEvent.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Physics__PlayerTeleport_ID: {
+                    PlayerTeleport message = PlayerTeleport.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Physics__PlayScriptID_ID: {
+                    PlayScriptID message = PlayScriptID.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Physics__PlayScriptType_ID: {
+                    PlayScriptType message = PlayScriptType.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Physics__UpdateObject_ID: {
+                    UpdateObject message = UpdateObject.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             default: {
                     handled = false;
                     break;
@@ -30,23 +85,6 @@ public class CM_Physics : MessageProcessor {
         }
 
         return handled;
-    }
-
-    public class CreatePlayer : Message {
-        public uint object_id;
-
-        public static CreatePlayer read(BinaryReader binaryReader) {
-            CreatePlayer newObj = new CreatePlayer();
-            newObj.object_id = binaryReader.ReadUInt32();
-            return newObj;
-        }
-
-        public override void contributeToTreeView(TreeView treeView) {
-            TreeNode rootNode = new TreeNode(this.GetType().Name);
-            rootNode.Expand();
-            rootNode.Nodes.Add("object_id = " + object_id);
-            treeView.Nodes.Add(rootNode);
-        }
     }
 
     public class Subpalette {
@@ -205,7 +243,7 @@ public class CM_Physics : MessageProcessor {
         }
 
         public uint bitfield;
-        public uint state;
+        public PhysicsState state;
         public byte[] movement_buffer;
         public uint autonomous_movement;
         public uint animframe_id;
@@ -231,7 +269,7 @@ public class CM_Physics : MessageProcessor {
         public static PhysicsDesc read(BinaryReader binaryReader) {
             PhysicsDesc newObj = new PhysicsDesc();
             newObj.bitfield = binaryReader.ReadUInt32();
-            newObj.state = binaryReader.ReadUInt32();
+            newObj.state = (PhysicsState)binaryReader.ReadUInt32();
 
             if ((newObj.bitfield & (uint)PhysicsDescInfo.MOVEMENT) != 0) {
                 uint buff_length = binaryReader.ReadUInt32();
@@ -805,6 +843,49 @@ public class CM_Physics : MessageProcessor {
         }
     }
 
+    public class PhysicsTimestampPack {
+        public ushort ts1;
+        public ushort ts2;
+
+        public static PhysicsTimestampPack read(BinaryReader binaryReader) {
+            PhysicsTimestampPack newObj = new PhysicsTimestampPack();
+            newObj.ts1 = binaryReader.ReadUInt16();
+            newObj.ts2 = binaryReader.ReadUInt16();
+            Util.readToAlign(binaryReader);
+            return newObj;
+        }
+
+        public void contributeToTreeNode(TreeNode node) {
+            node.Nodes.Add("ts1 = " + ts1);
+            node.Nodes.Add("ts2 = " + ts2);
+        }
+    }
+
+    public class ObjDescEvent : Message {
+        public uint object_id;
+        public ObjDesc desc;
+        public PhysicsTimestampPack timestamps;
+
+        public static ObjDescEvent read(BinaryReader binaryReader) {
+            ObjDescEvent newObj = new ObjDescEvent();
+            newObj.object_id = binaryReader.ReadUInt32();
+            newObj.desc = ObjDesc.read(binaryReader);
+            newObj.timestamps = PhysicsTimestampPack.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("object_id = " + object_id);
+            TreeNode descNode = rootNode.Nodes.Add("desc = ");
+            desc.contributeToTreeNode(descNode);
+            TreeNode timestampsNode = rootNode.Nodes.Add("timestamps = ");
+            timestamps.contributeToTreeNode(timestampsNode);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
     public class CreateObject : Message {
         public uint object_id;
         public ObjDesc objdesc;
@@ -813,6 +894,257 @@ public class CM_Physics : MessageProcessor {
 
         public static CreateObject read(BinaryReader binaryReader) {
             CreateObject newObj = new CreateObject();
+            newObj.object_id = binaryReader.ReadUInt32();
+            newObj.objdesc = ObjDesc.read(binaryReader);
+            newObj.physicsdesc = PhysicsDesc.read(binaryReader);
+            newObj.wdesc = PublicWeenieDesc.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("object_id = " + object_id);
+            TreeNode objdescNode = rootNode.Nodes.Add("objdesc = ");
+            objdesc.contributeToTreeNode(objdescNode);
+            TreeNode physicsdescNode = rootNode.Nodes.Add("physicsdesc = ");
+            physicsdesc.contributeToTreeNode(physicsdescNode);
+            TreeNode wdescNode = rootNode.Nodes.Add("wdesc = ");
+            wdesc.contributeToTreeNode(wdescNode);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class CreatePlayer : Message {
+        public uint object_id;
+
+        public static CreatePlayer read(BinaryReader binaryReader) {
+            CreatePlayer newObj = new CreatePlayer();
+            newObj.object_id = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("object_id = " + object_id);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class DeleteObject : Message {
+        public uint object_id;
+        public ushort instance_timestamp;
+
+        public static DeleteObject read(BinaryReader binaryReader) {
+            DeleteObject newObj = new DeleteObject();
+            newObj.object_id = binaryReader.ReadUInt32();
+            newObj.instance_timestamp = binaryReader.ReadUInt16();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("object_id = " + object_id);
+            rootNode.Nodes.Add("instance_timestamp = " + instance_timestamp);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class ParentEvent : Message {
+        public uint object_id;
+        public uint child_id;
+        public uint child_location;
+        public uint placement_id;
+        public PhysicsTimestampPack timestamps;
+
+        public static ParentEvent read(BinaryReader binaryReader) {
+            ParentEvent newObj = new ParentEvent();
+            newObj.object_id = binaryReader.ReadUInt32();
+            newObj.child_id = binaryReader.ReadUInt32();
+            newObj.child_location = binaryReader.ReadUInt32();
+            newObj.placement_id = binaryReader.ReadUInt32();
+            newObj.timestamps = PhysicsTimestampPack.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("object_id = " + object_id);
+            rootNode.Nodes.Add("child_id = " + child_id);
+            rootNode.Nodes.Add("child_location = " + child_location);
+            rootNode.Nodes.Add("placement_id = " + placement_id);
+            TreeNode timestampsNode = rootNode.Nodes.Add("timestamps = ");
+            timestamps.contributeToTreeNode(timestampsNode);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class PickupEvent : Message {
+        public uint object_id;
+        public PhysicsTimestampPack timestamps;
+
+        public static PickupEvent read(BinaryReader binaryReader) {
+            PickupEvent newObj = new PickupEvent();
+            newObj.object_id = binaryReader.ReadUInt32();
+            newObj.timestamps = PhysicsTimestampPack.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("object_id = " + object_id);
+            TreeNode timestampsNode = rootNode.Nodes.Add("timestamps = ");
+            timestamps.contributeToTreeNode(timestampsNode);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class SetState : Message {
+        public uint object_id;
+        public PhysicsState new_state;
+        public PhysicsTimestampPack timestamps;
+
+        public static SetState read(BinaryReader binaryReader) {
+            SetState newObj = new SetState();
+            newObj.object_id = binaryReader.ReadUInt32();
+            newObj.new_state = (PhysicsState)binaryReader.ReadUInt32();
+            newObj.timestamps = PhysicsTimestampPack.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("object_id = " + object_id);
+            rootNode.Nodes.Add("new_state = " + new_state);
+            TreeNode timestampsNode = rootNode.Nodes.Add("timestamps = ");
+            timestamps.contributeToTreeNode(timestampsNode);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class VectorUpdate : Message {
+        public uint object_id;
+        public Vector3 velocity;
+        public Vector3 omega;
+        public PhysicsTimestampPack timestamps;
+
+        public static VectorUpdate read(BinaryReader binaryReader) {
+            VectorUpdate newObj = new VectorUpdate();
+            newObj.object_id = binaryReader.ReadUInt32();
+            newObj.velocity = Vector3.read(binaryReader);
+            newObj.omega = Vector3.read(binaryReader);
+            newObj.timestamps = PhysicsTimestampPack.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("object_id = " + object_id);
+            rootNode.Nodes.Add("velocity = " + velocity);
+            rootNode.Nodes.Add("omega = " + omega);
+            TreeNode timestampsNode = rootNode.Nodes.Add("timestamps = ");
+            timestamps.contributeToTreeNode(timestampsNode);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class SoundEvent : Message {
+        public uint object_id;
+        public int sound;
+        public float volume;
+
+        public static SoundEvent read(BinaryReader binaryReader) {
+            SoundEvent newObj = new SoundEvent();
+            newObj.object_id = binaryReader.ReadUInt32();
+            newObj.sound = binaryReader.ReadInt32();
+            newObj.volume = binaryReader.ReadSingle();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("object_id = " + object_id);
+            rootNode.Nodes.Add("sound = " + sound);
+            rootNode.Nodes.Add("volume = " + volume);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class PlayerTeleport : Message {
+        public ushort physics_timestamp;
+
+        public static PlayerTeleport read(BinaryReader binaryReader) {
+            PlayerTeleport newObj = new PlayerTeleport();
+            newObj.physics_timestamp = binaryReader.ReadUInt16();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("physics_timestamp = " + physics_timestamp);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class PlayScriptID : Message {
+        public uint object_id;
+        public uint script_id;
+
+        public static PlayScriptID read(BinaryReader binaryReader) {
+            PlayScriptID newObj = new PlayScriptID();
+            newObj.object_id = binaryReader.ReadUInt32();
+            newObj.script_id = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("object_id = " + object_id);
+            rootNode.Nodes.Add("script_id = " + script_id);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class PlayScriptType : Message {
+        public uint object_id;
+        public int script_type;
+        public float mod;
+
+        public static PlayScriptType read(BinaryReader binaryReader) {
+            PlayScriptType newObj = new PlayScriptType();
+            newObj.object_id = binaryReader.ReadUInt32();
+            newObj.script_type = binaryReader.ReadInt32();
+            newObj.mod = binaryReader.ReadSingle();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView) {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("object_id = " + object_id);
+            rootNode.Nodes.Add("script_type = " + script_type);
+            rootNode.Nodes.Add("mod = " + mod);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class UpdateObject : Message {
+        public uint object_id;
+        public ObjDesc objdesc;
+        public PhysicsDesc physicsdesc;
+        public PublicWeenieDesc wdesc;
+
+        public static UpdateObject read(BinaryReader binaryReader) {
+            UpdateObject newObj = new UpdateObject();
             newObj.object_id = binaryReader.ReadUInt32();
             newObj.objdesc = ObjDesc.read(binaryReader);
             newObj.physicsdesc = PhysicsDesc.read(binaryReader);
