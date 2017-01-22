@@ -213,7 +213,7 @@ class CM_Movement : MessageProcessor {
         public uint object_id;
         public uint flags;
         public Position position;
-        public Vector3 velocity = new Vector3();
+        public Vector3 velocity;
         public uint placement_id;
         public bool has_contact;
         public ushort instance_timestamp;
@@ -243,9 +243,7 @@ class CM_Movement : MessageProcessor {
             newObj.position.frame.cache();
 
             if ((newObj.flags & 0x1) != 0) {
-                newObj.velocity.x = binaryReader.ReadSingle();
-                newObj.velocity.y = binaryReader.ReadSingle();
-                newObj.velocity.z = binaryReader.ReadSingle();
+                newObj.velocity = Vector3.read(binaryReader);
             }
 
             if ((newObj.flags & 0x2) != 0) {
@@ -269,8 +267,12 @@ class CM_Movement : MessageProcessor {
             rootNode.Nodes.Add("flags = " + flags);
             TreeNode positionNode = rootNode.Nodes.Add("position = ");
             position.contributeToTreeNode(positionNode);
-            rootNode.Nodes.Add("velocity = " + velocity);
-            rootNode.Nodes.Add("placement_id = " + placement_id);
+            if ((flags & 0x1) != 0) {
+                rootNode.Nodes.Add("velocity = " + velocity);
+            }
+            if ((flags & 0x2) != 0) {
+                rootNode.Nodes.Add("placement_id = " + placement_id);
+            }
             rootNode.Nodes.Add("has_contact = " + has_contact);
             rootNode.Nodes.Add("instance_timestamp = " + instance_timestamp);
             rootNode.Nodes.Add("position_timestamp = " + position_timestamp);

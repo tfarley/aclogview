@@ -358,9 +358,7 @@ public class Position {
     public static Position readOrigin(BinaryReader binaryReader) {
         Position newObj = new Position();
         newObj.objcell_id = binaryReader.ReadUInt32();
-        newObj.frame.m_fOrigin.x = binaryReader.ReadSingle();
-        newObj.frame.m_fOrigin.y = binaryReader.ReadSingle();
-        newObj.frame.m_fOrigin.z = binaryReader.ReadSingle();
+        newObj.frame.m_fOrigin = Vector3.read(binaryReader);
         return newObj;
     }
 
