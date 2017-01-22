@@ -22,3 +22,11 @@ public enum HARBitmask {
     AllegianceGuests_HARBitmask = (1 << 1),
     AllegianceStorage_HARBitmask = (1 << 2)
 }
+
+public enum HouseType {
+    Undef_HouseType,
+    Cottage_HouseType,
+    Villa_HouseType,
+    Mansion_HouseType,
+    Apartment_HouseType
+}
