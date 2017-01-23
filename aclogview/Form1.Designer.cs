@@ -50,6 +50,7 @@
             this.checkBox_useHighlighting = new System.Windows.Forms.CheckBox();
             this.menuItem1 = new System.Windows.Forms.MenuItem();
             this.menuItem2 = new System.Windows.Forms.MenuItem();
+            this.menuItem3 = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -276,7 +277,8 @@
             // 
             this.menuItem1.Index = 2;
             this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuItem2});
+            this.menuItem2,
+            this.menuItem3});
             this.menuItem1.Text = "Tools";
             // 
             // menuItem2
@@ -284,6 +286,12 @@
             this.menuItem2.Index = 0;
             this.menuItem2.Text = "Count Packet Types";
             this.menuItem2.Click += new System.EventHandler(this.menuItem2_Click);
+            // 
+            // menuItem3
+            // 
+            this.menuItem3.Index = 1;
+            this.menuItem3.Text = "Find Bad Parsers";
+            this.menuItem3.Click += new System.EventHandler(this.menuItem3_Click);
             // 
             // Form1
             // 
@@ -344,6 +352,7 @@
         private System.Windows.Forms.CheckBox checkBox_useHighlighting;
         private System.Windows.Forms.MenuItem menuItem1;
         private System.Windows.Forms.MenuItem menuItem2;
+        private System.Windows.Forms.MenuItem menuItem3;
     }
 }
 

@@ -327,7 +327,7 @@ namespace aclogview {
                 }
             }
 
-            if (!dontList) {
+            if (!dontList && records.Count > 0) {
                 listView_Packets.VirtualListSize = records.Count;
 
                 listView_Packets.RedrawItems(0, records.Count - 1, false);
@@ -690,6 +690,68 @@ namespace aclogview {
             popup.setText(occurencesString.ToString());
             popup.setText(occurencesString.ToString() + "\r\n\r\n" + String.Join("\r\n", files));
             popup.ShowDialog();
+        }
+
+        private void menuItem3_Click(object sender, EventArgs e) {
+            FolderBrowserDialog openFolder = new FolderBrowserDialog();
+
+            if (openFolder.ShowDialog() != DialogResult.OK) {
+                return;
+            }
+
+            string[] files = Directory.GetFiles(openFolder.SelectedPath, "*.pcap", SearchOption.AllDirectories);
+
+            OrderedDictionary opcodeOccurrences = new OrderedDictionary();
+
+            foreach (PacketOpcode opcode in Enum.GetValues(typeof(PacketOpcode))) {
+                opcodeOccurrences[opcode] = 0;
+            }
+
+            foreach (string file in files) {
+                loadPcap(file);
+
+                int curPacket = 0;
+                int curFragment = 0;
+                try {
+                    for (curPacket = 0; curPacket < records.Count; ++curPacket) {
+                        PacketRecord record = records[curPacket];
+                        for (curFragment = 0; curFragment < record.netPacket.fragList_.Count; ++curFragment) {
+                            BlobFrag frag = record.netPacket.fragList_[curFragment];
+                            if (frag.memberHeader_.numFrags > 0) {
+                                continue;
+                            }
+
+                            BinaryReader fragDataReader = new BinaryReader(new MemoryStream(frag.dat_));
+
+                            bool handled = false;
+                            foreach (MessageProcessor messageProcessor in messageProcessors) {
+                                long readerStartPos = fragDataReader.BaseStream.Position;
+
+                                bool accepted = messageProcessor.acceptMessageData(fragDataReader, treeView_ParsedData);
+
+                                if (accepted && handled) {
+                                    throw new Exception("Multiple message processors are handling the same data!");
+                                }
+
+                                if (accepted) {
+                                    handled = true;
+                                }
+
+                                fragDataReader.BaseStream.Position = readerStartPos;
+                            }
+
+                            /*if (!handled) {
+                                PacketOpcode opcode = Util.readOpcode(fragDataReader);
+                                treeView_ParsedData.Nodes.Add(new TreeNode("Unhandled: " + opcode));
+                            }*/
+
+                        }
+                    }
+                } catch (Exception ex) {
+                    MessageBox.Show("Packet " + curPacket + " Fragment " + curFragment + " EXCEPTION: " + ex.Message);
+                    break;
+                }
+            }
         }
     }
 }
