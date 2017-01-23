@@ -48,6 +48,8 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.checkBox_HideHeaderOnly = new System.Windows.Forms.CheckBox();
             this.checkBox_useHighlighting = new System.Windows.Forms.CheckBox();
+            this.menuItem1 = new System.Windows.Forms.MenuItem();
+            this.menuItem2 = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -180,6 +182,7 @@
             this.mainMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem_File,
             this.menuItem_Edit,
+            this.menuItem1,
             this.menuItem_Help});
             // 
             // menuItem_File
@@ -202,7 +205,7 @@
             // 
             // menuItem_Help
             // 
-            this.menuItem_Help.Index = 2;
+            this.menuItem_Help.Index = 3;
             this.menuItem_Help.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem_About});
             this.menuItem_Help.Text = "Help";
@@ -269,6 +272,19 @@
             this.checkBox_useHighlighting.UseVisualStyleBackColor = true;
             this.checkBox_useHighlighting.CheckedChanged += new System.EventHandler(this.checkBox_useHighlighting_CheckedChanged);
             // 
+            // menuItem1
+            // 
+            this.menuItem1.Index = 2;
+            this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem2});
+            this.menuItem1.Text = "Tools";
+            // 
+            // menuItem2
+            // 
+            this.menuItem2.Index = 0;
+            this.menuItem2.Text = "Count Packet Types";
+            this.menuItem2.Click += new System.EventHandler(this.menuItem2_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -326,6 +342,8 @@
         private System.Windows.Forms.TreeView treeView_ParsedData;
         private System.Windows.Forms.CheckBox checkBox_HideHeaderOnly;
         private System.Windows.Forms.CheckBox checkBox_useHighlighting;
+        private System.Windows.Forms.MenuItem menuItem1;
+        private System.Windows.Forms.MenuItem menuItem2;
     }
 }
 

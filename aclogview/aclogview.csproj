@@ -111,6 +111,12 @@
     <Compile Include="Proto_UI.cs" />
     <Compile Include="Enums\Spells.cs" />
     <Compile Include="Enums\StatTypes.cs" />
+    <Compile Include="TextPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TextPopup.Designer.cs">
+      <DependentUpon>TextPopup.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -123,6 +129,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="TextPopup.resx">
+      <DependentUpon>TextPopup.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

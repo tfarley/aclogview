@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -67,7 +68,7 @@ namespace aclogview {
             public byte[] data;
             public int optionalHeadersLen;
             public NetPacket netPacket;
-            public PacketOpcode opcode;
+            public List<PacketOpcode> opcodes = new List<PacketOpcode>();
             public string extraInfo;
         }
 
@@ -85,7 +86,9 @@ namespace aclogview {
                 packetTypeStr.Append(newFrag.memberHeader_.blobNum);
                 packetTypeStr.Append("]");
             } else {
-                packetTypeStr.Append(Util.readOpcode(fragDataReader).ToString());
+                PacketOpcode opcode = Util.readOpcode(fragDataReader);
+                packet.opcodes.Add(opcode);
+                packetTypeStr.Append(opcode.ToString());
             }
         }
 
@@ -249,7 +252,7 @@ namespace aclogview {
         List<PacketRecord> records = new List<PacketRecord>();
         List<ListViewItem> listItems = new List<ListViewItem>();
 
-        private void loadPcap(string fileName) {
+        private void loadPcap(string fileName, bool dontList = false) {
             this.Text = "AC Log View - " + Path.GetFileName(fileName);
 
             records.Clear();
@@ -310,22 +313,26 @@ namespace aclogview {
 
                         records.Add(packet);
 
-                        ListViewItem newItem = new ListViewItem(packet.index.ToString());
-                        newItem.SubItems.Add(packet.isSend ? "Send" : "Recv");
-                        newItem.SubItems.Add(packet.tsSec.ToString());
-                        newItem.SubItems.Add(packet.packetHeadersStr);
-                        newItem.SubItems.Add(packet.packetTypeStr);
-                        newItem.SubItems.Add(packet.data.Length.ToString());
-                        newItem.SubItems.Add(packet.extraInfo);
-                        listItems.Add(newItem);
+                        if (!dontList) {
+                            ListViewItem newItem = new ListViewItem(packet.index.ToString());
+                            newItem.SubItems.Add(packet.isSend ? "Send" : "Recv");
+                            newItem.SubItems.Add(packet.tsSec.ToString());
+                            newItem.SubItems.Add(packet.packetHeadersStr);
+                            newItem.SubItems.Add(packet.packetTypeStr);
+                            newItem.SubItems.Add(packet.data.Length.ToString());
+                            newItem.SubItems.Add(packet.extraInfo);
+                            listItems.Add(newItem);
+                        }
                     }
                 }
             }
 
-            listView_Packets.VirtualListSize = records.Count;
+            if (!dontList) {
+                listView_Packets.VirtualListSize = records.Count;
 
-            listView_Packets.RedrawItems(0, records.Count - 1, false);
-            updateData();
+                listView_Packets.RedrawItems(0, records.Count - 1, false);
+                updateData();
+            }
         }
 
         private void listView_Packets_ColumnClick(object sender, ColumnClickEventArgs e) {
@@ -633,6 +640,56 @@ namespace aclogview {
 
         private void checkBox_useHighlighting_CheckedChanged(object sender, EventArgs e) {
             updateText();
+        }
+
+        private void menuItem2_Click(object sender, EventArgs e) {
+            FolderBrowserDialog openFolder = new FolderBrowserDialog();
+
+            if (openFolder.ShowDialog() != DialogResult.OK) {
+                return;
+            }
+
+            string[] files = Directory.GetFiles(openFolder.SelectedPath, "*.pcap", SearchOption.AllDirectories);
+
+            OrderedDictionary opcodeOccurrences = new OrderedDictionary();
+
+            foreach (PacketOpcode opcode in Enum.GetValues(typeof(PacketOpcode))) {
+                opcodeOccurrences[opcode] = 0;
+            }
+
+            foreach (string file in files) {
+                loadPcap(file, true);
+
+                foreach (PacketRecord record in records) {
+                    foreach (PacketOpcode opcode in record.opcodes) {
+                        if (opcodeOccurrences.Contains(opcode)) {
+                            opcodeOccurrences[opcode] = (Int32)opcodeOccurrences[opcode] + 1;
+                        } else {
+                            opcodeOccurrences[opcode] = 1;
+                        }
+                    }
+                }
+            }
+
+            long totalCount = 0;
+            StringBuilder occurencesString = new StringBuilder();
+            foreach (DictionaryEntry entry in opcodeOccurrences) {
+                occurencesString.Append(entry.Key);
+                occurencesString.Append(" = ");
+                occurencesString.Append(entry.Value);
+                occurencesString.Append("\r\n");
+
+                totalCount += (Int32)entry.Value;
+            }
+
+            occurencesString.Append("\r\n\r\nTotal Count = ");
+            occurencesString.Append(totalCount);
+            occurencesString.Append("\r\n");
+
+            TextPopup popup = new TextPopup();
+            popup.setText(occurencesString.ToString());
+            popup.setText(occurencesString.ToString() + "\r\n\r\n" + String.Join("\r\n", files));
+            popup.ShowDialog();
         }
     }
 }
