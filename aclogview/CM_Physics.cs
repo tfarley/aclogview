@@ -1116,13 +1116,13 @@ public class CM_Physics : MessageProcessor {
 
     public class PlayScriptType : Message {
         public uint object_id;
-        public int script_type;
+        public PScriptType script_type;
         public float mod;
 
         public static PlayScriptType read(BinaryReader binaryReader) {
             PlayScriptType newObj = new PlayScriptType();
             newObj.object_id = binaryReader.ReadUInt32();
-            newObj.script_type = binaryReader.ReadInt32();
+            newObj.script_type = (PScriptType)binaryReader.ReadUInt32();
             newObj.mod = binaryReader.ReadSingle();
             return newObj;
         }
