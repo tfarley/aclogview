@@ -335,6 +335,8 @@ namespace aclogview {
 
                 listView_Packets.RedrawItems(0, records.Count - 1, false);
                 updateData();
+            } else {
+                listView_Packets.VirtualListSize = 0;
             }
         }
 
@@ -630,7 +632,9 @@ namespace aclogview {
         }
 
         private void listView_Packets_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e) {
-            e.Item = listItems[e.ItemIndex];
+            if (e.ItemIndex < listItems.Count) {
+                e.Item = listItems[e.ItemIndex];
+            }
         }
 
         private void menuItem_About_Click(object sender, EventArgs e) {
