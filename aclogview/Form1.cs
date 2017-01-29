@@ -649,7 +649,7 @@ namespace aclogview {
             updateText();
         }
 
-        private void menuItem2_Click(object sender, EventArgs e) {
+        private void menuItem_ToolCount_Click(object sender, EventArgs e) {
             FolderBrowserDialog openFolder = new FolderBrowserDialog();
 
             if (openFolder.ShowDialog() != DialogResult.OK) {
@@ -699,7 +699,7 @@ namespace aclogview {
             popup.ShowDialog();
         }
 
-        private void menuItem3_Click(object sender, EventArgs e) {
+        private void menuItem_ToolBad_Click(object sender, EventArgs e) {
             FolderBrowserDialog openFolder = new FolderBrowserDialog();
 
             if (openFolder.ShowDialog() != DialogResult.OK) {
@@ -761,7 +761,7 @@ namespace aclogview {
             }
         }
 
-        private void menuItem4_Click(object sender, EventArgs e) {
+        private void menuItem_ToolHeatmap_Click(object sender, EventArgs e) {
             FolderBrowserDialog openFolder = new FolderBrowserDialog();
 
             if (openFolder.ShowDialog() != DialogResult.OK) {
@@ -804,7 +804,7 @@ namespace aclogview {
             }
 
             ImagePopup popup = new ImagePopup();
-            popup.ClientSize = new Size(600, 600);
+            popup.ClientSize = new Size(512, 512);
             popup.setImage(heatmapImg);
             popup.ShowDialog();
         }

@@ -41,8 +41,9 @@
             this.menuItem_Open = new System.Windows.Forms.MenuItem();
             this.menuItem_Edit = new System.Windows.Forms.MenuItem();
             this.menuItem1 = new System.Windows.Forms.MenuItem();
-            this.menuItem2 = new System.Windows.Forms.MenuItem();
-            this.menuItem3 = new System.Windows.Forms.MenuItem();
+            this.menuItem_ToolCount = new System.Windows.Forms.MenuItem();
+            this.menuItem_ToolBad = new System.Windows.Forms.MenuItem();
+            this.menuItem_ToolHeatmap = new System.Windows.Forms.MenuItem();
             this.menuItem_Help = new System.Windows.Forms.MenuItem();
             this.menuItem_About = new System.Windows.Forms.MenuItem();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
@@ -51,7 +52,6 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.checkBox_HideHeaderOnly = new System.Windows.Forms.CheckBox();
             this.checkBox_useHighlighting = new System.Windows.Forms.CheckBox();
-            this.menuItem4 = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -209,22 +209,28 @@
             // 
             this.menuItem1.Index = 2;
             this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuItem2,
-            this.menuItem3,
-            this.menuItem4});
+            this.menuItem_ToolCount,
+            this.menuItem_ToolBad,
+            this.menuItem_ToolHeatmap});
             this.menuItem1.Text = "Tools";
             // 
-            // menuItem2
+            // menuItem_ToolCount
             // 
-            this.menuItem2.Index = 0;
-            this.menuItem2.Text = "Count Packet Types";
-            this.menuItem2.Click += new System.EventHandler(this.menuItem2_Click);
+            this.menuItem_ToolCount.Index = 0;
+            this.menuItem_ToolCount.Text = "Count Packet Types";
+            this.menuItem_ToolCount.Click += new System.EventHandler(this.menuItem_ToolCount_Click);
             // 
-            // menuItem3
+            // menuItem_ToolBad
             // 
-            this.menuItem3.Index = 1;
-            this.menuItem3.Text = "Find Bad Parsers";
-            this.menuItem3.Click += new System.EventHandler(this.menuItem3_Click);
+            this.menuItem_ToolBad.Index = 1;
+            this.menuItem_ToolBad.Text = "Find Bad Parsers";
+            this.menuItem_ToolBad.Click += new System.EventHandler(this.menuItem_ToolBad_Click);
+            // 
+            // menuItem_ToolHeatmap
+            // 
+            this.menuItem_ToolHeatmap.Index = 2;
+            this.menuItem_ToolHeatmap.Text = "Heatmap";
+            this.menuItem_ToolHeatmap.Click += new System.EventHandler(this.menuItem_ToolHeatmap_Click);
             // 
             // menuItem_Help
             // 
@@ -295,12 +301,6 @@
             this.checkBox_useHighlighting.UseVisualStyleBackColor = true;
             this.checkBox_useHighlighting.CheckedChanged += new System.EventHandler(this.checkBox_useHighlighting_CheckedChanged);
             // 
-            // menuItem4
-            // 
-            this.menuItem4.Index = 2;
-            this.menuItem4.Text = "Heatmap";
-            this.menuItem4.Click += new System.EventHandler(this.menuItem4_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -359,9 +359,9 @@
         private System.Windows.Forms.CheckBox checkBox_HideHeaderOnly;
         private System.Windows.Forms.CheckBox checkBox_useHighlighting;
         private System.Windows.Forms.MenuItem menuItem1;
-        private System.Windows.Forms.MenuItem menuItem2;
-        private System.Windows.Forms.MenuItem menuItem3;
-        private System.Windows.Forms.MenuItem menuItem4;
+        private System.Windows.Forms.MenuItem menuItem_ToolCount;
+        private System.Windows.Forms.MenuItem menuItem_ToolBad;
+        private System.Windows.Forms.MenuItem menuItem_ToolHeatmap;
     }
 }
 

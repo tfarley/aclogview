@@ -23,7 +23,11 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.mainMenu1 = new System.Windows.Forms.MainMenu(this.components);
+            this.menuItem_File = new System.Windows.Forms.MenuItem();
+            this.menuItem_Save = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -37,12 +41,31 @@
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
+            // mainMenu1
+            // 
+            this.mainMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem_File});
+            // 
+            // menuItem_File
+            // 
+            this.menuItem_File.Index = 0;
+            this.menuItem_File.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem_Save});
+            this.menuItem_File.Text = "File";
+            // 
+            // menuItem_Save
+            // 
+            this.menuItem_Save.Index = 0;
+            this.menuItem_Save.Text = "Save";
+            this.menuItem_Save.Click += new System.EventHandler(this.menuItem_Save_Click);
+            // 
             // ImagePopup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 561);
             this.Controls.Add(this.pictureBox1);
+            this.Menu = this.mainMenu1;
             this.Name = "ImagePopup";
             this.Text = "ImagePopup";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -53,5 +76,8 @@
         #endregion
 
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.MainMenu mainMenu1;
+        private System.Windows.Forms.MenuItem menuItem_File;
+        private System.Windows.Forms.MenuItem menuItem_Save;
     }
 }
