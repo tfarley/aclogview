@@ -756,5 +756,53 @@ namespace aclogview {
                 }
             }
         }
+
+        private void menuItem4_Click(object sender, EventArgs e) {
+            FolderBrowserDialog openFolder = new FolderBrowserDialog();
+
+            if (openFolder.ShowDialog() != DialogResult.OK) {
+                return;
+            }
+
+            string[] files = Directory.GetFiles(openFolder.SelectedPath, "*.pcap", SearchOption.AllDirectories);
+
+            uint[,] heatmap = new uint[256, 256];
+            foreach (string file in files) {
+                loadPcap(file, true);
+
+                foreach (PacketRecord record in records) {
+                    foreach (BlobFrag frag in record.netPacket.fragList_) {
+                        if (frag.dat_.Length > 20) {
+                            BinaryReader fragDataReader = new BinaryReader(new MemoryStream(frag.dat_));
+                            fragDataReader.ReadUInt32();
+                            fragDataReader.ReadUInt32();
+                            if ((PacketOpcode)fragDataReader.ReadUInt32() == PacketOpcode.Evt_Movement__AutonomousPosition_ID) {
+                                Position pos = Position.read(fragDataReader);
+                                uint x = (pos.objcell_id >> 24) & 0xFF;
+                                uint y = 255 - ((pos.objcell_id >> 16) & 0xFF);
+                                heatmap[x, y] = 1;
+                            }
+                        }
+                    }
+                }
+            }
+
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            Stream imageStream = assembly.GetManifestResourceStream("aclogview.map.png");
+            Bitmap heatmapImg = new Bitmap(imageStream);
+            for (int y = 0; y < 256; ++y) {
+                for (int x = 0; x < 256; ++x) {
+                    if (heatmap[x, y] > 0) {
+                        Color curColor = heatmapImg.GetPixel(x, y);
+                        heatmapImg.SetPixel(x, y, Color.FromArgb(255, Math.Min(255, 200 + curColor.R), curColor.G, curColor.B));
+                    }
+                }
+            }
+
+            ImagePopup popup = new ImagePopup();
+            popup.ClientSize = new Size(600, 600);
+            popup.setImage(heatmapImg);
+            popup.ShowDialog();
+        }
     }
 }
