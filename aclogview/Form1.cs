@@ -305,6 +305,9 @@ namespace aclogview {
                             if (packetReader.BaseStream.Position != packetReader.BaseStream.Length) {
                                 packet.extraInfo = "Didnt read entire packet! " + packet.extraInfo;
                             }
+                        } catch (OutOfMemoryException e) {
+                            MessageBox.Show("Out of memory, stopping read: " + e);
+                            break;
                         } catch (Exception e) {
                             packet.extraInfo += "EXCEPTION: " + e.Message + " " + e.StackTrace;
                         }
