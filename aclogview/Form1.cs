@@ -15,6 +15,7 @@ namespace aclogview {
     public partial class Form1 : Form {
         private ListViewItemComparer comparer = new ListViewItemComparer();
         public List<MessageProcessor> messageProcessors = new List<MessageProcessor>();
+        private long curPacket;
 
         public Form1() {
             InitializeComponent();
@@ -252,6 +253,167 @@ namespace aclogview {
         List<PacketRecord> records = new List<PacketRecord>();
         List<ListViewItem> listItems = new List<ListViewItem>();
 
+        private int readPacketRecordData(BinaryReader binaryReader, long len, uint tsSec, long curPacket, bool dontList) {
+            // Begin reading headers
+            long packetStartPos = binaryReader.BaseStream.Position;
+
+            EthernetHeader ethernetHeader = EthernetHeader.read(binaryReader);
+
+            // Skip non-IP packets
+            if (ethernetHeader.proto != 8) {
+                binaryReader.BaseStream.Position += len - (binaryReader.BaseStream.Position - packetStartPos);
+                return 1;
+            }
+
+            IpHeader ipHeader = IpHeader.read(binaryReader);
+
+            // Skip non-UDP packets
+            if (ipHeader.proto != 17) {
+                binaryReader.BaseStream.Position += len - (binaryReader.BaseStream.Position - packetStartPos);
+                return 1;
+            }
+
+            UdpHeader udpHeader = UdpHeader.read(binaryReader);
+
+            bool isSend = (udpHeader.dPort >= 9000 && udpHeader.dPort <= 9013);
+            bool isRecv = (udpHeader.sPort >= 9000 && udpHeader.sPort <= 9013);
+
+            // Skip non-AC-port packets
+            if (!isSend && !isRecv) {
+                binaryReader.BaseStream.Position += len - (binaryReader.BaseStream.Position - packetStartPos);
+                return 1;
+            }
+
+            long headersSize = binaryReader.BaseStream.Position - packetStartPos;
+
+            // Begin reading non-header packet content
+            StringBuilder packetHeadersStr = new StringBuilder();
+            StringBuilder packetTypeStr = new StringBuilder();
+
+            PacketRecord packet = new PacketRecord();
+            packet.index = records.Count;
+            packet.isSend = isSend;
+            packet.tsSec = tsSec;
+            packet.netPacket = new NetPacket();
+            packet.data = binaryReader.ReadBytes((int)(len - headersSize));
+            packet.extraInfo = "";
+            BinaryReader packetReader = new BinaryReader(new MemoryStream(packet.data));
+            try {
+                ProtoHeader pHeader = ProtoHeader.read(packetReader);
+
+                readOptionalHeaders(packet, pHeader.header_, packetHeadersStr, packetReader);
+
+                if (packetReader.BaseStream.Position == packetReader.BaseStream.Length) {
+                    packetTypeStr.Append("<Header Only>");
+                }
+
+                uint HAS_FRAGS_MASK = 0x4; // See SharedNet::SplitPacketData
+                if ((pHeader.header_ & HAS_FRAGS_MASK) != 0) {
+                    bool first = true;
+                    while (packetReader.BaseStream.Position != packetReader.BaseStream.Length) {
+                        if (!first) {
+                            packetTypeStr.Append(" + ");
+                        }
+                        readPacket(packet, packetTypeStr, packetReader);
+                        first = false;
+                    }
+                }
+
+                if (packetReader.BaseStream.Position != packetReader.BaseStream.Length) {
+                    packet.extraInfo = "Didnt read entire packet! " + packet.extraInfo;
+                }
+            } catch (OutOfMemoryException e) {
+                //MessageBox.Show("Out of memory (packet " + curPacket + "), stopping read: " + e);
+                return 2;
+            } catch (Exception e) {
+                packet.extraInfo += "EXCEPTION: " + e.Message + " " + e.StackTrace;
+            }
+            packet.packetHeadersStr = packetHeadersStr.ToString();
+            packet.packetTypeStr = packetTypeStr.ToString();
+
+            records.Add(packet);
+
+            if (!dontList) {
+                ListViewItem newItem = new ListViewItem(packet.index.ToString());
+                newItem.SubItems.Add(packet.isSend ? "Send" : "Recv");
+                newItem.SubItems.Add(packet.tsSec.ToString());
+                newItem.SubItems.Add(packet.packetHeadersStr);
+                newItem.SubItems.Add(packet.packetTypeStr);
+                newItem.SubItems.Add(packet.data.Length.ToString());
+                newItem.SubItems.Add(packet.extraInfo);
+                listItems.Add(newItem);
+            }
+
+            return 0;
+        }
+
+        private void loadPcapContent(BinaryReader binaryReader, bool dontList) {
+            PcapHeader pcapHeader = PcapHeader.read(binaryReader);
+
+            while (binaryReader.BaseStream.Position != binaryReader.BaseStream.Length) {
+                curPacket++;
+
+                if (binaryReader.BaseStream.Length - binaryReader.BaseStream.Position < 16) {
+                    //MessageBox.Show("Stream cut short (packet " + curPacket + "), stopping read: " + (binaryReader.BaseStream.Length - binaryReader.BaseStream.Position));
+                    break;
+                }
+
+                PcapRecordHeader recordHeader = PcapRecordHeader.read(binaryReader);
+
+                if (recordHeader.inclLen > 50000) {
+                    //MessageBox.Show("Enormous packet (packet " + curPacket + "), stopping read: " + recordHeader.inclLen);
+                    break;
+                }
+
+                // Make sure there's enough room for an ethernet header
+                if (recordHeader.inclLen < 14) {
+                    binaryReader.BaseStream.Position += recordHeader.inclLen;
+                    continue;
+                }
+
+                if (readPacketRecordData(binaryReader, recordHeader.inclLen, recordHeader.tsSec, curPacket, dontList) == 2) {
+                    break;
+                }
+            }
+        }
+
+        private void loadPcapngContent(BinaryReader binaryReader, bool dontList) {
+            while (binaryReader.BaseStream.Position != binaryReader.BaseStream.Length) {
+                curPacket++;
+
+                if (binaryReader.BaseStream.Length - binaryReader.BaseStream.Position < 8) {
+                    //MessageBox.Show("Stream cut short (packet " + curPacket + "), stopping read: " + (binaryReader.BaseStream.Length - binaryReader.BaseStream.Position));
+                    break;
+                }
+
+                long recordStartPos = binaryReader.BaseStream.Position;
+
+                uint blockType = binaryReader.ReadUInt32();
+                uint blockTotalLength = binaryReader.ReadUInt32();
+
+                if (blockType == 6) {
+                    uint interfaceID = binaryReader.ReadUInt32();
+                    uint tsHigh = binaryReader.ReadUInt32();
+                    uint tsLow = binaryReader.ReadUInt32();
+                    uint capturedLen = binaryReader.ReadUInt32();
+                    uint packetLen = binaryReader.ReadUInt32();
+
+                    if (readPacketRecordData(binaryReader, capturedLen, tsLow, curPacket, dontList) == 2) {
+                        break;
+                    }
+                } else if (blockType == 3) {
+                    uint packetLen = binaryReader.ReadUInt32();
+                    uint capturedLen = blockTotalLength - 16;
+
+                    if (readPacketRecordData(binaryReader, capturedLen, 0, curPacket, dontList) == 2) {
+                        break;
+                    }
+                }
+
+                binaryReader.BaseStream.Position += blockTotalLength - (binaryReader.BaseStream.Position - recordStartPos);
+            }
+        }
+
         private void loadPcap(string fileName, bool dontList = false) {
             this.Text = "AC Log View - " + Path.GetFileName(fileName);
 
@@ -260,72 +422,13 @@ namespace aclogview {
 
             using (FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
                 using (BinaryReader binaryReader = new BinaryReader(fileStream)) {
-                    PcapHeader pcapHeader = PcapHeader.read(binaryReader);
-                    while (binaryReader.BaseStream.Position != binaryReader.BaseStream.Length) {
-                        PcapRecordHeader recordHeader = PcapRecordHeader.read(binaryReader);
+                    uint magicNumber = binaryReader.ReadUInt32();
+                    binaryReader.BaseStream.Position = 0;
 
-                        long packetStartPos = binaryReader.BaseStream.Position;
-                        EthernetHeader ethernetHeader = EthernetHeader.read(binaryReader);
-                        IpHeader ipHeader = IpHeader.read(binaryReader);
-                        UdpHeader udpHeader = UdpHeader.read(binaryReader);
-                        long headersSize = binaryReader.BaseStream.Position - packetStartPos;
-
-                        StringBuilder packetHeadersStr = new StringBuilder();
-                        StringBuilder packetTypeStr = new StringBuilder();
-
-                        PacketRecord packet = new PacketRecord();
-                        packet.index = records.Count;
-                        packet.isSend = (udpHeader.sPort == 12345);
-                        packet.tsSec = recordHeader.tsSec;
-                        packet.netPacket = new NetPacket();
-                        packet.data = binaryReader.ReadBytes((int)(recordHeader.inclLen - headersSize));
-                        packet.extraInfo = "";
-                        BinaryReader packetReader = new BinaryReader(new MemoryStream(packet.data));
-                        try {
-                            ProtoHeader pHeader = ProtoHeader.read(packetReader);
-
-                            readOptionalHeaders(packet, pHeader.header_, packetHeadersStr, packetReader);
-
-                            if (packetReader.BaseStream.Position == packetReader.BaseStream.Length) {
-                                packetTypeStr.Append("<Header Only>");
-                            }
-
-                            uint HAS_FRAGS_MASK = 0x4; // See SharedNet::SplitPacketData
-                            if ((pHeader.header_ & HAS_FRAGS_MASK) != 0) {
-                                bool first = true;
-                                while (packetReader.BaseStream.Position != packetReader.BaseStream.Length) {
-                                    if (!first) {
-                                        packetTypeStr.Append(" + ");
-                                    }
-                                    readPacket(packet, packetTypeStr, packetReader);
-                                    first = false;
-                                }
-                            }
-
-                            if (packetReader.BaseStream.Position != packetReader.BaseStream.Length) {
-                                packet.extraInfo = "Didnt read entire packet! " + packet.extraInfo;
-                            }
-                        } catch (OutOfMemoryException e) {
-                            MessageBox.Show("Out of memory, stopping read: " + e);
-                            break;
-                        } catch (Exception e) {
-                            packet.extraInfo += "EXCEPTION: " + e.Message + " " + e.StackTrace;
-                        }
-                        packet.packetHeadersStr = packetHeadersStr.ToString();
-                        packet.packetTypeStr = packetTypeStr.ToString();
-
-                        records.Add(packet);
-
-                        if (!dontList) {
-                            ListViewItem newItem = new ListViewItem(packet.index.ToString());
-                            newItem.SubItems.Add(packet.isSend ? "Send" : "Recv");
-                            newItem.SubItems.Add(packet.tsSec.ToString());
-                            newItem.SubItems.Add(packet.packetHeadersStr);
-                            newItem.SubItems.Add(packet.packetTypeStr);
-                            newItem.SubItems.Add(packet.data.Length.ToString());
-                            newItem.SubItems.Add(packet.extraInfo);
-                            listItems.Add(newItem);
-                        }
+                    if (magicNumber == 0xA1B2C3D4 || magicNumber == 0xD4C3B2A1) {
+                        loadPcapContent(binaryReader, dontList);
+                    } else {
+                        loadPcapngContent(binaryReader, dontList);
                     }
                 }
             }
@@ -656,7 +759,9 @@ namespace aclogview {
                 return;
             }
 
-            string[] files = Directory.GetFiles(openFolder.SelectedPath, "*.pcap", SearchOption.AllDirectories);
+            List<string> files = new List<string>();
+            files.AddRange(Directory.GetFiles(openFolder.SelectedPath, "*.pcap", SearchOption.AllDirectories));
+            files.AddRange(Directory.GetFiles(openFolder.SelectedPath, "*.pcapng", SearchOption.AllDirectories));
 
             OrderedDictionary opcodeOccurrences = new OrderedDictionary();
 
@@ -706,7 +811,9 @@ namespace aclogview {
                 return;
             }
 
-            string[] files = Directory.GetFiles(openFolder.SelectedPath, "*.pcap", SearchOption.AllDirectories);
+            List<string> files = new List<string>();
+            files.AddRange(Directory.GetFiles(openFolder.SelectedPath, "*.pcap", SearchOption.AllDirectories));
+            files.AddRange(Directory.GetFiles(openFolder.SelectedPath, "*.pcapng", SearchOption.AllDirectories));
 
             OrderedDictionary opcodeOccurrences = new OrderedDictionary();
 
@@ -768,7 +875,9 @@ namespace aclogview {
                 return;
             }
 
-            string[] files = Directory.GetFiles(openFolder.SelectedPath, "*.pcap", SearchOption.AllDirectories);
+            List<string> files = new List<string>();
+            files.AddRange(Directory.GetFiles(openFolder.SelectedPath, "*.pcap", SearchOption.AllDirectories));
+            files.AddRange(Directory.GetFiles(openFolder.SelectedPath, "*.pcapng", SearchOption.AllDirectories));
 
             uint[,] heatmap = new uint[256, 256];
             foreach (string file in files) {
@@ -781,9 +890,9 @@ namespace aclogview {
                             fragDataReader.ReadUInt32();
                             fragDataReader.ReadUInt32();
                             if ((PacketOpcode)fragDataReader.ReadUInt32() == PacketOpcode.Evt_Movement__AutonomousPosition_ID) {
-                                Position pos = Position.read(fragDataReader);
-                                uint x = (pos.objcell_id >> 24) & 0xFF;
-                                uint y = 255 - ((pos.objcell_id >> 16) & 0xFF);
+                                uint objcell_id = fragDataReader.ReadUInt32();
+                                uint x = (objcell_id >> 24) & 0xFF;
+                                uint y = 255 - ((objcell_id >> 16) & 0xFF);
                                 heatmap[x, y] = 1;
                             }
                         }
