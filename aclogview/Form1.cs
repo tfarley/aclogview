@@ -24,6 +24,7 @@ namespace aclogview {
         private void Form1_Load(object sender, EventArgs e) {
             Util.initReaders();
             messageProcessors.Add(new CM_Admin());
+            messageProcessors.Add(new CM_Advocate());
             messageProcessors.Add(new CM_Allegiance());
             messageProcessors.Add(new CM_Character());
             messageProcessors.Add(new CM_Combat());
