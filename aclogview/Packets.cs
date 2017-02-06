@@ -75,7 +75,7 @@ public class Util {
             return id;
         } else {
             ushort idHigh = binaryReader.ReadUInt16();
-            return (uint)(idHigh | ((id & 0x3FFF) << 16));
+            return (uint)(idHigh | ((id & 0x7FFF) << 16));
         }
     }
 
