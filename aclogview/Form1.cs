@@ -879,12 +879,18 @@ namespace aclogview {
             files.AddRange(Directory.GetFiles(openFolder.SelectedPath, "*.pcap", SearchOption.AllDirectories));
             files.AddRange(Directory.GetFiles(openFolder.SelectedPath, "*.pcapng", SearchOption.AllDirectories));
 
+            uint packetCount = 0;
+            uint messageCount = 0;
             uint[,] heatmap = new uint[256, 256];
             foreach (string file in files) {
                 loadPcap(file, true);
 
                 foreach (PacketRecord record in records) {
+                    packetCount++;
                     foreach (BlobFrag frag in record.netPacket.fragList_) {
+                        if (frag.memberHeader_.blobNum == 0) {
+                            messageCount++;
+                        }
                         if (frag.dat_.Length > 20) {
                             BinaryReader fragDataReader = new BinaryReader(new MemoryStream(frag.dat_));
                             fragDataReader.ReadUInt32();
@@ -913,6 +919,7 @@ namespace aclogview {
             }
 
             ImagePopup popup = new ImagePopup();
+            popup.Text = "Coverage Map - " + packetCount + " packets, " + messageCount + " messages";
             popup.ClientSize = new Size(512, 512);
             popup.setImage(heatmapImg);
             popup.ShowDialog();
