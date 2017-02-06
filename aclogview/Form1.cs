@@ -52,7 +52,7 @@ namespace aclogview {
         private void menuItem5_Click(object sender, EventArgs e) {
             OpenFileDialog openFile = new OpenFileDialog();
             openFile.AddExtension = true;
-            openFile.Filter = "Packet Captures (*.pcap)|*.pcap|All Files (*.*)|*.*";
+            openFile.Filter = "Packet Captures (*.pcap;*.pcapng)|*.pcap;*.pcapng|All Files (*.*)|*.*";
 
             if (openFile.ShowDialog() != DialogResult.OK) {
                 return;
