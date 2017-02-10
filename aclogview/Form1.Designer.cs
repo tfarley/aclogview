@@ -68,6 +68,7 @@
             this.splitContainer_Main.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.splitContainer_Main.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer_Main.Location = new System.Drawing.Point(0, 24);
+            this.splitContainer_Main.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.splitContainer_Main.Name = "splitContainer_Main";
             this.splitContainer_Main.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -80,8 +81,9 @@
             // 
             this.splitContainer_Main.Panel2.Controls.Add(this.splitContainer_Bottom);
             this.splitContainer_Main.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.splitContainer_Main.Size = new System.Drawing.Size(1520, 918);
-            this.splitContainer_Main.SplitterDistance = 423;
+            this.splitContainer_Main.Size = new System.Drawing.Size(2027, 1140);
+            this.splitContainer_Main.SplitterDistance = 525;
+            this.splitContainer_Main.SplitterWidth = 5;
             this.splitContainer_Main.TabIndex = 0;
             // 
             // listView_Packets
@@ -97,9 +99,10 @@
             this.listView_Packets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView_Packets.FullRowSelect = true;
             this.listView_Packets.Location = new System.Drawing.Point(0, 0);
+            this.listView_Packets.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.listView_Packets.MultiSelect = false;
             this.listView_Packets.Name = "listView_Packets";
-            this.listView_Packets.Size = new System.Drawing.Size(1516, 419);
+            this.listView_Packets.Size = new System.Drawing.Size(2023, 521);
             this.listView_Packets.TabIndex = 0;
             this.listView_Packets.UseCompatibleStateImageBehavior = false;
             this.listView_Packets.View = System.Windows.Forms.View.Details;
@@ -147,6 +150,7 @@
             this.splitContainer_Bottom.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.splitContainer_Bottom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer_Bottom.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer_Bottom.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.splitContainer_Bottom.Name = "splitContainer_Bottom";
             // 
             // splitContainer_Bottom.Panel1
@@ -156,8 +160,9 @@
             // splitContainer_Bottom.Panel2
             // 
             this.splitContainer_Bottom.Panel2.Controls.Add(this.treeView_ParsedData);
-            this.splitContainer_Bottom.Size = new System.Drawing.Size(1520, 491);
-            this.splitContainer_Bottom.SplitterDistance = 1130;
+            this.splitContainer_Bottom.Size = new System.Drawing.Size(2027, 610);
+            this.splitContainer_Bottom.SplitterDistance = 1506;
+            this.splitContainer_Bottom.SplitterWidth = 5;
             this.splitContainer_Bottom.TabIndex = 0;
             // 
             // textBox_PacketData
@@ -165,8 +170,9 @@
             this.textBox_PacketData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox_PacketData.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox_PacketData.Location = new System.Drawing.Point(0, 0);
+            this.textBox_PacketData.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.textBox_PacketData.Name = "textBox_PacketData";
-            this.textBox_PacketData.Size = new System.Drawing.Size(1126, 487);
+            this.textBox_PacketData.Size = new System.Drawing.Size(1502, 606);
             this.textBox_PacketData.TabIndex = 0;
             this.textBox_PacketData.Text = "";
             // 
@@ -174,8 +180,9 @@
             // 
             this.treeView_ParsedData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView_ParsedData.Location = new System.Drawing.Point(0, 0);
+            this.treeView_ParsedData.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.treeView_ParsedData.Name = "treeView_ParsedData";
-            this.treeView_ParsedData.Size = new System.Drawing.Size(382, 487);
+            this.treeView_ParsedData.Size = new System.Drawing.Size(512, 606);
             this.treeView_ParsedData.TabIndex = 0;
             this.treeView_ParsedData.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_ParsedData_AfterSelect);
             // 
@@ -247,42 +254,51 @@
             // 
             // menuStrip
             // 
+            this.menuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(1520, 24);
+            this.menuStrip.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
+            this.menuStrip.Size = new System.Drawing.Size(2027, 24);
             this.menuStrip.TabIndex = 1;
             this.menuStrip.Text = "menuStrip1";
             // 
             // textBox_Search
             // 
-            this.textBox_Search.Location = new System.Drawing.Point(566, 0);
+            this.textBox_Search.Location = new System.Drawing.Point(755, 0);
+            this.textBox_Search.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.textBox_Search.Name = "textBox_Search";
-            this.textBox_Search.Size = new System.Drawing.Size(165, 20);
+            this.textBox_Search.Size = new System.Drawing.Size(219, 22);
             this.textBox_Search.TabIndex = 2;
             this.textBox_Search.Visible = false;
+            this.textBox_Search.TextChanged += new System.EventHandler(this.textBox_Search_TextChanged);
             // 
             // pictureBox_Search
             // 
-            this.pictureBox_Search.Location = new System.Drawing.Point(539, 0);
+            this.pictureBox_Search.Location = new System.Drawing.Point(719, 0);
+            this.pictureBox_Search.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pictureBox_Search.Name = "pictureBox_Search";
-            this.pictureBox_Search.Size = new System.Drawing.Size(20, 20);
+            this.pictureBox_Search.Size = new System.Drawing.Size(27, 25);
             this.pictureBox_Search.TabIndex = 3;
             this.pictureBox_Search.TabStop = false;
             this.pictureBox_Search.Visible = false;
+            this.pictureBox_Search.Click += new System.EventHandler(this.pictureBox_Search_Click);
             // 
             // statusStrip
             // 
-            this.statusStrip.Location = new System.Drawing.Point(0, 942);
+            this.statusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.statusStrip.Location = new System.Drawing.Point(0, 1164);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(1520, 22);
+            this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
+            this.statusStrip.Size = new System.Drawing.Size(2027, 22);
             this.statusStrip.TabIndex = 1;
             this.statusStrip.Text = "statusStrip1";
             // 
             // checkBox_HideHeaderOnly
             // 
-            this.checkBox_HideHeaderOnly.Location = new System.Drawing.Point(805, 3);
+            this.checkBox_HideHeaderOnly.Location = new System.Drawing.Point(1073, 4);
+            this.checkBox_HideHeaderOnly.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.checkBox_HideHeaderOnly.Name = "checkBox_HideHeaderOnly";
-            this.checkBox_HideHeaderOnly.Size = new System.Drawing.Size(138, 17);
+            this.checkBox_HideHeaderOnly.Size = new System.Drawing.Size(184, 21);
             this.checkBox_HideHeaderOnly.TabIndex = 0;
             this.checkBox_HideHeaderOnly.Text = "Hide Header Only";
             this.checkBox_HideHeaderOnly.UseVisualStyleBackColor = true;
@@ -293,9 +309,10 @@
             // 
             this.checkBox_useHighlighting.Checked = true;
             this.checkBox_useHighlighting.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_useHighlighting.Location = new System.Drawing.Point(949, 2);
+            this.checkBox_useHighlighting.Location = new System.Drawing.Point(1265, 2);
+            this.checkBox_useHighlighting.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.checkBox_useHighlighting.Name = "checkBox_useHighlighting";
-            this.checkBox_useHighlighting.Size = new System.Drawing.Size(156, 17);
+            this.checkBox_useHighlighting.Size = new System.Drawing.Size(208, 21);
             this.checkBox_useHighlighting.TabIndex = 4;
             this.checkBox_useHighlighting.Text = "Use Highlighting (Slower!)";
             this.checkBox_useHighlighting.UseVisualStyleBackColor = true;
@@ -303,9 +320,9 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1520, 964);
+            this.ClientSize = new System.Drawing.Size(2027, 1186);
             this.Controls.Add(this.checkBox_useHighlighting);
             this.Controls.Add(this.checkBox_HideHeaderOnly);
             this.Controls.Add(this.splitContainer_Main);
@@ -314,6 +331,7 @@
             this.Controls.Add(this.menuStrip);
             this.Controls.Add(this.statusStrip);
             this.DoubleBuffered = true;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Menu = this.mainMenu;
             this.Name = "Form1";
             this.Text = "AC Log View";
