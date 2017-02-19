@@ -21,6 +21,12 @@ namespace aclogview {
 
         private string[] args;
 
+        /// <summary>
+        /// Add multiple opcodes to highlight to this list.<para /> 
+        /// Each opcode will have a different row highlight color.
+        /// </summary>
+        private readonly List<int> opCodesToHighlight = new List<int>();
+
         public Form1(string[] args) {
             InitializeComponent();
 
@@ -54,7 +60,13 @@ namespace aclogview {
             messageProcessors.Add(new CM_Writing());
             messageProcessors.Add(new Proto_UI());
 
-            if (args != null && args.Length == 1)
+            if (args != null && args.Length >= 2)
+            {
+                int opcode;
+                if (int.TryParse(args[1], out opcode))
+                    opCodesToHighlight.Add(opcode);
+            }
+            if (args != null && args.Length >= 1)
                 loadPcap(args[0]);
         }
 
@@ -421,6 +433,13 @@ namespace aclogview {
         private void loadPcap(string fileName, bool dontList = false) {
             this.Text = "AC Log View - " + Path.GetFileName(fileName);
 
+            if (opCodesToHighlight.Count > 0)
+            {
+                this.Text += "              Highlighted OpCodes: ";
+                foreach (var opcode in opCodesToHighlight)
+                    Text += opcode + " (" + opcode.ToString("X4") + "),";
+            }
+
             records.Clear();
             listItems.Clear();
 
@@ -741,6 +760,25 @@ namespace aclogview {
         private void listView_Packets_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e) {
             if (e.ItemIndex < listItems.Count) {
                 e.Item = listItems[e.ItemIndex];
+
+                // Apply highlights here
+                if (opCodesToHighlight.Count > 0)
+                {
+                    var record = records[Int32.Parse(e.Item.SubItems[0].Text)];
+
+                    for (int i = 0 ; i < opCodesToHighlight.Count ; i++)
+                    {
+                        if (record.opcodes.Contains((PacketOpcode)opCodesToHighlight[i]))
+                        {
+                            if (i == 0) e.Item.BackColor = Color.LightBlue;
+                            else if (i == 1) e.Item.BackColor = Color.LightPink;
+                            else if (i == 2) e.Item.BackColor = Color.LightGreen;
+                            else if (i == 3) e.Item.BackColor = Color.GreenYellow;
+                            else e.Item.BackColor = Color.MediumVioletRed;
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -932,7 +970,7 @@ namespace aclogview {
         private void mnuItem_ToolFindOpcodeInFiles_Click(object sender, EventArgs e)
         {
             var form = new FindOpcodeInFilesForm();
-            form.Show();
+            form.Show(this);
         }
     }
 }

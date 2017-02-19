@@ -29,22 +29,22 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.txtSearchPathRoot = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnStartSearch = new System.Windows.Forms.Button();
             this.btnStopSearch = new System.Windows.Forms.Button();
             this.btnChangeSearchPathRoot = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.columnHits = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.columnFileSize = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.columnFilePath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label2 = new System.Windows.Forms.Label();
             this.txtOpcode = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.columnHits = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.columnFileSize = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.columnFilePath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -122,6 +122,33 @@
             this.dataGridView1.TabIndex = 5;
             this.dataGridView1.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentDoubleClick);
             // 
+            // columnHits
+            // 
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle1.Format = "N0";
+            this.columnHits.DefaultCellStyle = dataGridViewCellStyle1;
+            this.columnHits.HeaderText = "Hits";
+            this.columnHits.Name = "columnHits";
+            this.columnHits.ReadOnly = true;
+            this.columnHits.Width = 60;
+            // 
+            // columnFileSize
+            // 
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle2.Format = "N0";
+            this.columnFileSize.DefaultCellStyle = dataGridViewCellStyle2;
+            this.columnFileSize.HeaderText = "File Size";
+            this.columnFileSize.Name = "columnFileSize";
+            this.columnFileSize.ReadOnly = true;
+            this.columnFileSize.Width = 80;
+            // 
+            // columnFilePath
+            // 
+            this.columnFilePath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.columnFilePath.HeaderText = "File Path";
+            this.columnFilePath.Name = "columnFilePath";
+            this.columnFilePath.ReadOnly = true;
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -159,33 +186,6 @@
             // 
             this.timer1.Interval = 200;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // columnHits
-            // 
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle7.Format = "N0";
-            this.columnHits.DefaultCellStyle = dataGridViewCellStyle7;
-            this.columnHits.HeaderText = "Hits";
-            this.columnHits.Name = "columnHits";
-            this.columnHits.ReadOnly = true;
-            this.columnHits.Width = 60;
-            // 
-            // columnFileSize
-            // 
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle8.Format = "N0";
-            this.columnFileSize.DefaultCellStyle = dataGridViewCellStyle8;
-            this.columnFileSize.HeaderText = "File Size";
-            this.columnFileSize.Name = "columnFileSize";
-            this.columnFileSize.ReadOnly = true;
-            this.columnFileSize.Width = 80;
-            // 
-            // columnFilePath
-            // 
-            this.columnFilePath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.columnFilePath.HeaderText = "File Path";
-            this.columnFilePath.Name = "columnFilePath";
-            this.columnFilePath.ReadOnly = true;
             // 
             // FindOpcodeInFilesForm
             // 

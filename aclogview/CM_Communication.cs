@@ -13,13 +13,57 @@ public class CM_Communication : MessageProcessor {
 
         PacketOpcode opcode = Util.readOpcode(messageDataReader);
         switch (opcode) {
-            case PacketOpcode.Evt_Communication__WeenieError_ID: {
+            case PacketOpcode.Evt_Communication__TalkDirectByName_ID: // 0x005D
+                {
+                    var message = TalkDirectByName.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Communication__ChannelBroadcast_ID: // 0x0147
+                {
+                    var message = ChannelBroadcast.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            /*case PacketOpcode.Evt_Communication__SetSquelchDB_ID: // 0x01F4
+                {
+                    var message = SetSquelchDB.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }*/
+            case PacketOpcode.Evt_Communication__WeenieError_ID: // 0x028A
+                {
                     WeenieError message = WeenieError.read(messageDataReader);
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }
-            case PacketOpcode.Evt_Communication__WeenieErrorWithString_ID: {
+            case PacketOpcode.Evt_Communication__WeenieErrorWithString_ID: // 0x028B
+                {
                     WeenieErrorWithString message = WeenieErrorWithString.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Communication__HearSpeech_ID: // 0x02BB
+                {
+                    var message = HearSpeech.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Communication__HearRangedSpeech_ID: // 0x02BC
+                {
+                    var message = HearRangedSpeech.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Communication__HearDirectSpeech_ID: // 0x2BD
+                {
+                    var message = HearDirectSpeech.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Communication__TextboxString_ID: // 0xF7E0
+                {
+                    var message = TextBoxString.read(messageDataReader);
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }
@@ -31,6 +75,70 @@ public class CM_Communication : MessageProcessor {
 
         return handled;
     }
+
+    public class TalkDirectByName : Message
+    {
+        public PStringChar MessageText;
+        public PStringChar TargetName;
+
+        public static TalkDirectByName read(BinaryReader binaryReader)
+        {
+            var newObj = new TalkDirectByName();
+            newObj.MessageText = PStringChar.read(binaryReader);
+            newObj.TargetName = PStringChar.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
+            rootNode.Nodes.Add("TargetName = " + TargetName.m_buffer);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class ChannelBroadcast : Message
+    {
+        public uint GroupChatType;
+        public uint Unknown;
+        public PStringChar MessageText;
+
+        public static ChannelBroadcast read(BinaryReader binaryReader)
+        {
+            var newObj = new ChannelBroadcast();
+            newObj.GroupChatType = binaryReader.ReadUInt32();
+            newObj.Unknown = binaryReader.ReadUInt32();
+            newObj.MessageText = PStringChar.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("GroupChatType = " + GroupChatType);
+            rootNode.Nodes.Add("Unknown = " + Unknown);
+            rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    /*public class SetSquelchDB : Message
+    {
+        public static SetSquelchDB read(BinaryReader binaryReader)
+        {
+            var newObj = new SetSquelchDB();
+
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            throw new NotImplementedException();
+        }
+    }*/
 
     public class WeenieError : Message {
         public WERROR etype;
@@ -65,6 +173,125 @@ public class CM_Communication : MessageProcessor {
             rootNode.Expand();
             rootNode.Nodes.Add("etype = " + etype);
             rootNode.Nodes.Add("user_data = " + user_data);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class HearSpeech : Message
+    {
+        public PStringChar MessageText;
+        public PStringChar SenderName;
+        public uint SenderID;
+        public uint ChatMessageType;
+
+        public static HearSpeech read(BinaryReader binaryReader)
+        {
+            var newObj = new HearSpeech();
+            newObj.MessageText = PStringChar.read(binaryReader);
+            newObj.SenderName = PStringChar.read(binaryReader);
+            newObj.SenderID = binaryReader.ReadUInt32();
+            newObj.ChatMessageType = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
+            rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
+            rootNode.Nodes.Add("SenderID = " + SenderID);
+            rootNode.Nodes.Add("ChatMessageType = " + ChatMessageType);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class HearRangedSpeech : Message
+    {
+        public PStringChar MessageText;
+        public PStringChar SenderName;
+        public uint SenderID;
+        public float Range;
+        public uint ChatMessageType;
+
+        public static HearRangedSpeech read(BinaryReader binaryReader)
+        {
+            var newObj = new HearRangedSpeech();
+            newObj.MessageText = PStringChar.read(binaryReader);
+            newObj.SenderName = PStringChar.read(binaryReader);
+            newObj.SenderID = binaryReader.ReadUInt32();
+            newObj.Range = binaryReader.ReadSingle();
+            newObj.ChatMessageType = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
+            rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
+            rootNode.Nodes.Add("SenderID = " + SenderID);
+            rootNode.Nodes.Add("Range = " + Range);
+            rootNode.Nodes.Add("ChatMessageType = " + ChatMessageType);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class HearDirectSpeech : Message
+    {
+        public PStringChar MessageText;
+        public PStringChar SenderName;
+        public uint SenderID;
+        public uint TargetID;
+        public uint ChatMessageType;
+        public uint Unknown;
+
+        public static HearDirectSpeech read(BinaryReader binaryReader)
+        {
+            var newObj = new HearDirectSpeech();
+            newObj.MessageText = PStringChar.read(binaryReader);
+            newObj.SenderName = PStringChar.read(binaryReader);
+            newObj.SenderID = binaryReader.ReadUInt32();
+            newObj.TargetID = binaryReader.ReadUInt32();
+            newObj.ChatMessageType = binaryReader.ReadUInt32();
+            newObj.Unknown = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
+            rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
+            rootNode.Nodes.Add("SenderID = " + SenderID);
+            rootNode.Nodes.Add("TargetID = " + TargetID);
+            rootNode.Nodes.Add("ChatMessageType = " + ChatMessageType);
+            rootNode.Nodes.Add("Unknown = " + Unknown);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class TextBoxString : Message
+    {
+        public PStringChar MessageText;
+        public uint ChatMessageType;
+
+        public static TextBoxString read(BinaryReader binaryReader)
+        {
+            var newObj = new TextBoxString();
+            newObj.MessageText = PStringChar.read(binaryReader);
+            newObj.ChatMessageType = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
+            rootNode.Nodes.Add("ChatMessageType = " + ChatMessageType);
             treeView.Nodes.Add(rootNode);
         }
     }

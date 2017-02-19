@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -33,6 +34,10 @@ namespace aclogview
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.Columns[0].ValueType = typeof(int);
             dataGridView1.Columns[1].ValueType = typeof(int);
+
+            // Center to our owner, if we have one
+            if (Owner != null)
+                Location = new Point(Owner.Location.X + Owner.Width / 2 - Width / 2, Owner.Location.Y + Owner.Height / 2 - Height / 2);
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -207,9 +212,12 @@ namespace aclogview
 
         private void dataGridView1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex == -1)
+                return;
+
             var fileName = (string)dataGridView1.Rows[e.RowIndex].Cells[2].Value;
 
-            System.Diagnostics.Process.Start(Application.ExecutablePath, '"' + fileName + '"');
+            System.Diagnostics.Process.Start(Application.ExecutablePath, '"' + fileName + '"' + " " + opCodeToSearchFor);
         }
     }
 }
