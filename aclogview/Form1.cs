@@ -11,14 +11,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using aclogview.Properties;
+
 namespace aclogview {
     public partial class Form1 : Form {
         private ListViewItemComparer comparer = new ListViewItemComparer();
         public List<MessageProcessor> messageProcessors = new List<MessageProcessor>();
         private long curPacket;
 
-        public Form1() {
+        private string[] args;
+
+        public Form1(string[] args) {
             InitializeComponent();
+
+            this.args = args;
         }
 
         private void Form1_Load(object sender, EventArgs e) {
@@ -47,6 +53,16 @@ namespace aclogview {
             messageProcessors.Add(new CM_Vendor());
             messageProcessors.Add(new CM_Writing());
             messageProcessors.Add(new Proto_UI());
+
+            if (args != null && args.Length == 1)
+                loadPcap(args[0]);
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+
+            Settings.Default.Save();
         }
 
         private void menuItem5_Click(object sender, EventArgs e) {
@@ -59,19 +75,6 @@ namespace aclogview {
             }
 
             loadPcap(openFile.FileName);
-        }
-
-        class PacketRecord {
-            public int index;
-            public bool isSend;
-            public uint tsSec;
-            public string packetHeadersStr;
-            public string packetTypeStr;
-            public byte[] data;
-            public int optionalHeadersLen;
-            public NetPacket netPacket;
-            public List<PacketOpcode> opcodes = new List<PacketOpcode>();
-            public string extraInfo;
         }
 
         private void readPacket(PacketRecord packet, StringBuilder packetTypeStr, BinaryReader packetReader) {
@@ -924,6 +927,12 @@ namespace aclogview {
             popup.ClientSize = new Size(512, 512);
             popup.setImage(heatmapImg);
             popup.ShowDialog();
+        }
+
+        private void mnuItem_ToolFindOpcodeInFiles_Click(object sender, EventArgs e)
+        {
+            var form = new FindOpcodeInFilesForm();
+            form.Show();
         }
     }
 }
