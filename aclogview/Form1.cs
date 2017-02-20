@@ -11,14 +11,26 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using aclogview.Properties;
+
 namespace aclogview {
     public partial class Form1 : Form {
         private ListViewItemComparer comparer = new ListViewItemComparer();
         public List<MessageProcessor> messageProcessors = new List<MessageProcessor>();
         private long curPacket;
 
-        public Form1() {
+        private string[] args;
+
+        /// <summary>
+        /// Add multiple opcodes to highlight to this list.<para /> 
+        /// Each opcode will have a different row highlight color.
+        /// </summary>
+        private readonly List<int> opCodesToHighlight = new List<int>();
+
+        public Form1(string[] args) {
             InitializeComponent();
+
+            this.args = args;
         }
 
         private void Form1_Load(object sender, EventArgs e) {
@@ -47,6 +59,22 @@ namespace aclogview {
             messageProcessors.Add(new CM_Vendor());
             messageProcessors.Add(new CM_Writing());
             messageProcessors.Add(new Proto_UI());
+
+            if (args != null && args.Length >= 2)
+            {
+                int opcode;
+                if (int.TryParse(args[1], out opcode))
+                    opCodesToHighlight.Add(opcode);
+            }
+            if (args != null && args.Length >= 1)
+                loadPcap(args[0]);
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+
+            Settings.Default.Save();
         }
 
         private void menuItem5_Click(object sender, EventArgs e) {
@@ -59,19 +87,6 @@ namespace aclogview {
             }
 
             loadPcap(openFile.FileName);
-        }
-
-        class PacketRecord {
-            public int index;
-            public bool isSend;
-            public uint tsSec;
-            public string packetHeadersStr;
-            public string packetTypeStr;
-            public byte[] data;
-            public int optionalHeadersLen;
-            public NetPacket netPacket;
-            public List<PacketOpcode> opcodes = new List<PacketOpcode>();
-            public string extraInfo;
         }
 
         private void readPacket(PacketRecord packet, StringBuilder packetTypeStr, BinaryReader packetReader) {
@@ -418,6 +433,13 @@ namespace aclogview {
         private void loadPcap(string fileName, bool dontList = false) {
             this.Text = "AC Log View - " + Path.GetFileName(fileName);
 
+            if (opCodesToHighlight.Count > 0)
+            {
+                this.Text += "              Highlighted OpCodes: ";
+                foreach (var opcode in opCodesToHighlight)
+                    Text += opcode + " (" + opcode.ToString("X4") + "),";
+            }
+
             records.Clear();
             listItems.Clear();
 
@@ -738,6 +760,25 @@ namespace aclogview {
         private void listView_Packets_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e) {
             if (e.ItemIndex < listItems.Count) {
                 e.Item = listItems[e.ItemIndex];
+
+                // Apply highlights here
+                if (opCodesToHighlight.Count > 0)
+                {
+                    var record = records[Int32.Parse(e.Item.SubItems[0].Text)];
+
+                    for (int i = 0 ; i < opCodesToHighlight.Count ; i++)
+                    {
+                        if (record.opcodes.Contains((PacketOpcode)opCodesToHighlight[i]))
+                        {
+                            if (i == 0) e.Item.BackColor = Color.LightBlue;
+                            else if (i == 1) e.Item.BackColor = Color.LightPink;
+                            else if (i == 2) e.Item.BackColor = Color.LightGreen;
+                            else if (i == 3) e.Item.BackColor = Color.GreenYellow;
+                            else e.Item.BackColor = Color.MediumVioletRed;
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -924,6 +965,12 @@ namespace aclogview {
             popup.ClientSize = new Size(512, 512);
             popup.setImage(heatmapImg);
             popup.ShowDialog();
+        }
+
+        private void mnuItem_ToolFindOpcodeInFiles_Click(object sender, EventArgs e)
+        {
+            var form = new FindOpcodeInFilesForm();
+            form.Show(this);
         }
     }
 }

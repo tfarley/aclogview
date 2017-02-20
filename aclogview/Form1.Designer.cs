@@ -44,6 +44,7 @@
             this.menuItem_ToolCount = new System.Windows.Forms.MenuItem();
             this.menuItem_ToolBad = new System.Windows.Forms.MenuItem();
             this.menuItem_ToolHeatmap = new System.Windows.Forms.MenuItem();
+            this.mnuItem_ToolFindOpcodeInFiles = new System.Windows.Forms.MenuItem();
             this.menuItem_Help = new System.Windows.Forms.MenuItem();
             this.menuItem_About = new System.Windows.Forms.MenuItem();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
@@ -211,7 +212,8 @@
             this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem_ToolCount,
             this.menuItem_ToolBad,
-            this.menuItem_ToolHeatmap});
+            this.menuItem_ToolHeatmap,
+            this.mnuItem_ToolFindOpcodeInFiles});
             this.menuItem1.Text = "Tools";
             // 
             // menuItem_ToolCount
@@ -231,6 +233,12 @@
             this.menuItem_ToolHeatmap.Index = 2;
             this.menuItem_ToolHeatmap.Text = "Heatmap";
             this.menuItem_ToolHeatmap.Click += new System.EventHandler(this.menuItem_ToolHeatmap_Click);
+            // 
+            // mnuItem_ToolFindOpcodeInFiles
+            // 
+            this.mnuItem_ToolFindOpcodeInFiles.Index = 3;
+            this.mnuItem_ToolFindOpcodeInFiles.Text = "Find Opcode In Files";
+            this.mnuItem_ToolFindOpcodeInFiles.Click += new System.EventHandler(this.mnuItem_ToolFindOpcodeInFiles_Click);
             // 
             // menuItem_Help
             // 
@@ -362,6 +370,7 @@
         private System.Windows.Forms.MenuItem menuItem_ToolCount;
         private System.Windows.Forms.MenuItem menuItem_ToolBad;
         private System.Windows.Forms.MenuItem menuItem_ToolHeatmap;
+        private System.Windows.Forms.MenuItem mnuItem_ToolFindOpcodeInFiles;
     }
 }
 
