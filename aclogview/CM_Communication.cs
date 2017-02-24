@@ -31,6 +31,12 @@ public class CM_Communication : MessageProcessor {
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }*/
+            case PacketOpcode.Evt_Communication__Recv_ChatRoomTracker_ID: // 0x0295
+                {
+                    var message = Recv_ChatRoomTracker.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Communication__WeenieError_ID: // 0x028A
                 {
                     WeenieError message = WeenieError.read(messageDataReader);
@@ -139,6 +145,53 @@ public class CM_Communication : MessageProcessor {
             throw new NotImplementedException();
         }
     }*/
+
+    public class Recv_ChatRoomTracker : Message
+    {
+        public uint AllegianceChannel;
+        public uint GeneralChannel;
+        public uint TradeChannel;
+        public uint LFGChannel;
+        public uint RoleplayChannel;
+        public uint Olthoi;
+        public uint Society;
+        public uint Unknown_3;
+        public uint Unknown_4;
+        public uint Unknown_5;
+
+        public static Recv_ChatRoomTracker read(BinaryReader binaryReader)
+        {
+            var newObj = new Recv_ChatRoomTracker();
+            newObj.AllegianceChannel = binaryReader.ReadUInt32();
+            newObj.GeneralChannel = binaryReader.ReadUInt32();
+            newObj.TradeChannel = binaryReader.ReadUInt32();
+            newObj.LFGChannel = binaryReader.ReadUInt32();
+            newObj.RoleplayChannel = binaryReader.ReadUInt32();
+            newObj.Olthoi = binaryReader.ReadUInt32();
+            newObj.Society = binaryReader.ReadUInt32();
+            newObj.Unknown_3 = binaryReader.ReadUInt32();
+            newObj.Unknown_4 = binaryReader.ReadUInt32();
+            newObj.Unknown_5 = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("AllegianceChannel = " + AllegianceChannel);
+            rootNode.Nodes.Add("GeneralChannel = " + GeneralChannel);
+            rootNode.Nodes.Add("TradeChannel = " + TradeChannel);
+            rootNode.Nodes.Add("LFGChannel = " + LFGChannel);
+            rootNode.Nodes.Add("RoleplayChannel = " + RoleplayChannel);
+            rootNode.Nodes.Add("Olthoi = " + Olthoi);
+            rootNode.Nodes.Add("Society = " + Society);
+            rootNode.Nodes.Add("Unknown_3 = " + Unknown_3);
+            rootNode.Nodes.Add("Unknown_4 = " + Unknown_4);
+            rootNode.Nodes.Add("Unknown_5 = " + Unknown_5);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
 
     public class WeenieError : Message {
         public WERROR etype;

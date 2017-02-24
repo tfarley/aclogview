@@ -40,6 +40,7 @@
             this.menuItem_File = new System.Windows.Forms.MenuItem();
             this.menuItem_Open = new System.Windows.Forms.MenuItem();
             this.menuItem_Edit = new System.Windows.Forms.MenuItem();
+            this.mnuItem_EditNextHighlightedRow = new System.Windows.Forms.MenuItem();
             this.menuItem1 = new System.Windows.Forms.MenuItem();
             this.menuItem_ToolCount = new System.Windows.Forms.MenuItem();
             this.menuItem_ToolBad = new System.Windows.Forms.MenuItem();
@@ -68,6 +69,7 @@
             // 
             this.splitContainer_Main.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.splitContainer_Main.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer_Main.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.splitContainer_Main.Location = new System.Drawing.Point(0, 24);
             this.splitContainer_Main.Name = "splitContainer_Main";
             this.splitContainer_Main.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -82,7 +84,7 @@
             this.splitContainer_Main.Panel2.Controls.Add(this.splitContainer_Bottom);
             this.splitContainer_Main.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.splitContainer_Main.Size = new System.Drawing.Size(1520, 918);
-            this.splitContainer_Main.SplitterDistance = 423;
+            this.splitContainer_Main.SplitterDistance = 500;
             this.splitContainer_Main.TabIndex = 0;
             // 
             // listView_Packets
@@ -100,7 +102,7 @@
             this.listView_Packets.Location = new System.Drawing.Point(0, 0);
             this.listView_Packets.MultiSelect = false;
             this.listView_Packets.Name = "listView_Packets";
-            this.listView_Packets.Size = new System.Drawing.Size(1516, 419);
+            this.listView_Packets.Size = new System.Drawing.Size(1516, 496);
             this.listView_Packets.TabIndex = 0;
             this.listView_Packets.UseCompatibleStateImageBehavior = false;
             this.listView_Packets.View = System.Windows.Forms.View.Details;
@@ -117,26 +119,26 @@
             // columnHeader5
             // 
             this.columnHeader5.Text = "S/R";
+            this.columnHeader5.Width = 50;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Time";
-            this.columnHeader2.Width = 100;
+            this.columnHeader2.Width = 80;
             // 
             // columnHeader7
             // 
             this.columnHeader7.Text = "Headers";
-            this.columnHeader7.Width = 150;
+            this.columnHeader7.Width = 220;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "Type";
-            this.columnHeader3.Width = 200;
+            this.columnHeader3.Width = 500;
             // 
             // columnHeader4
             // 
             this.columnHeader4.Text = "Size";
-            this.columnHeader4.Width = 100;
             // 
             // columnHeader6
             // 
@@ -157,7 +159,7 @@
             // splitContainer_Bottom.Panel2
             // 
             this.splitContainer_Bottom.Panel2.Controls.Add(this.treeView_ParsedData);
-            this.splitContainer_Bottom.Size = new System.Drawing.Size(1520, 491);
+            this.splitContainer_Bottom.Size = new System.Drawing.Size(1520, 414);
             this.splitContainer_Bottom.SplitterDistance = 1130;
             this.splitContainer_Bottom.TabIndex = 0;
             // 
@@ -167,7 +169,7 @@
             this.textBox_PacketData.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox_PacketData.Location = new System.Drawing.Point(0, 0);
             this.textBox_PacketData.Name = "textBox_PacketData";
-            this.textBox_PacketData.Size = new System.Drawing.Size(1126, 487);
+            this.textBox_PacketData.Size = new System.Drawing.Size(1126, 410);
             this.textBox_PacketData.TabIndex = 0;
             this.textBox_PacketData.Text = "";
             // 
@@ -176,7 +178,7 @@
             this.treeView_ParsedData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView_ParsedData.Location = new System.Drawing.Point(0, 0);
             this.treeView_ParsedData.Name = "treeView_ParsedData";
-            this.treeView_ParsedData.Size = new System.Drawing.Size(382, 487);
+            this.treeView_ParsedData.Size = new System.Drawing.Size(382, 410);
             this.treeView_ParsedData.TabIndex = 0;
             this.treeView_ParsedData.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_ParsedData_AfterSelect);
             // 
@@ -199,12 +201,21 @@
             // 
             this.menuItem_Open.Index = 0;
             this.menuItem_Open.Text = "Open";
-            this.menuItem_Open.Click += new System.EventHandler(this.menuItem5_Click);
+            this.menuItem_Open.Click += new System.EventHandler(this.menuItem_Open_Click);
             // 
             // menuItem_Edit
             // 
             this.menuItem_Edit.Index = 1;
+            this.menuItem_Edit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mnuItem_EditNextHighlightedRow});
             this.menuItem_Edit.Text = "Edit";
+            // 
+            // mnuItem_EditNextHighlightedRow
+            // 
+            this.mnuItem_EditNextHighlightedRow.Index = 0;
+            this.mnuItem_EditNextHighlightedRow.Shortcut = System.Windows.Forms.Shortcut.F3;
+            this.mnuItem_EditNextHighlightedRow.Text = "Next Highlighted Row";
+            this.mnuItem_EditNextHighlightedRow.Click += new System.EventHandler(this.mnuItem_EditNextHighlightedRow_Click);
             // 
             // menuItem1
             // 
@@ -371,6 +382,7 @@
         private System.Windows.Forms.MenuItem menuItem_ToolBad;
         private System.Windows.Forms.MenuItem menuItem_ToolHeatmap;
         private System.Windows.Forms.MenuItem mnuItem_ToolFindOpcodeInFiles;
+        private System.Windows.Forms.MenuItem mnuItem_EditNextHighlightedRow;
     }
 }
 
