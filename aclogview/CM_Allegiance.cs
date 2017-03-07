@@ -272,7 +272,8 @@ public class CM_Allegiance : MessageProcessor {
         }
     }
 
-    public class AllegianceNode {
+    public class AllegianceNode
+    {
         public AllegianceNode _patron;
         public AllegianceNode _peer;
         public AllegianceNode _vassal;
@@ -281,7 +282,8 @@ public class CM_Allegiance : MessageProcessor {
         // TODO: Read in all the stuff
     }
 
-    public class AllegianceHierarchy {
+    public class AllegianceHierarchy
+    {
         public AllegianceVersion m_oldVersion;
         public uint m_total;
         public PackableHashTable<uint, uint> m_AllegianceOfficers;
@@ -301,25 +303,45 @@ public class CM_Allegiance : MessageProcessor {
         public AllegianceNode m_pMonarch;
 
         // TODO: Read in all the stuff
-    }
 
-    public class AllegianceProfile {
-        public uint _total_members;
-        public uint _total_vassals;
-        public AllegianceHierarchy _allegiance;
-
-        public static AllegianceProfile read(BinaryReader binaryReader) {
-            AllegianceProfile newObj = new AllegianceProfile();
-            newObj._total_members = binaryReader.ReadUInt32();
-            newObj._total_vassals = binaryReader.ReadUInt32();
+        public static AllegianceHierarchy read(BinaryReader binaryReader)
+        {
+            AllegianceHierarchy newObj = new AllegianceHierarchy();
+            newObj.m_oldVersion = (AllegianceVersion)binaryReader.ReadByte();
+            newObj.m_total = binaryReader.ReadUInt32();
             // TODO: Read in profile
             return newObj;
         }
 
-        public void contributeToTreeNode(TreeNode node) {
+        public void contributeToTreeNode(TreeNode node)
+        {
+            node.Nodes.Add("m_oldVersion = " + m_oldVersion);
+            node.Nodes.Add("m_total = " + m_total);
+            // TODO: Read in profile
+        }
+    }
+
+    public class AllegianceProfile
+    {
+        public uint _total_members;
+        public uint _total_vassals;
+        public AllegianceHierarchy _allegiance;
+
+        public static AllegianceProfile read(BinaryReader binaryReader)
+        {
+            AllegianceProfile newObj = new AllegianceProfile();
+            newObj._total_members = binaryReader.ReadUInt32();
+            newObj._total_vassals = binaryReader.ReadUInt32();
+            newObj._allegiance = AllegianceHierarchy.read(binaryReader);
+            return newObj;
+        }
+
+        public void contributeToTreeNode(TreeNode node)
+        {
             node.Nodes.Add("_total_members = " + _total_members);
             node.Nodes.Add("_total_vassals = " + _total_vassals);
-            // TODO: Read in profile
+            TreeNode profileNode = node.Nodes.Add("allegianceProfile = ");
+            _allegiance.contributeToTreeNode(profileNode);
         }
     }
 

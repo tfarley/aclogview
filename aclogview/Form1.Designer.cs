@@ -54,6 +54,7 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.checkBox_HideHeaderOnly = new System.Windows.Forms.CheckBox();
             this.checkBox_useHighlighting = new System.Windows.Forms.CheckBox();
+            this.mnuItem_EditPreviousHighlightedRow = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -99,6 +100,7 @@
             this.columnHeader6});
             this.listView_Packets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView_Packets.FullRowSelect = true;
+            this.listView_Packets.HideSelection = false;
             this.listView_Packets.Location = new System.Drawing.Point(0, 0);
             this.listView_Packets.MultiSelect = false;
             this.listView_Packets.Name = "listView_Packets";
@@ -207,12 +209,13 @@
             // 
             this.menuItem_Edit.Index = 1;
             this.menuItem_Edit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mnuItem_EditPreviousHighlightedRow,
             this.mnuItem_EditNextHighlightedRow});
             this.menuItem_Edit.Text = "Edit";
             // 
             // mnuItem_EditNextHighlightedRow
             // 
-            this.mnuItem_EditNextHighlightedRow.Index = 0;
+            this.mnuItem_EditNextHighlightedRow.Index = 1;
             this.mnuItem_EditNextHighlightedRow.Shortcut = System.Windows.Forms.Shortcut.F3;
             this.mnuItem_EditNextHighlightedRow.Text = "Next Highlighted Row";
             this.mnuItem_EditNextHighlightedRow.Click += new System.EventHandler(this.mnuItem_EditNextHighlightedRow_Click);
@@ -320,6 +323,13 @@
             this.checkBox_useHighlighting.UseVisualStyleBackColor = true;
             this.checkBox_useHighlighting.CheckedChanged += new System.EventHandler(this.checkBox_useHighlighting_CheckedChanged);
             // 
+            // mnuItem_EditPreviousHighlightedRow
+            // 
+            this.mnuItem_EditPreviousHighlightedRow.Index = 0;
+            this.mnuItem_EditPreviousHighlightedRow.Shortcut = System.Windows.Forms.Shortcut.ShiftF3;
+            this.mnuItem_EditPreviousHighlightedRow.Text = "Previous Highlighted Row";
+            this.mnuItem_EditPreviousHighlightedRow.Click += new System.EventHandler(this.mnuItem_EditPreviousHighlightedRow_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -383,6 +393,7 @@
         private System.Windows.Forms.MenuItem menuItem_ToolHeatmap;
         private System.Windows.Forms.MenuItem mnuItem_ToolFindOpcodeInFiles;
         private System.Windows.Forms.MenuItem mnuItem_EditNextHighlightedRow;
+        private System.Windows.Forms.MenuItem mnuItem_EditPreviousHighlightedRow;
     }
 }
 

@@ -787,9 +787,28 @@ namespace aclogview {
             loadPcap(openFile.FileName);
         }
 
+        private void mnuItem_EditPreviousHighlightedRow_Click(object sender, EventArgs e)
+        {
+            if (listView_Packets.TopItem == null)
+                return;
+
+            for (int i = listView_Packets.TopItem.Index - 1; i >= 0; i--)
+            {
+                if (listView_Packets.Items[i].BackColor != SystemColors.Window)
+                {
+                    listView_Packets.TopItem = listView_Packets.Items[i];
+                    listView_Packets.TopItem.Selected = true;
+                    listView_Packets.TopItem.Focused = true;
+                    break;
+                }
+            }
+        }
 
         private void mnuItem_EditNextHighlightedRow_Click(object sender, EventArgs e)
         {
+            if (listView_Packets.TopItem == null)
+                return;
+
             for (int i = listView_Packets.TopItem.Index + 1; i < listView_Packets.Items.Count; i++)
             {
                 if (listView_Packets.Items[i].BackColor != SystemColors.Window)

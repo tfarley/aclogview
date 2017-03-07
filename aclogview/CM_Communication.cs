@@ -155,11 +155,11 @@ public class CM_Communication : MessageProcessor {
         public uint RoleplayChannel;
         public uint Olthoi;
         public uint Society;
-        public uint Unknown_3;
-        public uint Unknown_4;
-        public uint Unknown_5;
+        public uint SocietyCelHan;
+        public uint SocietyEldWeb;
+        public uint SocietyRadBlo;
 
-        public static Recv_ChatRoomTracker read(BinaryReader binaryReader)
+		public static Recv_ChatRoomTracker read(BinaryReader binaryReader)
         {
             var newObj = new Recv_ChatRoomTracker();
             newObj.AllegianceChannel = binaryReader.ReadUInt32();
@@ -169,9 +169,9 @@ public class CM_Communication : MessageProcessor {
             newObj.RoleplayChannel = binaryReader.ReadUInt32();
             newObj.Olthoi = binaryReader.ReadUInt32();
             newObj.Society = binaryReader.ReadUInt32();
-            newObj.Unknown_3 = binaryReader.ReadUInt32();
-            newObj.Unknown_4 = binaryReader.ReadUInt32();
-            newObj.Unknown_5 = binaryReader.ReadUInt32();
+            newObj.SocietyCelHan = binaryReader.ReadUInt32();
+            newObj.SocietyEldWeb = binaryReader.ReadUInt32();
+            newObj.SocietyRadBlo = binaryReader.ReadUInt32();
             return newObj;
         }
 
@@ -186,9 +186,9 @@ public class CM_Communication : MessageProcessor {
             rootNode.Nodes.Add("RoleplayChannel = " + RoleplayChannel);
             rootNode.Nodes.Add("Olthoi = " + Olthoi);
             rootNode.Nodes.Add("Society = " + Society);
-            rootNode.Nodes.Add("Unknown_3 = " + Unknown_3);
-            rootNode.Nodes.Add("Unknown_4 = " + Unknown_4);
-            rootNode.Nodes.Add("Unknown_5 = " + Unknown_5);
+            rootNode.Nodes.Add("SocietyCelHan = " + SocietyCelHan);
+            rootNode.Nodes.Add("SocietyEldWeb = " + SocietyEldWeb);
+            rootNode.Nodes.Add("SocietyRadBlo = " + SocietyRadBlo);
             treeView.Nodes.Add(rootNode);
         }
     }
