@@ -40,6 +40,7 @@
             this.menuItem_File = new System.Windows.Forms.MenuItem();
             this.menuItem_Open = new System.Windows.Forms.MenuItem();
             this.menuItem_Edit = new System.Windows.Forms.MenuItem();
+            this.mnuItem_EditPreviousHighlightedRow = new System.Windows.Forms.MenuItem();
             this.mnuItem_EditNextHighlightedRow = new System.Windows.Forms.MenuItem();
             this.menuItem1 = new System.Windows.Forms.MenuItem();
             this.menuItem_ToolCount = new System.Windows.Forms.MenuItem();
@@ -54,7 +55,8 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.checkBox_HideHeaderOnly = new System.Windows.Forms.CheckBox();
             this.checkBox_useHighlighting = new System.Windows.Forms.CheckBox();
-            this.mnuItem_EditPreviousHighlightedRow = new System.Windows.Forms.MenuItem();
+            this.menuItem2 = new System.Windows.Forms.MenuItem();
+            this.mnuItem_ToolFragDatListTool = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -213,6 +215,13 @@
             this.mnuItem_EditNextHighlightedRow});
             this.menuItem_Edit.Text = "Edit";
             // 
+            // mnuItem_EditPreviousHighlightedRow
+            // 
+            this.mnuItem_EditPreviousHighlightedRow.Index = 0;
+            this.mnuItem_EditPreviousHighlightedRow.Shortcut = System.Windows.Forms.Shortcut.ShiftF3;
+            this.mnuItem_EditPreviousHighlightedRow.Text = "Previous Highlighted Row";
+            this.mnuItem_EditPreviousHighlightedRow.Click += new System.EventHandler(this.mnuItem_EditPreviousHighlightedRow_Click);
+            // 
             // mnuItem_EditNextHighlightedRow
             // 
             this.mnuItem_EditNextHighlightedRow.Index = 1;
@@ -227,7 +236,9 @@
             this.menuItem_ToolCount,
             this.menuItem_ToolBad,
             this.menuItem_ToolHeatmap,
-            this.mnuItem_ToolFindOpcodeInFiles});
+            this.menuItem2,
+            this.mnuItem_ToolFindOpcodeInFiles,
+            this.mnuItem_ToolFragDatListTool});
             this.menuItem1.Text = "Tools";
             // 
             // menuItem_ToolCount
@@ -250,7 +261,7 @@
             // 
             // mnuItem_ToolFindOpcodeInFiles
             // 
-            this.mnuItem_ToolFindOpcodeInFiles.Index = 3;
+            this.mnuItem_ToolFindOpcodeInFiles.Index = 4;
             this.mnuItem_ToolFindOpcodeInFiles.Text = "Find Opcode In Files";
             this.mnuItem_ToolFindOpcodeInFiles.Click += new System.EventHandler(this.mnuItem_ToolFindOpcodeInFiles_Click);
             // 
@@ -323,12 +334,16 @@
             this.checkBox_useHighlighting.UseVisualStyleBackColor = true;
             this.checkBox_useHighlighting.CheckedChanged += new System.EventHandler(this.checkBox_useHighlighting_CheckedChanged);
             // 
-            // mnuItem_EditPreviousHighlightedRow
+            // menuItem2
             // 
-            this.mnuItem_EditPreviousHighlightedRow.Index = 0;
-            this.mnuItem_EditPreviousHighlightedRow.Shortcut = System.Windows.Forms.Shortcut.ShiftF3;
-            this.mnuItem_EditPreviousHighlightedRow.Text = "Previous Highlighted Row";
-            this.mnuItem_EditPreviousHighlightedRow.Click += new System.EventHandler(this.mnuItem_EditPreviousHighlightedRow_Click);
+            this.menuItem2.Index = 3;
+            this.menuItem2.Text = "-";
+            // 
+            // mnuItem_ToolFragDatListTool
+            // 
+            this.mnuItem_ToolFragDatListTool.Index = 5;
+            this.mnuItem_ToolFragDatListTool.Text = "Frag Dat List Tool";
+            this.mnuItem_ToolFragDatListTool.Click += new System.EventHandler(this.mnuItem_ToolFragDatListTool_Click);
             // 
             // Form1
             // 
@@ -394,6 +409,8 @@
         private System.Windows.Forms.MenuItem mnuItem_ToolFindOpcodeInFiles;
         private System.Windows.Forms.MenuItem mnuItem_EditNextHighlightedRow;
         private System.Windows.Forms.MenuItem mnuItem_EditPreviousHighlightedRow;
+        private System.Windows.Forms.MenuItem menuItem2;
+        private System.Windows.Forms.MenuItem mnuItem_ToolFragDatListTool;
     }
 }
 
