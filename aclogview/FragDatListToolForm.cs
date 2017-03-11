@@ -179,7 +179,10 @@ namespace aclogview
                 {
                     ProcessFileForBuild(currentFile);
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("File failed to process with exception: " + Environment.NewLine + ex, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
 
             // ********************************************************************
@@ -315,7 +318,10 @@ namespace aclogview
                 {
                     ProcessFileForExamination(currentFile);
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("File failed to process with exception: " + Environment.NewLine + ex, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -395,16 +401,38 @@ namespace aclogview
                                         if (i > 0)
                                             sb.Append(',');
 
-                                        sb.Append(lineItems[i] ?? String.Empty);
+                                        var output = lineItems[i];
+
+                                        // Format the value for CSV output, if needed.
+                                        // We only do this for certain columns. This is very time consuming
+                                        if (output != null && itemTypeKeys[parsed.wdesc._type][i].EndsWith("name"))
+                                        {
+                                            if (output.Contains(",") || output.Contains("\"") || output.Contains("\r") || output.Contains("\n"))
+                                            {
+                                                var sb2 = new StringBuilder();
+                                                sb2.Append("\"");
+                                                foreach (char nextChar in output)
+                                                {
+                                                    sb2.Append(nextChar);
+                                                    if (nextChar == '"')
+                                                        sb2.Append("\"");
+                                                }
+                                                sb2.Append("\"");
+                                                output = sb2.ToString();
+                                            }
+
+                                        }
+
+                                        if (output != null)
+                                            sb.Append(output);
                                     }
 
                                     itemTypeStreamWriters[parsed.wdesc._type].WriteLine(sb.ToString());
                                 }
                             }
                         }
-                        catch
+                        catch (EndOfStreamException) // This can happen when a frag is incomplete and we try to parse it
                         {
-                            // Do something with the exception maybe
                             totalExceptions++;
                         }
                     }
