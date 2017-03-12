@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.txtSearchPathRoot = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnStartSearch = new System.Windows.Forms.Button();
@@ -38,12 +39,15 @@
             this.btnChangeSearchPathRoot = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.columnHits = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.columnExceptions = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnFileSize = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnFilePath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label2 = new System.Windows.Forms.Label();
             this.txtOpcode = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -117,6 +121,7 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.columnHits,
+            this.columnExceptions,
             this.columnFileSize,
             this.columnFilePath});
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -137,11 +142,21 @@
             this.columnHits.ReadOnly = true;
             this.columnHits.Width = 60;
             // 
-            // columnFileSize
+            // columnExceptions
             // 
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
             dataGridViewCellStyle2.Format = "N0";
-            this.columnFileSize.DefaultCellStyle = dataGridViewCellStyle2;
+            this.columnExceptions.DefaultCellStyle = dataGridViewCellStyle2;
+            this.columnExceptions.HeaderText = "Exceptions";
+            this.columnExceptions.Name = "columnExceptions";
+            this.columnExceptions.ReadOnly = true;
+            this.columnExceptions.Width = 60;
+            // 
+            // columnFileSize
+            // 
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle3.Format = "N0";
+            this.columnFileSize.DefaultCellStyle = dataGridViewCellStyle3;
             this.columnFileSize.HeaderText = "File Size";
             this.columnFileSize.Name = "columnFileSize";
             this.columnFileSize.ReadOnly = true;
@@ -174,7 +189,9 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1});
+            this.toolStripStatusLabel1,
+            this.toolStripStatusLabel2,
+            this.toolStripStatusLabel3});
             this.statusStrip1.Location = new System.Drawing.Point(0, 539);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(784, 22);
@@ -186,6 +203,20 @@
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(89, 17);
             this.toolStripStatusLabel1.Text = "Files Processed:";
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Margin = new System.Windows.Forms.Padding(20, 3, 0, 2);
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(60, 17);
+            this.toolStripStatusLabel2.Text = "Total Hits:";
+            // 
+            // toolStripStatusLabel3
+            // 
+            this.toolStripStatusLabel3.Margin = new System.Windows.Forms.Padding(20, 3, 0, 2);
+            this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(92, 17);
+            this.toolStripStatusLabel3.Text = "Frag Exceptions:";
             // 
             // timer1
             // 
@@ -277,12 +308,15 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn columnHits;
-        private System.Windows.Forms.DataGridViewTextBoxColumn columnFileSize;
-        private System.Windows.Forms.DataGridViewTextBoxColumn columnFilePath;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn columnHits;
+        private System.Windows.Forms.DataGridViewTextBoxColumn columnExceptions;
+        private System.Windows.Forms.DataGridViewTextBoxColumn columnFileSize;
+        private System.Windows.Forms.DataGridViewTextBoxColumn columnFilePath;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
     }
 }

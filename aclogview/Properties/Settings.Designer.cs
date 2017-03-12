@@ -46,5 +46,29 @@ namespace aclogview.Properties {
                 this["FindOpcodeInFilesOpcode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string FragDatFileToProcess {
+            get {
+                return ((string)(this["FragDatFileToProcess"]));
+            }
+            set {
+                this["FragDatFileToProcess"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string FragDatFileOutputFolder {
+            get {
+                return ((string)(this["FragDatFileOutputFolder"]));
+            }
+            set {
+                this["FragDatFileOutputFolder"] = value;
+            }
+        }
     }
 }

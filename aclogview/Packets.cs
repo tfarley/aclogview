@@ -363,7 +363,7 @@ public class Position {
     }
 
     public void contributeToTreeNode(TreeNode node) {
-        node.Nodes.Add("objcell_id = " + objcell_id);
+        node.Nodes.Add("objcell_id = 0x" + objcell_id.ToString("X8"));
         TreeNode frameNode = node.Nodes.Add("frame = ");
         frame.contributeToTreeNode(frameNode);
     }

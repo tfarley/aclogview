@@ -426,7 +426,7 @@ public class CM_Physics : MessageProcessor {
             }
             TreeNode timestampsNode = node.Nodes.Add("timestamps = ");
             for (int i = 0; i < timestamps.Length; ++i) {
-                timestampsNode.Nodes.Add(timestamps[i].ToString());
+                timestampsNode.Nodes.Add("[" + i + "] = " + timestamps[i]);
             }
         }
     }
