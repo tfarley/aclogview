@@ -51,6 +51,7 @@
     <Compile Include="CM_Allegiance.cs" />
     <Compile Include="CM_Combat.cs" />
     <Compile Include="CM_Fellowship.cs" />
+    <Compile Include="CM_Death.cs" />
     <Compile Include="CM_Game.cs" />
     <Compile Include="CM_House.cs" />
     <Compile Include="CM_Magic.cs" />

@@ -41,6 +41,7 @@ namespace aclogview {
             messageProcessors.Add(new CM_Character());
             messageProcessors.Add(new CM_Combat());
             messageProcessors.Add(new CM_Communication());
+            messageProcessors.Add(new CM_Death());
             messageProcessors.Add(new CM_Examine());
             messageProcessors.Add(new CM_Fellowship());
             messageProcessors.Add(new CM_Game());
