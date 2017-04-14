@@ -13,7 +13,12 @@ class CM_Movement : MessageProcessor {
 
         PacketOpcode opcode = Util.readOpcode(messageDataReader);
         switch (opcode) {
-            // TODO: PacketOpcode.Evt_Movement__PositionAndMovement_ID
+            case PacketOpcode.LIFESTONE_MATERIALIZE:
+                {
+                    LifestoneMaterialize message = LifestoneMaterialize.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Movement__Jump_ID: {
                     Jump message = Jump.read(messageDataReader);
                     message.contributeToTreeView(outputTreeView);
@@ -660,6 +665,44 @@ class CM_Movement : MessageProcessor {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
             rootNode.Nodes.Add("i_extent = " + i_extent);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class LifestoneMaterialize : Message
+    {
+        public int ObjectId;
+        public Position Position;
+        public uint unknown2;
+        public uint unknown3;
+        public uint unknown4;
+        public uint unknown5;
+
+        public static LifestoneMaterialize read(BinaryReader binaryReader)
+        {
+            LifestoneMaterialize newObj = new LifestoneMaterialize();
+            newObj.ObjectId = binaryReader.ReadInt32();
+            newObj.Position = Position.read(binaryReader);
+            newObj.unknown2 = binaryReader.ReadUInt32();
+            newObj.unknown3 = binaryReader.ReadUInt32();
+            newObj.unknown4 = binaryReader.ReadUInt32();
+            newObj.unknown5 = binaryReader.ReadUInt32();
+            Util.readToAlign(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("player_id = " + ObjectId);
+            TreeNode posNode = rootNode.Nodes.Add("position = ");
+            Position.contributeToTreeNode(posNode);
+            posNode.ExpandAll();
+            rootNode.Nodes.Add("unknown2 = " + unknown2);
+            rootNode.Nodes.Add("unknown3 = " + unknown3);
+            rootNode.Nodes.Add("unknown4 = " + unknown4);
+            rootNode.Nodes.Add("unknown5 = " + unknown5);
             treeView.Nodes.Add(rootNode);
         }
     }
