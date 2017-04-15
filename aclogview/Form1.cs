@@ -28,6 +28,8 @@ namespace aclogview {
         private readonly List<int> opCodesToHighlight = new List<int>();
 
         private StringBuilder strbuilder = new StringBuilder();
+        private int curpacketindex = 0;
+        private bool locked = false;
 
         public Form1(string[] args) {
             InitializeComponent();
@@ -499,6 +501,11 @@ namespace aclogview {
         private void updateData() {
             updateText();
             updateTree();
+            if (listView_Packets.FocusedItem != null)
+            {
+                lblTracker.Text = "Viewing #" + listView_Packets.FocusedItem.Index;
+                curpacketindex = listView_Packets.FocusedItem.Index;
+            }
         }
 
         private void updateText() {
@@ -743,6 +750,7 @@ namespace aclogview {
         {
             updateData();
         }
+
 
         private void listView_Packets_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
@@ -1068,5 +1076,52 @@ namespace aclogview {
             }
         }
 
+        private void CmdLock_Click(object sender, EventArgs e)
+        {
+            if (CmdLock.Text == "Lock")
+            {
+                CmdLock.Text = "UnLock";
+                locked = true;
+                listView_Packets.Enabled = false;
+            }
+            else
+            {
+                CmdLock.Text = "Lock";
+                locked = false;
+                listView_Packets.Enabled = true;
+            }
+                
+        }
+
+        private void cmdforward_Click(object sender, EventArgs e)
+        {
+            if (listView_Packets.SelectedIndices.Count > 0)
+            {
+                int currow = listView_Packets.Items[listView_Packets.SelectedIndices[0]].Index;
+                if (currow++ <= listView_Packets.Items.Count)
+                {
+                    listView_Packets.Items[currow].Selected = true;
+                    listView_Packets.Items[currow].Focused = true;
+                    listView_Packets.EnsureVisible(currow);
+                    updateData();
+                }
+            }
+        }
+
+        private void cmdbackward_Click(object sender, EventArgs e)
+        {
+            if (listView_Packets.SelectedIndices.Count > 0)
+            {
+                int currow = listView_Packets.Items[listView_Packets.SelectedIndices[0]].Index;
+                if (currow-- >= 1)
+                {
+                    listView_Packets.Items[currow].Selected = true;
+                    listView_Packets.Items[currow].Focused = true;
+                    listView_Packets.EnsureVisible(currow); 
+                    updateData();
+                }
+            }
+
+        }
     }
 }

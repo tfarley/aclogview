@@ -36,6 +36,8 @@
             this.splitContainer_Bottom = new System.Windows.Forms.SplitContainer();
             this.textBox_PacketData = new System.Windows.Forms.RichTextBox();
             this.treeView_ParsedData = new System.Windows.Forms.TreeView();
+            this.parsedContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.CopyCmd = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
             this.menuItem_File = new System.Windows.Forms.MenuItem();
             this.menuItem_Open = new System.Windows.Forms.MenuItem();
@@ -57,8 +59,10 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.checkBox_HideHeaderOnly = new System.Windows.Forms.CheckBox();
             this.checkBox_useHighlighting = new System.Windows.Forms.CheckBox();
-            this.parsedContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.CopyCmd = new System.Windows.Forms.ToolStripMenuItem();
+            this.CmdLock = new System.Windows.Forms.Button();
+            this.cmdforward = new System.Windows.Forms.Button();
+            this.cmdbackward = new System.Windows.Forms.Button();
+            this.lblTracker = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -67,8 +71,8 @@
             this.splitContainer_Bottom.Panel1.SuspendLayout();
             this.splitContainer_Bottom.Panel2.SuspendLayout();
             this.splitContainer_Bottom.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Search)).BeginInit();
             this.parsedContextMenu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Search)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer_Main
@@ -189,6 +193,22 @@
             this.treeView_ParsedData.Size = new System.Drawing.Size(382, 410);
             this.treeView_ParsedData.TabIndex = 0;
             this.treeView_ParsedData.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_ParsedData_AfterSelect);
+            // 
+            // parsedContextMenu
+            // 
+            this.parsedContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CopyCmd});
+            this.parsedContextMenu.Name = "parsedContextMenu";
+            this.parsedContextMenu.Size = new System.Drawing.Size(96, 26);
+            this.parsedContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.parsedContextMenu_Opening);
+            this.parsedContextMenu.Click += new System.EventHandler(this.parsedContextMenu_Click);
+            // 
+            // CopyCmd
+            // 
+            this.CopyCmd.Name = "CopyCmd";
+            this.CopyCmd.ShowShortcutKeys = false;
+            this.CopyCmd.Size = new System.Drawing.Size(95, 22);
+            this.CopyCmd.Text = "&Copy";
             // 
             // mainMenu
             // 
@@ -349,27 +369,55 @@
             this.checkBox_useHighlighting.UseVisualStyleBackColor = true;
             this.checkBox_useHighlighting.CheckedChanged += new System.EventHandler(this.checkBox_useHighlighting_CheckedChanged);
             // 
-            // parsedContextMenu
+            // CmdLock
             // 
-            this.parsedContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.CopyCmd});
-            this.parsedContextMenu.Name = "parsedContextMenu";
-            this.parsedContextMenu.Size = new System.Drawing.Size(96, 26);
-            this.parsedContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.parsedContextMenu_Opening);
-            this.parsedContextMenu.Click += new System.EventHandler(this.parsedContextMenu_Click);
+            this.CmdLock.Location = new System.Drawing.Point(2, 1);
+            this.CmdLock.Name = "CmdLock";
+            this.CmdLock.Size = new System.Drawing.Size(75, 23);
+            this.CmdLock.TabIndex = 5;
+            this.CmdLock.Text = "Lock";
+            this.CmdLock.UseVisualStyleBackColor = true;
+            this.CmdLock.Click += new System.EventHandler(this.CmdLock_Click);
             // 
-            // CopyCmd
+            // cmdforward
             // 
-            this.CopyCmd.Name = "CopyCmd";
-            this.CopyCmd.ShowShortcutKeys = false;
-            this.CopyCmd.Size = new System.Drawing.Size(95, 22);
-            this.CopyCmd.Text = "&Copy";
+            this.cmdforward.Location = new System.Drawing.Point(83, 1);
+            this.cmdforward.Name = "cmdforward";
+            this.cmdforward.Size = new System.Drawing.Size(75, 23);
+            this.cmdforward.TabIndex = 6;
+            this.cmdforward.Text = ">";
+            this.cmdforward.UseVisualStyleBackColor = true;
+            this.cmdforward.Click += new System.EventHandler(this.cmdforward_Click);
+            // 
+            // cmdbackward
+            // 
+            this.cmdbackward.Location = new System.Drawing.Point(164, 0);
+            this.cmdbackward.Name = "cmdbackward";
+            this.cmdbackward.Size = new System.Drawing.Size(75, 23);
+            this.cmdbackward.TabIndex = 7;
+            this.cmdbackward.Text = "<";
+            this.cmdbackward.UseVisualStyleBackColor = true;
+            this.cmdbackward.Click += new System.EventHandler(this.cmdbackward_Click);
+            // 
+            // lblTracker
+            // 
+            this.lblTracker.AutoSize = true;
+            this.lblTracker.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTracker.Location = new System.Drawing.Point(245, 3);
+            this.lblTracker.Name = "lblTracker";
+            this.lblTracker.Size = new System.Drawing.Size(86, 17);
+            this.lblTracker.TabIndex = 8;
+            this.lblTracker.Text = "Viewing #0";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1520, 852);
+            this.Controls.Add(this.lblTracker);
+            this.Controls.Add(this.cmdbackward);
+            this.Controls.Add(this.cmdforward);
+            this.Controls.Add(this.CmdLock);
             this.Controls.Add(this.checkBox_useHighlighting);
             this.Controls.Add(this.checkBox_HideHeaderOnly);
             this.Controls.Add(this.splitContainer_Main);
@@ -390,8 +438,8 @@
             this.splitContainer_Bottom.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Bottom)).EndInit();
             this.splitContainer_Bottom.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Search)).EndInit();
             this.parsedContextMenu.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Search)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -434,6 +482,10 @@
         private System.Windows.Forms.MenuItem mnuItem_ToolFragDatListTool;
         private System.Windows.Forms.ContextMenuStrip parsedContextMenu;
         private System.Windows.Forms.ToolStripMenuItem CopyCmd;
+        private System.Windows.Forms.Button CmdLock;
+        private System.Windows.Forms.Button cmdforward;
+        private System.Windows.Forms.Button cmdbackward;
+        private System.Windows.Forms.Label lblTracker;
     }
 }
 
