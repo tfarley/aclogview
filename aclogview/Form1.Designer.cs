@@ -391,7 +391,7 @@
             // 
             // cmdbackward
             // 
-            this.cmdbackward.Location = new System.Drawing.Point(164, 0);
+            this.cmdbackward.Location = new System.Drawing.Point(164, 2);
             this.cmdbackward.Name = "cmdbackward";
             this.cmdbackward.Size = new System.Drawing.Size(75, 23);
             this.cmdbackward.TabIndex = 7;

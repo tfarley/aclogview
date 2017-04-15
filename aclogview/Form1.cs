@@ -28,8 +28,6 @@ namespace aclogview {
         private readonly List<int> opCodesToHighlight = new List<int>();
 
         private StringBuilder strbuilder = new StringBuilder();
-        private int curpacketindex = 0;
-        private bool locked = false;
 
         public Form1(string[] args) {
             InitializeComponent();
@@ -504,7 +502,6 @@ namespace aclogview {
             if (listView_Packets.FocusedItem != null)
             {
                 lblTracker.Text = "Viewing #" + listView_Packets.FocusedItem.Index;
-                curpacketindex = listView_Packets.FocusedItem.Index;
             }
         }
 
@@ -1081,13 +1078,11 @@ namespace aclogview {
             if (CmdLock.Text == "Lock")
             {
                 CmdLock.Text = "UnLock";
-                locked = true;
                 listView_Packets.Enabled = false;
             }
             else
             {
                 CmdLock.Text = "Lock";
-                locked = false;
                 listView_Packets.Enabled = true;
             }
                 
