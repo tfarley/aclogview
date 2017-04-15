@@ -200,7 +200,6 @@
             this.CopyCmd});
             this.parsedContextMenu.Name = "parsedContextMenu";
             this.parsedContextMenu.Size = new System.Drawing.Size(96, 26);
-            this.parsedContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.parsedContextMenu_Opening);
             this.parsedContextMenu.Click += new System.EventHandler(this.parsedContextMenu_Click);
             // 
             // CopyCmd

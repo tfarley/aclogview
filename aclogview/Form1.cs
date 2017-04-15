@@ -1043,12 +1043,6 @@ namespace aclogview {
             updateText();
         }
 
-        private void parsedContextMenu_Opening(object sender, CancelEventArgs e)
-        {
-
-        }
-
-
         private void parsedContextMenu_Click(object sender, EventArgs e)
         {
 
