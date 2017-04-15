@@ -46,7 +46,9 @@
             this.menuItem_ToolCount = new System.Windows.Forms.MenuItem();
             this.menuItem_ToolBad = new System.Windows.Forms.MenuItem();
             this.menuItem_ToolHeatmap = new System.Windows.Forms.MenuItem();
+            this.menuItem2 = new System.Windows.Forms.MenuItem();
             this.mnuItem_ToolFindOpcodeInFiles = new System.Windows.Forms.MenuItem();
+            this.mnuItem_ToolFragDatListTool = new System.Windows.Forms.MenuItem();
             this.menuItem_Help = new System.Windows.Forms.MenuItem();
             this.menuItem_About = new System.Windows.Forms.MenuItem();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
@@ -55,8 +57,8 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.checkBox_HideHeaderOnly = new System.Windows.Forms.CheckBox();
             this.checkBox_useHighlighting = new System.Windows.Forms.CheckBox();
-            this.menuItem2 = new System.Windows.Forms.MenuItem();
-            this.mnuItem_ToolFragDatListTool = new System.Windows.Forms.MenuItem();
+            this.parsedContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.CopyCmd = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -66,6 +68,7 @@
             this.splitContainer_Bottom.Panel2.SuspendLayout();
             this.splitContainer_Bottom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Search)).BeginInit();
+            this.parsedContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer_Main
@@ -86,8 +89,8 @@
             // 
             this.splitContainer_Main.Panel2.Controls.Add(this.splitContainer_Bottom);
             this.splitContainer_Main.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.splitContainer_Main.Size = new System.Drawing.Size(1520, 918);
-            this.splitContainer_Main.SplitterDistance = 500;
+            this.splitContainer_Main.Size = new System.Drawing.Size(1520, 806);
+            this.splitContainer_Main.SplitterDistance = 388;
             this.splitContainer_Main.TabIndex = 0;
             // 
             // listView_Packets
@@ -106,7 +109,7 @@
             this.listView_Packets.Location = new System.Drawing.Point(0, 0);
             this.listView_Packets.MultiSelect = false;
             this.listView_Packets.Name = "listView_Packets";
-            this.listView_Packets.Size = new System.Drawing.Size(1516, 496);
+            this.listView_Packets.Size = new System.Drawing.Size(1516, 384);
             this.listView_Packets.TabIndex = 0;
             this.listView_Packets.UseCompatibleStateImageBehavior = false;
             this.listView_Packets.View = System.Windows.Forms.View.Details;
@@ -179,6 +182,7 @@
             // 
             // treeView_ParsedData
             // 
+            this.treeView_ParsedData.ContextMenuStrip = this.parsedContextMenu;
             this.treeView_ParsedData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView_ParsedData.Location = new System.Drawing.Point(0, 0);
             this.treeView_ParsedData.Name = "treeView_ParsedData";
@@ -259,11 +263,22 @@
             this.menuItem_ToolHeatmap.Text = "Heatmap";
             this.menuItem_ToolHeatmap.Click += new System.EventHandler(this.menuItem_ToolHeatmap_Click);
             // 
+            // menuItem2
+            // 
+            this.menuItem2.Index = 3;
+            this.menuItem2.Text = "-";
+            // 
             // mnuItem_ToolFindOpcodeInFiles
             // 
             this.mnuItem_ToolFindOpcodeInFiles.Index = 4;
             this.mnuItem_ToolFindOpcodeInFiles.Text = "Find Opcode In Files";
             this.mnuItem_ToolFindOpcodeInFiles.Click += new System.EventHandler(this.mnuItem_ToolFindOpcodeInFiles_Click);
+            // 
+            // mnuItem_ToolFragDatListTool
+            // 
+            this.mnuItem_ToolFragDatListTool.Index = 5;
+            this.mnuItem_ToolFragDatListTool.Text = "Frag Dat List Tool";
+            this.mnuItem_ToolFragDatListTool.Click += new System.EventHandler(this.mnuItem_ToolFragDatListTool_Click);
             // 
             // menuItem_Help
             // 
@@ -305,7 +320,7 @@
             // 
             // statusStrip
             // 
-            this.statusStrip.Location = new System.Drawing.Point(0, 942);
+            this.statusStrip.Location = new System.Drawing.Point(0, 830);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(1520, 22);
             this.statusStrip.TabIndex = 1;
@@ -334,22 +349,27 @@
             this.checkBox_useHighlighting.UseVisualStyleBackColor = true;
             this.checkBox_useHighlighting.CheckedChanged += new System.EventHandler(this.checkBox_useHighlighting_CheckedChanged);
             // 
-            // menuItem2
+            // parsedContextMenu
             // 
-            this.menuItem2.Index = 3;
-            this.menuItem2.Text = "-";
+            this.parsedContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CopyCmd});
+            this.parsedContextMenu.Name = "parsedContextMenu";
+            this.parsedContextMenu.Size = new System.Drawing.Size(96, 26);
+            this.parsedContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.parsedContextMenu_Opening);
+            this.parsedContextMenu.Click += new System.EventHandler(this.parsedContextMenu_Click);
             // 
-            // mnuItem_ToolFragDatListTool
+            // CopyCmd
             // 
-            this.mnuItem_ToolFragDatListTool.Index = 5;
-            this.mnuItem_ToolFragDatListTool.Text = "Frag Dat List Tool";
-            this.mnuItem_ToolFragDatListTool.Click += new System.EventHandler(this.mnuItem_ToolFragDatListTool_Click);
+            this.CopyCmd.Name = "CopyCmd";
+            this.CopyCmd.ShowShortcutKeys = false;
+            this.CopyCmd.Size = new System.Drawing.Size(95, 22);
+            this.CopyCmd.Text = "&Copy";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1520, 964);
+            this.ClientSize = new System.Drawing.Size(1520, 852);
             this.Controls.Add(this.checkBox_useHighlighting);
             this.Controls.Add(this.checkBox_HideHeaderOnly);
             this.Controls.Add(this.splitContainer_Main);
@@ -371,6 +391,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Bottom)).EndInit();
             this.splitContainer_Bottom.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Search)).EndInit();
+            this.parsedContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -411,6 +432,8 @@
         private System.Windows.Forms.MenuItem mnuItem_EditPreviousHighlightedRow;
         private System.Windows.Forms.MenuItem menuItem2;
         private System.Windows.Forms.MenuItem mnuItem_ToolFragDatListTool;
+        private System.Windows.Forms.ContextMenuStrip parsedContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem CopyCmd;
     }
 }
 

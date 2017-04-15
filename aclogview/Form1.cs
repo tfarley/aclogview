@@ -27,6 +27,8 @@ namespace aclogview {
         /// </summary>
         private readonly List<int> opCodesToHighlight = new List<int>();
 
+        private StringBuilder strbuilder = new StringBuilder();
+
         public Form1(string[] args) {
             InitializeComponent();
 
@@ -1035,5 +1037,36 @@ namespace aclogview {
         {
             updateText();
         }
+
+        private void parsedContextMenu_Opening(object sender, CancelEventArgs e)
+        {
+
+        }
+
+
+        private void parsedContextMenu_Click(object sender, EventArgs e)
+        {
+
+            if (treeView_ParsedData.Nodes.Count > 0)
+            {
+                strbuilder.Clear();
+                foreach (var node in GetTreeNodes(treeView_ParsedData.Nodes))
+                {
+                    strbuilder.AppendLine(node.Text);
+                }
+                Clipboard.SetText(strbuilder.ToString());
+            }
+        }
+
+        IEnumerable<TreeNode> GetTreeNodes(TreeNodeCollection nodes)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                yield return node;
+                foreach (var child in GetTreeNodes(node.Nodes))
+                    yield return child;
+            }
+        }
+
     }
 }
