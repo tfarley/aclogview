@@ -194,7 +194,9 @@ namespace aclogview
 
         private void ProcessFileForBuild(string fileName)
         {
-            var records = PCapReader.LoadPcap(fileName, ref searchAborted);
+            // NOTE: If you want to get fully constructed/merged messages isntead of fragments:
+            // Pass true below and use record.data as the full message, instead of individual record.frags
+            var records = PCapReader.LoadPcap(fileName, false, ref searchAborted);
 
             // Temperorary objects
             var allFrags = new List<FragDatListFile.FragDatInfo>();
@@ -208,7 +210,7 @@ namespace aclogview
                 // ********************************************************************
                 // ************************ Custom Search Code ************************ 
                 // ********************************************************************
-                foreach (BlobFrag frag in record.netPacket.fragList_)
+                foreach (BlobFrag frag in record.frags)
                 {
                     try
                     {

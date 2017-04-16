@@ -134,7 +134,7 @@ public class BlobFrag {
     //public BlobFragHeader_t hdrRead_;
     public BlobFragHeader_t memberHeader_;
     public byte[] dat_;
-    public NetBlob myBlob_;
+    //public NetBlob myBlob_;
 }
 
 public class NetPacket {

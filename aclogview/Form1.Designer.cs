@@ -63,6 +63,7 @@
             this.cmdforward = new System.Windows.Forms.Button();
             this.cmdbackward = new System.Windows.Forms.Button();
             this.lblTracker = new System.Windows.Forms.Label();
+            this.menuItem_OpenAsMessages = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -200,6 +201,7 @@
             this.CopyCmd});
             this.parsedContextMenu.Name = "parsedContextMenu";
             this.parsedContextMenu.Size = new System.Drawing.Size(96, 26);
+            this.parsedContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.parsedContextMenu_Opening);
             this.parsedContextMenu.Click += new System.EventHandler(this.parsedContextMenu_Click);
             // 
             // CopyCmd
@@ -221,7 +223,8 @@
             // 
             this.menuItem_File.Index = 0;
             this.menuItem_File.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuItem_Open});
+            this.menuItem_Open,
+            this.menuItem_OpenAsMessages});
             this.menuItem_File.Text = "File";
             // 
             // menuItem_Open
@@ -397,6 +400,7 @@
             this.cmdbackward.Text = "<";
             this.cmdbackward.UseVisualStyleBackColor = true;
             this.cmdbackward.Click += new System.EventHandler(this.cmdbackward_Click);
+            // menuItem_OpenAsMessages
             // 
             // lblTracker
             // 
@@ -407,6 +411,9 @@
             this.lblTracker.Size = new System.Drawing.Size(86, 17);
             this.lblTracker.TabIndex = 8;
             this.lblTracker.Text = "Viewing #0";
+            this.menuItem_OpenAsMessages.Index = 1;
+            this.menuItem_OpenAsMessages.Text = "Open As Messages";
+            this.menuItem_OpenAsMessages.Click += new System.EventHandler(this.menuItem_OpenAsMessages_Click);
             // 
             // Form1
             // 
@@ -485,6 +492,7 @@
         private System.Windows.Forms.Button cmdforward;
         private System.Windows.Forms.Button cmdbackward;
         private System.Windows.Forms.Label lblTracker;
+        private System.Windows.Forms.MenuItem menuItem_OpenAsMessages;
     }
 }
 

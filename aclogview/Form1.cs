@@ -20,6 +20,7 @@ namespace aclogview
         private ListViewItemComparer comparer = new ListViewItemComparer();
         public List<MessageProcessor> messageProcessors = new List<MessageProcessor>();
         private long curPacket;
+        private bool loadedAsMessages;
 
         private string[] args;
 
@@ -47,6 +48,7 @@ namespace aclogview
             messageProcessors.Add(new CM_Character());
             messageProcessors.Add(new CM_Combat());
             messageProcessors.Add(new CM_Communication());
+            messageProcessors.Add(new CM_Death());
             messageProcessors.Add(new CM_Examine());
             messageProcessors.Add(new CM_Fellowship());
             messageProcessors.Add(new CM_Game());
@@ -73,7 +75,7 @@ namespace aclogview
                     opCodesToHighlight.Add(opcode);
             }
             if (args != null && args.Length >= 1)
-                loadPcap(args[0]);
+                loadPcap(args[0], false);
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -83,422 +85,10 @@ namespace aclogview
             Settings.Default.Save();
         }
 
-
-        private void readPacket(PacketRecord packet, StringBuilder packetTypeStr, BinaryReader packetReader)
-        {
-            BlobFrag newFrag = new BlobFrag();
-            newFrag.memberHeader_ = BlobFragHeader_t.read(packetReader);
-            newFrag.dat_ = packetReader.ReadBytes(newFrag.memberHeader_.blobFragSize - 16); // 16 == size of frag header
-
-            packet.netPacket.fragList_.Add(newFrag);
-
-            BinaryReader fragDataReader = new BinaryReader(new MemoryStream(newFrag.dat_));
-
-            if (newFrag.memberHeader_.blobNum != 0)
-            {
-                packetTypeStr.Append("FragData[");
-                packetTypeStr.Append(newFrag.memberHeader_.blobNum);
-                packetTypeStr.Append("]");
-            }
-            else
-            {
-                PacketOpcode opcode = Util.readOpcode(fragDataReader);
-                packet.opcodes.Add(opcode);
-                packetTypeStr.Append(opcode.ToString());
-            }
-        }
-
-        private void readOptionalHeaders(PacketRecord packet, uint header_, StringBuilder packetHeadersStr, BinaryReader packetReader)
-        {
-            long readStartPos = packetReader.BaseStream.Position;
-
-            if ((header_ & CServerSwitchStructHeader.mask) != 0)
-            {
-                CServerSwitchStruct serverSwitchStruct = CServerSwitchStruct.read(packetReader);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("Server Switch");
-            }
-
-            if ((header_ & LogonServerAddrHeader.mask) != 0)
-            {
-                sockaddr_in serverAddr = sockaddr_in.read(packetReader);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("Logon Server Addr");
-            }
-
-            if ((header_ & CEmptyHeader1.mask) != 0)
-            {
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("Empty Header 1");
-            }
-
-            if ((header_ & CReferralStructHeader.mask) != 0)
-            {
-                CReferralStruct referralStruct = CReferralStruct.read(packetReader);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("Referral");
-            }
-
-            if ((header_ & NakHeader.mask) != 0)
-            {
-                CSeqIDListHeader nakSeqIDs = NakHeader.read(packetReader);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("Nak");
-            }
-
-            if ((header_ & EmptyAckHeader.mask) != 0)
-            {
-                CSeqIDListHeader ackSeqIDs = EmptyAckHeader.read(packetReader);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("Empty Ack");
-            }
-
-            if ((header_ & PakHeader.mask) != 0)
-            {
-                PakHeader pakHeader = PakHeader.read(packetReader);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("Pak");
-            }
-
-            if ((header_ & CEmptyHeader2.mask) != 0)
-            {
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("Empty Header 2");
-            }
-
-            if ((header_ & CLogonHeader.mask) != 0)
-            {
-                CLogonHeader.HandshakeWireData handshakeData = CLogonHeader.HandshakeWireData.read(packetReader);
-                byte[] authData = packetReader.ReadBytes((int)handshakeData.cbAuthData);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("Logon");
-            }
-
-            if ((header_ & ULongHeader.mask) != 0)
-            {
-                ULongHeader ulongHeader = ULongHeader.read(packetReader);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("ULong 1");
-            }
-
-            if ((header_ & CConnectHeader.mask) != 0)
-            {
-                CConnectHeader.HandshakeWireData handshakeData = CConnectHeader.HandshakeWireData.read(packetReader);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("Connect");
-            }
-
-            if ((header_ & ULongHeader2.mask) != 0)
-            {
-                ULongHeader2 ulongHeader = ULongHeader2.read(packetReader);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("ULong 2");
-            }
-
-            if ((header_ & NetErrorHeader.mask) != 0)
-            {
-                NetError netError = NetError.read(packetReader);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("Net Error");
-            }
-
-            if ((header_ & NetErrorHeader_cs_DisconnectReceived.mask) != 0)
-            {
-                NetError netError = NetError.read(packetReader);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("Net Error Disconnect");
-            }
-
-            if ((header_ & CICMDCommandStructHeader.mask) != 0)
-            {
-                CICMDCommandStruct icmdStruct = CICMDCommandStruct.read(packetReader);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("ICmd");
-            }
-
-            if ((header_ & CTimeSyncHeader.mask) != 0)
-            {
-                CTimeSyncHeader timeSyncHeader = CTimeSyncHeader.read(packetReader);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("Time Sync");
-            }
-
-            if ((header_ & CEchoRequestHeader.mask) != 0)
-            {
-                CEchoRequestHeader echoRequestHeader = CEchoRequestHeader.read(packetReader);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("Echo Request");
-            }
-
-            if ((header_ & CEchoResponseHeader.mask) != 0)
-            {
-                CEchoResponseHeader.CEchoResponseHeaderWireData echoResponseData = CEchoResponseHeader.CEchoResponseHeaderWireData.read(packetReader);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("Echo Response");
-            }
-
-            if ((header_ & CFlowStructHeader.mask) != 0)
-            {
-                CFlowStruct flowStruct = CFlowStruct.read(packetReader);
-                if (packetHeadersStr.Length != 0)
-                {
-                    packetHeadersStr.Append(" | ");
-                }
-                packetHeadersStr.Append("Flow");
-            }
-
-            packet.optionalHeadersLen = (int)(packetReader.BaseStream.Position - readStartPos);
-        }
-
         List<PacketRecord> records = new List<PacketRecord>();
         List<ListViewItem> listItems = new List<ListViewItem>();
-
-        private int readPacketRecordData(BinaryReader binaryReader, long len, uint tsSec, long curPacket, bool dontList)
-        {
-            // Begin reading headers
-            long packetStartPos = binaryReader.BaseStream.Position;
-
-            EthernetHeader ethernetHeader = EthernetHeader.read(binaryReader);
-
-            // Skip non-IP packets
-            if (ethernetHeader.proto != 8)
-            {
-                binaryReader.BaseStream.Position += len - (binaryReader.BaseStream.Position - packetStartPos);
-                return 1;
-            }
-
-            IpHeader ipHeader = IpHeader.read(binaryReader);
-
-            // Skip non-UDP packets
-            if (ipHeader.proto != 17)
-            {
-                binaryReader.BaseStream.Position += len - (binaryReader.BaseStream.Position - packetStartPos);
-                return 1;
-            }
-
-            UdpHeader udpHeader = UdpHeader.read(binaryReader);
-
-            bool isSend = (udpHeader.dPort >= 9000 && udpHeader.dPort <= 9013);
-            bool isRecv = (udpHeader.sPort >= 9000 && udpHeader.sPort <= 9013);
-
-            // Skip non-AC-port packets
-            if (!isSend && !isRecv)
-            {
-                binaryReader.BaseStream.Position += len - (binaryReader.BaseStream.Position - packetStartPos);
-                return 1;
-            }
-
-            long headersSize = binaryReader.BaseStream.Position - packetStartPos;
-
-            // Begin reading non-header packet content
-            StringBuilder packetHeadersStr = new StringBuilder();
-            StringBuilder packetTypeStr = new StringBuilder();
-
-            PacketRecord packet = new PacketRecord();
-            packet.index = records.Count;
-            packet.isSend = isSend;
-            packet.tsSec = tsSec;
-            packet.netPacket = new NetPacket();
-            packet.data = binaryReader.ReadBytes((int)(len - headersSize));
-            packet.extraInfo = "";
-            BinaryReader packetReader = new BinaryReader(new MemoryStream(packet.data));
-            try
-            {
-                ProtoHeader pHeader = ProtoHeader.read(packetReader);
-
-                readOptionalHeaders(packet, pHeader.header_, packetHeadersStr, packetReader);
-
-                if (packetReader.BaseStream.Position == packetReader.BaseStream.Length)
-                {
-                    packetTypeStr.Append("<Header Only>");
-                }
-
-                uint HAS_FRAGS_MASK = 0x4; // See SharedNet::SplitPacketData
-                if ((pHeader.header_ & HAS_FRAGS_MASK) != 0)
-                {
-                    bool first = true;
-                    while (packetReader.BaseStream.Position != packetReader.BaseStream.Length)
-                    {
-                        if (!first)
-                        {
-                            packetTypeStr.Append(" + ");
-                        }
-                        readPacket(packet, packetTypeStr, packetReader);
-                        first = false;
-                    }
-                }
-
-                if (packetReader.BaseStream.Position != packetReader.BaseStream.Length)
-                {
-                    packet.extraInfo = "Didnt read entire packet! " + packet.extraInfo;
-                }
-            }
-            catch (OutOfMemoryException e)
-            {
-                //MessageBox.Show("Out of memory (packet " + curPacket + "), stopping read: " + e);
-                return 2;
-            }
-            catch (Exception e)
-            {
-                packet.extraInfo += "EXCEPTION: " + e.Message + " " + e.StackTrace;
-            }
-            packet.packetHeadersStr = packetHeadersStr.ToString();
-            packet.packetTypeStr = packetTypeStr.ToString();
-
-            records.Add(packet);
-
-            if (!dontList)
-            {
-                ListViewItem newItem = new ListViewItem(packet.index.ToString());
-                newItem.SubItems.Add(packet.isSend ? "Send" : "Recv");
-                newItem.SubItems.Add(packet.tsSec.ToString());
-                newItem.SubItems.Add(packet.packetHeadersStr);
-                newItem.SubItems.Add(packet.packetTypeStr);
-                newItem.SubItems.Add(packet.data.Length.ToString());
-                newItem.SubItems.Add(packet.extraInfo);
-                listItems.Add(newItem);
-            }
-
-            return 0;
-        }
-
-        private void loadPcapContent(BinaryReader binaryReader, bool dontList)
-        {
-            PcapHeader pcapHeader = PcapHeader.read(binaryReader);
-
-            while (binaryReader.BaseStream.Position != binaryReader.BaseStream.Length)
-            {
-                curPacket++;
-
-                if (binaryReader.BaseStream.Length - binaryReader.BaseStream.Position < 16)
-                {
-                    //MessageBox.Show("Stream cut short (packet " + curPacket + "), stopping read: " + (binaryReader.BaseStream.Length - binaryReader.BaseStream.Position));
-                    break;
-                }
-
-                PcapRecordHeader recordHeader = PcapRecordHeader.read(binaryReader);
-
-                if (recordHeader.inclLen > 50000)
-                {
-                    //MessageBox.Show("Enormous packet (packet " + curPacket + "), stopping read: " + recordHeader.inclLen);
-                    break;
-                }
-
-                // Make sure there's enough room for an ethernet header
-                if (recordHeader.inclLen < 14)
-                {
-                    binaryReader.BaseStream.Position += recordHeader.inclLen;
-                    continue;
-                }
-
-                if (readPacketRecordData(binaryReader, recordHeader.inclLen, recordHeader.tsSec, curPacket, dontList) == 2)
-                {
-                    break;
-                }
-            }
-        }
-
-        private void loadPcapngContent(BinaryReader binaryReader, bool dontList)
-        {
-            while (binaryReader.BaseStream.Position != binaryReader.BaseStream.Length)
-            {
-                curPacket++;
-
-                if (binaryReader.BaseStream.Length - binaryReader.BaseStream.Position < 8)
-                {
-                    //MessageBox.Show("Stream cut short (packet " + curPacket + "), stopping read: " + (binaryReader.BaseStream.Length - binaryReader.BaseStream.Position));
-                    break;
-                }
-
-                long recordStartPos = binaryReader.BaseStream.Position;
-
-                uint blockType = binaryReader.ReadUInt32();
-                uint blockTotalLength = binaryReader.ReadUInt32();
-
-                if (blockType == 6)
-                {
-                    uint interfaceID = binaryReader.ReadUInt32();
-                    uint tsHigh = binaryReader.ReadUInt32();
-                    uint tsLow = binaryReader.ReadUInt32();
-                    uint capturedLen = binaryReader.ReadUInt32();
-                    uint packetLen = binaryReader.ReadUInt32();
-
-                    if (readPacketRecordData(binaryReader, capturedLen, tsLow, curPacket, dontList) == 2)
-                    {
-                        break;
-                    }
-                }
-                else if (blockType == 3)
-                {
-                    uint packetLen = binaryReader.ReadUInt32();
-                    uint capturedLen = blockTotalLength - 16;
-
-                    if (readPacketRecordData(binaryReader, capturedLen, 0, curPacket, dontList) == 2)
-                    {
-                        break;
-                    }
-                }
-
-                binaryReader.BaseStream.Position += blockTotalLength - (binaryReader.BaseStream.Position - recordStartPos);
-            }
-        }
-
-        private void loadPcap(string fileName, bool dontList = false)
-        {
+        
+        private void loadPcap(string fileName, bool asMessages, bool dontList = false) {
             this.Text = "AC Log View - " + Path.GetFileName(fileName);
 
             if (opCodesToHighlight.Count > 0)
@@ -511,21 +101,21 @@ namespace aclogview
             records.Clear();
             listItems.Clear();
 
-            using (FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                using (BinaryReader binaryReader = new BinaryReader(fileStream))
-                {
-                    uint magicNumber = binaryReader.ReadUInt32();
-                    binaryReader.BaseStream.Position = 0;
+            bool abort = false;
+            records = PCapReader.LoadPcap(fileName, asMessages, ref abort);
 
-                    if (magicNumber == 0xA1B2C3D4 || magicNumber == 0xD4C3B2A1)
-                    {
-                        loadPcapContent(binaryReader, dontList);
-                    }
-                    else
-                    {
-                        loadPcapngContent(binaryReader, dontList);
-                    }
+            if (!dontList)
+            {
+                foreach (PacketRecord record in records)
+                {
+                    ListViewItem newItem = new ListViewItem(record.index.ToString());
+                    newItem.SubItems.Add(record.isSend ? "Send" : "Recv");
+                    newItem.SubItems.Add(record.tsSec.ToString());
+                    newItem.SubItems.Add(record.packetHeadersStr);
+                    newItem.SubItems.Add(record.packetTypeStr);
+                    newItem.SubItems.Add(record.data.Length.ToString());
+                    newItem.SubItems.Add(record.extraInfo);
+                    listItems.Add(newItem);
                 }
             }
 
@@ -610,8 +200,7 @@ namespace aclogview
                 PacketRecord record = records[Int32.Parse(listItems[listView_Packets.SelectedIndices[0]].SubItems[0].Text)];
                 byte[] data = record.data;
 
-                if (checkBox_useHighlighting.Checked)
-                {
+                if (checkBox_useHighlighting.Checked && !loadedAsMessages) {
                     int fragStartPos = 20 + record.optionalHeadersLen;
                     int curFrag = 0;
                     int curLine = 0;
@@ -658,19 +247,14 @@ namespace aclogview
                             {
                                 // Optional headers
                                 textBox_PacketData.SelectionColor = Color.Green;
-                            }
-                            else if (record.netPacket.fragList_.Count > 0)
-                            {
-                                if (curFrag < record.netPacket.fragList_.Count)
-                                {
+                            } else if (record.frags.Count > 0) {
+                                if (curFrag < record.frags.Count) {
                                     int fragCurPos = dataIndex - fragStartPos;
                                     if (fragCurPos < 16)
                                     {
                                         // Fragment header
                                         textBox_PacketData.SelectionColor = Color.Magenta;
-                                    }
-                                    else if (fragCurPos == (16 + record.netPacket.fragList_[curFrag].dat_.Length))
-                                    {
+                                    } else if (fragCurPos == (16 + record.frags[curFrag].dat_.Length)) {
                                         // Next fragment
                                         fragStartPos = dataIndex;
                                         curFrag++;
@@ -700,10 +284,8 @@ namespace aclogview
                         fragStartPos = lineFragStartPos;
                         curFrag = linecurFrag;
 
-                        for (int i = 0; i < Math.Min(16, data.Length - dataConsumed); ++i)
-                        {
-                            if (i == 8)
-                            {
+                        for (int i = 0; i < Math.Min(16, data.Length - dataConsumed); ++i) {
+                            if (i == 8) {
                                 textBox_PacketData.AppendText(" ");
                             }
 
@@ -711,10 +293,8 @@ namespace aclogview
 
                             int selectedIndex = -1;
                             TreeNode selectedNode = treeView_ParsedData.SelectedNode;
-                            if (selectedNode != null)
-                            {
-                                while (selectedNode.Parent != null)
-                                {
+                            if (selectedNode != null) {
+                                while (selectedNode.Parent != null) {
                                     selectedNode = selectedNode.Parent;
                                 }
                                 selectedIndex = selectedNode.Index;
@@ -724,53 +304,39 @@ namespace aclogview
                             textBox_PacketData.SelectionColor = Color.Red;
                             textBox_PacketData.SelectionBackColor = Color.White;
 
-                            if (dataIndex < 20)
-                            {
+                            if (dataIndex < 20) {
                                 // Protocol header
                                 textBox_PacketData.SelectionColor = Color.Blue;
-                            }
-                            else if (dataIndex < 20 + record.optionalHeadersLen)
-                            {
+                            } else if (dataIndex < 20 + record.optionalHeadersLen) {
                                 // Optional headers
                                 textBox_PacketData.SelectionColor = Color.Green;
-                            }
-                            else if (record.netPacket.fragList_.Count > 0)
-                            {
-                                if (curFrag < record.netPacket.fragList_.Count)
-                                {
+                            } else if (record.frags.Count > 0) {
+                                if (curFrag < record.frags.Count) {
                                     int fragCurPos = dataIndex - fragStartPos;
                                     if (fragCurPos < 16)
                                     {
                                         // Fragment header
                                         textBox_PacketData.SelectionColor = Color.Magenta;
-                                    }
-                                    else if (fragCurPos == (16 + record.netPacket.fragList_[curFrag].dat_.Length))
-                                    {
+                                    } else if (fragCurPos == (16 + record.frags[curFrag].dat_.Length)) {
                                         // Next fragment
                                         fragStartPos = dataIndex;
                                         curFrag++;
                                         textBox_PacketData.SelectionColor = Color.Magenta;
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         // Fragment data
                                         textBox_PacketData.SelectionColor = Color.Black;
                                     }
 
-                                    if (selectedIndex == curFrag)
-                                    {
+                                    if (selectedIndex == curFrag) {
                                         textBox_PacketData.SelectionBackColor = Color.LightGray;
                                     }
                                 }
                             }
 
                             char asChar = Convert.ToChar(data[dataIndex]);
-                            if (asChar >= ' ' && asChar <= '~')
-                            {
+                            if (asChar >= ' ' && asChar <= '~') {
                                 textBox_PacketData.AppendText(Char.ToString(asChar));
-                            }
-                            else
-                            {
+                            } else {
                                 textBox_PacketData.AppendText(".");
                             }
                         }
@@ -780,40 +346,30 @@ namespace aclogview
                         dataConsumed += 16;
                         curLine++;
                     }
-                }
-                else
-                {
+                } else {
                     StringBuilder strBuilder = new StringBuilder();
                     StringBuilder hexBuilder = new StringBuilder();
                     StringBuilder asciiBuilder = new StringBuilder();
                     int wrapCounter = 0;
-                    for (int i = 0; i < data.Length; ++i)
-                    {
-                        if (wrapCounter == 0)
-                        {
+                    for (int i = 0; i < data.Length; ++i) {
+                        if (wrapCounter == 0) {
                             strBuilder.Append(string.Format("{0:X4}  ", i));
                         }
 
                         hexBuilder.Append(string.Format("{0:X2} ", data[i]));
 
                         char asChar = Convert.ToChar(data[i]);
-                        if (asChar >= ' ' && asChar <= '~')
-                        {
+                        if (asChar >= ' ' && asChar <= '~') {
                             asciiBuilder.Append(asChar);
-                        }
-                        else
-                        {
+                        } else {
                             asciiBuilder.Append('.');
                         }
 
                         wrapCounter++;
-                        if (wrapCounter == 8)
-                        {
+                        if (wrapCounter == 8) {
                             hexBuilder.Append(' ');
                             asciiBuilder.Append(' ');
-                        }
-                        else if (wrapCounter == 16)
-                        {
+                        } else if (wrapCounter == 16) {
                             strBuilder.Append(hexBuilder.ToString());
                             hexBuilder.Clear();
 
@@ -828,11 +384,9 @@ namespace aclogview
                         }
                     }
 
-                    if (wrapCounter != 0)
-                    {
+                    if (wrapCounter != 0) {
                         int spacesToAppend = (16 - wrapCounter) * 3;
-                        if (wrapCounter < 8)
-                        {
+                        if (wrapCounter < 8) {
                             spacesToAppend++;
                         }
 
@@ -850,52 +404,76 @@ namespace aclogview
             }
         }
 
-        private void updateTree()
-        {
+        private void updateTree() {
             treeView_ParsedData.Nodes.Clear();
 
-            if (listView_Packets.SelectedIndices.Count > 0)
-            {
+            if (listView_Packets.SelectedIndices.Count > 0) {
                 PacketRecord record = records[Int32.Parse(listItems[listView_Packets.SelectedIndices[0]].SubItems[0].Text)];
 
-                foreach (BlobFrag frag in record.netPacket.fragList_)
+                if (loadedAsMessages)
                 {
-                    BinaryReader fragDataReader = new BinaryReader(new MemoryStream(frag.dat_));
-                    try
-                    {
+                    BinaryReader messageDataReader = new BinaryReader(new MemoryStream(record.data));
+                    try {
                         bool handled = false;
-                        foreach (MessageProcessor messageProcessor in messageProcessors)
-                        {
-                            long readerStartPos = fragDataReader.BaseStream.Position;
+                        foreach (MessageProcessor messageProcessor in messageProcessors) {
+                            long readerStartPos = messageDataReader.BaseStream.Position;
 
-                            bool accepted = messageProcessor.acceptMessageData(fragDataReader, treeView_ParsedData);
+                            bool accepted = messageProcessor.acceptMessageData(messageDataReader, treeView_ParsedData);
 
-                            if (accepted && handled)
-                            {
+                            if (accepted && handled) {
                                 throw new Exception("Multiple message processors are handling the same data!");
                             }
 
-                            if (accepted)
-                            {
+                            if (accepted) {
                                 handled = true;
-                                if (fragDataReader.BaseStream.Position != fragDataReader.BaseStream.Length)
-                                {
-                                    treeView_ParsedData.Nodes.Add(new TreeNode("WARNING: Prev fragment not fully read!"));
+                                if (messageDataReader.BaseStream.Position != messageDataReader.BaseStream.Length) {
+                                    treeView_ParsedData.Nodes.Add(new TreeNode("WARNING: Packet not fully read!"));
                                 }
                             }
 
-                            fragDataReader.BaseStream.Position = readerStartPos;
+                            messageDataReader.BaseStream.Position = readerStartPos;
                         }
 
-                        if (!handled)
-                        {
-                            PacketOpcode opcode = Util.readOpcode(fragDataReader);
+                        if (!handled) {
+                            PacketOpcode opcode = Util.readOpcode(messageDataReader);
                             treeView_ParsedData.Nodes.Add(new TreeNode("Unhandled: " + opcode));
                         }
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         treeView_ParsedData.Nodes.Add(new TreeNode("EXCEPTION: " + e.Message));
+                    }
+                }
+                else
+                {
+                    foreach (BlobFrag frag in record.frags) {
+                        BinaryReader fragDataReader = new BinaryReader(new MemoryStream(frag.dat_));
+                        try {
+                            bool handled = false;
+                            foreach (MessageProcessor messageProcessor in messageProcessors) {
+                                long readerStartPos = fragDataReader.BaseStream.Position;
+
+                                bool accepted = messageProcessor.acceptMessageData(fragDataReader, treeView_ParsedData);
+
+                                if (accepted && handled) {
+                                    throw new Exception("Multiple message processors are handling the same data!");
+                                }
+
+                                if (accepted) {
+                                    handled = true;
+                                    if (fragDataReader.BaseStream.Position != fragDataReader.BaseStream.Length) {
+                                        treeView_ParsedData.Nodes.Add(new TreeNode("WARNING: Prev fragment not fully read!"));
+                                    }
+                                }
+
+                                fragDataReader.BaseStream.Position = readerStartPos;
+                            }
+
+                            if (!handled) {
+                                PacketOpcode opcode = Util.readOpcode(fragDataReader);
+                                treeView_ParsedData.Nodes.Add(new TreeNode("Unhandled: " + opcode));
+                            }
+                        } catch (Exception e) {
+                            treeView_ParsedData.Nodes.Add(new TreeNode("EXCEPTION: " + e.Message));
+                        }
                     }
                 }
             }
@@ -906,11 +484,9 @@ namespace aclogview
             updateData();
         }
 
-
         private void listView_Packets_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            if (e.ItemIndex < listItems.Count)
-            {
+            if (e.ItemIndex < listItems.Count) {
                 e.Item = listItems[e.ItemIndex];
 
                 // Apply highlights here
@@ -918,7 +494,7 @@ namespace aclogview
                 {
                     var record = records[Int32.Parse(e.Item.SubItems[0].Text)];
 
-                    for (int i = 0; i < opCodesToHighlight.Count; i++)
+                    for (int i = 0 ; i < opCodesToHighlight.Count ; i++)
                     {
                         if (record.opcodes.Contains((PacketOpcode)opCodesToHighlight[i]))
                         {
@@ -940,8 +516,7 @@ namespace aclogview
             updateText();
         }
 
-
-        private void menuItem_Open_Click(object sender, EventArgs e)
+        private void openPcap(bool asMessages)
         {
             OpenFileDialog openFile = new OpenFileDialog();
             openFile.AddExtension = true;
@@ -950,7 +525,19 @@ namespace aclogview
             if (openFile.ShowDialog() != DialogResult.OK)
                 return;
 
-            loadPcap(openFile.FileName);
+            loadedAsMessages = asMessages;
+
+            loadPcap(openFile.FileName, asMessages);
+        }
+
+        private void menuItem_Open_Click(object sender, EventArgs e)
+        {
+            openPcap(false);
+        }
+
+        private void menuItem_OpenAsMessages_Click(object sender, EventArgs e)
+        {
+            openPcap(true);
         }
 
         private void mnuItem_EditPreviousHighlightedRow_Click(object sender, EventArgs e)
@@ -988,8 +575,7 @@ namespace aclogview
         }
 
 
-        private void menuItem_ToolCount_Click(object sender, EventArgs e)
-        {
+        private void menuItem_ToolCount_Click(object sender, EventArgs e) {
             FolderBrowserDialog openFolder = new FolderBrowserDialog();
 
             if (openFolder.ShowDialog() != DialogResult.OK)
@@ -1006,7 +592,7 @@ namespace aclogview
 
             foreach (string file in files)
             {
-                loadPcap(file, true);
+                loadPcap(file, false, true);
 
                 foreach (PacketRecord record in records)
                 {
@@ -1060,7 +646,7 @@ namespace aclogview
 
             foreach (string file in files)
             {
-                loadPcap(file);
+                loadPcap(file, false);
 
                 int curPacket = 0;
                 int curFragment = 0;
@@ -1069,9 +655,9 @@ namespace aclogview
                     for (curPacket = 0; curPacket < records.Count; ++curPacket)
                     {
                         PacketRecord record = records[curPacket];
-                        for (curFragment = 0; curFragment < record.netPacket.fragList_.Count; ++curFragment)
+                        for (curFragment = 0; curFragment < record.frags.Count; ++curFragment)
                         {
-                            BlobFrag frag = record.netPacket.fragList_[curFragment];
+                            BlobFrag frag = record.frags[curFragment];
                             if (frag.memberHeader_.numFrags > 0)
                                 continue;
 
@@ -1125,12 +711,12 @@ namespace aclogview
             uint[,] heatmap = new uint[256, 256];
             foreach (string file in files)
             {
-                loadPcap(file, true);
+                loadPcap(file, false, true);
 
                 foreach (PacketRecord record in records)
                 {
                     packetCount++;
-                    foreach (BlobFrag frag in record.netPacket.fragList_)
+                    foreach (BlobFrag frag in record.frags)
                     {
                         if (frag.memberHeader_.blobNum == 0)
                             messageCount++;

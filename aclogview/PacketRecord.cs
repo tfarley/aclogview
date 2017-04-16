@@ -9,10 +9,11 @@ namespace aclogview
         public uint tsSec;
         public string packetHeadersStr;
         public string packetTypeStr;
-        public byte[] data;
         public int optionalHeadersLen;
-        public NetPacket netPacket;
         public List<PacketOpcode> opcodes = new List<PacketOpcode>();
         public string extraInfo;
+
+        public byte[] data;
+        public List<BlobFrag> frags = new List<BlobFrag>();
     }
 }
