@@ -36,6 +36,8 @@
             this.splitContainer_Bottom = new System.Windows.Forms.SplitContainer();
             this.textBox_PacketData = new System.Windows.Forms.RichTextBox();
             this.treeView_ParsedData = new System.Windows.Forms.TreeView();
+            this.parsedContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.CopyCmd = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
             this.menuItem_File = new System.Windows.Forms.MenuItem();
             this.menuItem_Open = new System.Windows.Forms.MenuItem();
@@ -57,8 +59,7 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.checkBox_HideHeaderOnly = new System.Windows.Forms.CheckBox();
             this.checkBox_useHighlighting = new System.Windows.Forms.CheckBox();
-            this.parsedContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.CopyCmd = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem_OpenAsMessages = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -67,8 +68,8 @@
             this.splitContainer_Bottom.Panel1.SuspendLayout();
             this.splitContainer_Bottom.Panel2.SuspendLayout();
             this.splitContainer_Bottom.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Search)).BeginInit();
             this.parsedContextMenu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Search)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer_Main
@@ -190,6 +191,22 @@
             this.treeView_ParsedData.TabIndex = 0;
             this.treeView_ParsedData.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_ParsedData_AfterSelect);
             // 
+            // parsedContextMenu
+            // 
+            this.parsedContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CopyCmd});
+            this.parsedContextMenu.Name = "parsedContextMenu";
+            this.parsedContextMenu.Size = new System.Drawing.Size(96, 26);
+            this.parsedContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.parsedContextMenu_Opening);
+            this.parsedContextMenu.Click += new System.EventHandler(this.parsedContextMenu_Click);
+            // 
+            // CopyCmd
+            // 
+            this.CopyCmd.Name = "CopyCmd";
+            this.CopyCmd.ShowShortcutKeys = false;
+            this.CopyCmd.Size = new System.Drawing.Size(95, 22);
+            this.CopyCmd.Text = "&Copy";
+            // 
             // mainMenu
             // 
             this.mainMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
@@ -202,7 +219,8 @@
             // 
             this.menuItem_File.Index = 0;
             this.menuItem_File.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuItem_Open});
+            this.menuItem_Open,
+            this.menuItem_OpenAsMessages});
             this.menuItem_File.Text = "File";
             // 
             // menuItem_Open
@@ -349,21 +367,11 @@
             this.checkBox_useHighlighting.UseVisualStyleBackColor = true;
             this.checkBox_useHighlighting.CheckedChanged += new System.EventHandler(this.checkBox_useHighlighting_CheckedChanged);
             // 
-            // parsedContextMenu
+            // menuItem_OpenAsMessages
             // 
-            this.parsedContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.CopyCmd});
-            this.parsedContextMenu.Name = "parsedContextMenu";
-            this.parsedContextMenu.Size = new System.Drawing.Size(96, 26);
-            this.parsedContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.parsedContextMenu_Opening);
-            this.parsedContextMenu.Click += new System.EventHandler(this.parsedContextMenu_Click);
-            // 
-            // CopyCmd
-            // 
-            this.CopyCmd.Name = "CopyCmd";
-            this.CopyCmd.ShowShortcutKeys = false;
-            this.CopyCmd.Size = new System.Drawing.Size(95, 22);
-            this.CopyCmd.Text = "&Copy";
+            this.menuItem_OpenAsMessages.Index = 1;
+            this.menuItem_OpenAsMessages.Text = "Open As Messages";
+            this.menuItem_OpenAsMessages.Click += new System.EventHandler(this.menuItem_OpenAsMessages_Click);
             // 
             // Form1
             // 
@@ -390,8 +398,8 @@
             this.splitContainer_Bottom.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Bottom)).EndInit();
             this.splitContainer_Bottom.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Search)).EndInit();
             this.parsedContextMenu.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Search)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -434,6 +442,7 @@
         private System.Windows.Forms.MenuItem mnuItem_ToolFragDatListTool;
         private System.Windows.Forms.ContextMenuStrip parsedContextMenu;
         private System.Windows.Forms.ToolStripMenuItem CopyCmd;
+        private System.Windows.Forms.MenuItem menuItem_OpenAsMessages;
     }
 }
 

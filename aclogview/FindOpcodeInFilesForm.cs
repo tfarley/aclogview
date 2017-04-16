@@ -183,7 +183,7 @@ namespace aclogview
             int hits = 0;
             int exceptions = 0;
 
-            var records = PCapReader.LoadPcap(fileName, ref searchAborted);
+            var records = PCapReader.LoadPcap(fileName, false, ref searchAborted);
 
             foreach (var record in records)
             {
@@ -202,7 +202,7 @@ namespace aclogview
                 // ********************************************************************
                 // Custom search code that can output information to Special Output
                 // Below are several commented out examples on how you can search through bulk pcaps for targeted data, and output detailed information to the output tab.
-                foreach (BlobFrag frag in record.netPacket.fragList_)
+                foreach (BlobFrag frag in record.frags)
                 {
                     try
                     {

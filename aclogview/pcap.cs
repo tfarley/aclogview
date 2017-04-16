@@ -43,6 +43,38 @@ class PcapRecordHeader {
     }
 }
 
+class PcapngBlockHeader {
+    public uint blockType;
+    public uint blockTotalLength;
+    public uint interfaceID;
+    public uint tsHigh;
+    public uint tsLow;
+    public uint capturedLen;
+    public uint packetLen;
+
+    public static PcapngBlockHeader read(BinaryReader binaryReader) {
+        PcapngBlockHeader newObj = new PcapngBlockHeader();
+
+        newObj.blockType = binaryReader.ReadUInt32();
+        newObj.blockTotalLength = binaryReader.ReadUInt32();
+
+        uint tsLow = 0;
+        uint capturedLen = 0;
+        if (newObj.blockType == 6) {
+            newObj.interfaceID = binaryReader.ReadUInt32();
+            newObj.tsHigh = binaryReader.ReadUInt32();
+            newObj.tsLow = binaryReader.ReadUInt32();
+            newObj.capturedLen = binaryReader.ReadUInt32();
+            newObj.packetLen = binaryReader.ReadUInt32();
+        } else if (newObj.blockType == 3) {
+            newObj.packetLen = binaryReader.ReadUInt32();
+            newObj.capturedLen = newObj.blockTotalLength - 16;
+        }
+
+        return newObj;
+    }
+}
+
 class EthernetHeader {
     public byte[] dest;
     public byte[] source;
