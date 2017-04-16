@@ -671,23 +671,20 @@ class CM_Movement : MessageProcessor {
 
     public class LifestoneMaterialize : Message
     {
-        public int ObjectId;
+        public uint ObjectId;
+        public int unknown1;
         public Position Position;
-        public uint unknown2;
-        public uint unknown3;
-        public uint unknown4;
-        public uint unknown5;
+        public int unknown2;
+        public int unknown3;
 
         public static LifestoneMaterialize read(BinaryReader binaryReader)
         {
             LifestoneMaterialize newObj = new LifestoneMaterialize();
-            newObj.ObjectId = binaryReader.ReadInt32();
+            newObj.ObjectId = binaryReader.ReadUInt32();
+            newObj.unknown1 = binaryReader.ReadInt32();
             newObj.Position = Position.read(binaryReader);
-            newObj.unknown2 = binaryReader.ReadUInt32();
-            newObj.unknown3 = binaryReader.ReadUInt32();
-            newObj.unknown4 = binaryReader.ReadUInt32();
-            newObj.unknown5 = binaryReader.ReadUInt32();
-            Util.readToAlign(binaryReader);
+            newObj.unknown2 = binaryReader.ReadInt32();
+            newObj.unknown3 = binaryReader.ReadInt32();
             return newObj;
         }
 
@@ -696,13 +693,12 @@ class CM_Movement : MessageProcessor {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
             rootNode.Nodes.Add("player_id = " + ObjectId);
+            rootNode.Nodes.Add("unknown1 = " + unknown1);
             TreeNode posNode = rootNode.Nodes.Add("position = ");
             Position.contributeToTreeNode(posNode);
             posNode.ExpandAll();
             rootNode.Nodes.Add("unknown2 = " + unknown2);
             rootNode.Nodes.Add("unknown3 = " + unknown3);
-            rootNode.Nodes.Add("unknown4 = " + unknown4);
-            rootNode.Nodes.Add("unknown5 = " + unknown5);
             treeView.Nodes.Add(rootNode);
         }
     }
