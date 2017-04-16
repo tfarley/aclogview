@@ -55,30 +55,30 @@ public class CM_Writing : MessageProcessor {
     }
 
     public class BookData : Message {
-        public uint i_objectID;
+        public uint i_objectid;
 
         public static BookData read(BinaryReader binaryReader) {
             BookData newObj = new BookData();
-            newObj.i_objectID = binaryReader.ReadUInt32();
+            newObj.i_objectid = binaryReader.ReadUInt32();
             return newObj;
         }
 
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_objectID = " + i_objectID);
+            rootNode.Nodes.Add("i_objectid = " + i_objectid.ToString("X"));
             treeView.Nodes.Add(rootNode);
         }
     }
 
     public class BookModifyPage : Message {
-        public uint i_objectID;
+        public uint i_objectid;
         public int i_pageNum;
         public PStringChar i_pageText;
 
         public static BookModifyPage read(BinaryReader binaryReader) {
             BookModifyPage newObj = new BookModifyPage();
-            newObj.i_objectID = binaryReader.ReadUInt32();
+            newObj.i_objectid = binaryReader.ReadUInt32();
             newObj.i_pageNum = binaryReader.ReadInt32();
             newObj.i_pageText = PStringChar.read(binaryReader);
             return newObj;
@@ -87,7 +87,7 @@ public class CM_Writing : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_objectID = " + i_objectID);
+            rootNode.Nodes.Add("i_objectid = " + i_objectid.ToString("X"));
             rootNode.Nodes.Add("i_pageNum = " + i_pageNum);
             rootNode.Nodes.Add("i_pageText = " + i_pageText);
             treeView.Nodes.Add(rootNode);
@@ -95,29 +95,29 @@ public class CM_Writing : MessageProcessor {
     }
 
     public class BookAddPage : Message {
-        public uint i_objectID;
+        public uint i_objectid;
 
         public static BookAddPage read(BinaryReader binaryReader) {
             BookAddPage newObj = new BookAddPage();
-            newObj.i_objectID = binaryReader.ReadUInt32();
+            newObj.i_objectid = binaryReader.ReadUInt32();
             return newObj;
         }
 
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_objectID = " + i_objectID);
+            rootNode.Nodes.Add("i_objectid = " + i_objectid.ToString("X"));
             treeView.Nodes.Add(rootNode);
         }
     }
 
     public class BookDeletePage : Message {
-        public uint i_objectID;
+        public uint i_objectid;
         public int i_pageNum;
 
         public static BookDeletePage read(BinaryReader binaryReader) {
             BookDeletePage newObj = new BookDeletePage();
-            newObj.i_objectID = binaryReader.ReadUInt32();
+            newObj.i_objectid = binaryReader.ReadUInt32();
             newObj.i_pageNum = binaryReader.ReadInt32();
             return newObj;
         }
@@ -125,19 +125,19 @@ public class CM_Writing : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_objectID = " + i_objectID);
+            rootNode.Nodes.Add("i_objectid = " + i_objectid.ToString("X"));
             rootNode.Nodes.Add("i_pageNum = " + i_pageNum);
             treeView.Nodes.Add(rootNode);
         }
     }
 
     public class BookPageData : Message {
-        public uint i_objectID;
+        public uint i_objectid;
         public int i_pageNum;
 
         public static BookPageData read(BinaryReader binaryReader) {
             BookPageData newObj = new BookPageData();
-            newObj.i_objectID = binaryReader.ReadUInt32();
+            newObj.i_objectid = binaryReader.ReadUInt32();
             newObj.i_pageNum = binaryReader.ReadInt32();
             return newObj;
         }
@@ -145,19 +145,19 @@ public class CM_Writing : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_objectID = " + i_objectID);
+            rootNode.Nodes.Add("i_objectid = " + i_objectid.ToString("X"));
             rootNode.Nodes.Add("i_pageNum = " + i_pageNum);
             treeView.Nodes.Add(rootNode);
         }
     }
 
     public class SetInscription : Message {
-        public uint i_objectID;
+        public uint i_objectid;
         public PStringChar i_inscription;
 
         public static SetInscription read(BinaryReader binaryReader) {
             SetInscription newObj = new SetInscription();
-            newObj.i_objectID = binaryReader.ReadUInt32();
+            newObj.i_objectid = binaryReader.ReadUInt32();
             newObj.i_inscription = PStringChar.read(binaryReader);
             return newObj;
         }
@@ -165,7 +165,7 @@ public class CM_Writing : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_objectID = " + i_objectID);
+            rootNode.Nodes.Add("i_objectid = " + i_objectid.ToString("X"));
             rootNode.Nodes.Add("i_inscription = " + i_inscription);
             treeView.Nodes.Add(rootNode);
         }

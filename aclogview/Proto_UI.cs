@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using aclogview;
+
 public class Proto_UI : MessageProcessor {
 
     public override bool acceptMessageData(BinaryReader messageDataReader, TreeView outputTreeView) {
@@ -316,7 +318,14 @@ public class Proto_UI : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("object_id = " + object_id);
+            if (Globals.UseHex)
+            {
+                rootNode.Nodes.Add("object_id = " + "0x" + this.object_id.ToString("X"));
+            }
+            else
+            {
+                rootNode.Nodes.Add("object_id = " + this.object_id);
+            }
             treeView.Nodes.Add(rootNode);
         }
     }

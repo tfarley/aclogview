@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using aclogview;
+
 public class CM_Item : MessageProcessor {
 
     public override bool acceptMessageData(BinaryReader messageDataReader, TreeView outputTreeView) {
@@ -54,7 +56,14 @@ public class CM_Item : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("target = " + target);
+            if (Globals.UseHex)
+            {                
+                rootNode.Nodes.Add("target = " + "0x" + target.ToString("X"));
+            }
+            else
+            {              
+                rootNode.Nodes.Add("target = " + target);
+            }            
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -109,7 +118,14 @@ public class CM_Item : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("target = " + target);
+            if (Globals.UseHex)
+            {
+                rootNode.Nodes.Add("target = " + "0x" + target.ToString("X"));
+            }
+            else
+            {
+                rootNode.Nodes.Add("target = " + target);
+            }
             rootNode.Nodes.Add("mana = " + mana);
             rootNode.Nodes.Add("fSuccess = " + fSuccess);
             treeView.Nodes.Add(rootNode);

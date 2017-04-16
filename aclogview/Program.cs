@@ -5,6 +5,26 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace aclogview {
+
+    public class Globals
+    {
+        private static bool _useHex;
+        public static bool UseHex
+        {
+            get
+            {
+                // Reads are usually simple
+                return _useHex;
+            }
+            set
+            {
+                // You can add logic here for race conditions,
+                // or other measurements
+                _useHex = value;
+            }
+        }
+    }
+
     static class Program {
         /// <summary>
         /// The main entry point for the application.

@@ -33,6 +33,7 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.HexOpCode = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.splitContainer_Bottom = new System.Windows.Forms.SplitContainer();
             this.textBox_PacketData = new System.Windows.Forms.RichTextBox();
             this.treeView_ParsedData = new System.Windows.Forms.TreeView();
@@ -41,6 +42,7 @@
             this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
             this.menuItem_File = new System.Windows.Forms.MenuItem();
             this.menuItem_Open = new System.Windows.Forms.MenuItem();
+            this.menuItem_OpenAsMessages = new System.Windows.Forms.MenuItem();
             this.menuItem_Edit = new System.Windows.Forms.MenuItem();
             this.mnuItem_EditPreviousHighlightedRow = new System.Windows.Forms.MenuItem();
             this.mnuItem_EditNextHighlightedRow = new System.Windows.Forms.MenuItem();
@@ -59,7 +61,7 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.checkBox_HideHeaderOnly = new System.Windows.Forms.CheckBox();
             this.checkBox_useHighlighting = new System.Windows.Forms.CheckBox();
-            this.menuItem_OpenAsMessages = new System.Windows.Forms.MenuItem();
+            this.checkBoxUseHex = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -103,7 +105,8 @@
             this.columnHeader7,
             this.columnHeader3,
             this.columnHeader4,
-            this.columnHeader6});
+            this.columnHeader6,
+            this.HexOpCode});
             this.listView_Packets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView_Packets.FullRowSelect = true;
             this.listView_Packets.HideSelection = false;
@@ -142,7 +145,7 @@
             // columnHeader3
             // 
             this.columnHeader3.Text = "Type";
-            this.columnHeader3.Width = 500;
+            this.columnHeader3.Width = 391;
             // 
             // columnHeader4
             // 
@@ -151,7 +154,12 @@
             // columnHeader6
             // 
             this.columnHeader6.Text = "Extra Info";
-            this.columnHeader6.Width = 250;
+            this.columnHeader6.Width = 66;
+            // 
+            // HexOpCode
+            // 
+            this.HexOpCode.Text = "OpCode";
+            this.HexOpCode.Width = 66;
             // 
             // splitContainer_Bottom
             // 
@@ -228,6 +236,12 @@
             this.menuItem_Open.Index = 0;
             this.menuItem_Open.Text = "Open";
             this.menuItem_Open.Click += new System.EventHandler(this.menuItem_Open_Click);
+            // 
+            // menuItem_OpenAsMessages
+            // 
+            this.menuItem_OpenAsMessages.Index = 1;
+            this.menuItem_OpenAsMessages.Text = "Open As Messages";
+            this.menuItem_OpenAsMessages.Click += new System.EventHandler(this.menuItem_OpenAsMessages_Click);
             // 
             // menuItem_Edit
             // 
@@ -346,9 +360,9 @@
             // 
             // checkBox_HideHeaderOnly
             // 
-            this.checkBox_HideHeaderOnly.Location = new System.Drawing.Point(805, 3);
+            this.checkBox_HideHeaderOnly.Location = new System.Drawing.Point(737, 3);
             this.checkBox_HideHeaderOnly.Name = "checkBox_HideHeaderOnly";
-            this.checkBox_HideHeaderOnly.Size = new System.Drawing.Size(138, 17);
+            this.checkBox_HideHeaderOnly.Size = new System.Drawing.Size(154, 17);
             this.checkBox_HideHeaderOnly.TabIndex = 0;
             this.checkBox_HideHeaderOnly.Text = "Hide Header Only";
             this.checkBox_HideHeaderOnly.UseVisualStyleBackColor = true;
@@ -359,25 +373,33 @@
             // 
             this.checkBox_useHighlighting.Checked = true;
             this.checkBox_useHighlighting.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_useHighlighting.Location = new System.Drawing.Point(949, 2);
+            this.checkBox_useHighlighting.Location = new System.Drawing.Point(1024, 3);
             this.checkBox_useHighlighting.Name = "checkBox_useHighlighting";
-            this.checkBox_useHighlighting.Size = new System.Drawing.Size(156, 17);
+            this.checkBox_useHighlighting.Size = new System.Drawing.Size(209, 17);
             this.checkBox_useHighlighting.TabIndex = 4;
             this.checkBox_useHighlighting.Text = "Use Highlighting (Slower!)";
             this.checkBox_useHighlighting.UseVisualStyleBackColor = true;
             this.checkBox_useHighlighting.CheckedChanged += new System.EventHandler(this.checkBox_useHighlighting_CheckedChanged);
             // 
-            // menuItem_OpenAsMessages
+            // checkBoxUseHex
             // 
-            this.menuItem_OpenAsMessages.Index = 1;
-            this.menuItem_OpenAsMessages.Text = "Open As Messages";
-            this.menuItem_OpenAsMessages.Click += new System.EventHandler(this.menuItem_OpenAsMessages_Click);
+            this.checkBoxUseHex.AutoSize = true;
+            this.checkBoxUseHex.Checked = true;
+            this.checkBoxUseHex.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxUseHex.Location = new System.Drawing.Point(897, 2);
+            this.checkBoxUseHex.Name = "checkBoxUseHex";
+            this.checkBoxUseHex.Size = new System.Drawing.Size(121, 17);
+            this.checkBoxUseHex.TabIndex = 5;
+            this.checkBoxUseHex.Text = "Display Guid as Hex";
+            this.checkBoxUseHex.UseVisualStyleBackColor = true;
+            this.checkBoxUseHex.CheckedChanged += new System.EventHandler(this.checkBoxUseHex_CheckedChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1520, 852);
+            this.Controls.Add(this.checkBoxUseHex);
             this.Controls.Add(this.checkBox_useHighlighting);
             this.Controls.Add(this.checkBox_HideHeaderOnly);
             this.Controls.Add(this.splitContainer_Main);
@@ -443,6 +465,8 @@
         private System.Windows.Forms.ContextMenuStrip parsedContextMenu;
         private System.Windows.Forms.ToolStripMenuItem CopyCmd;
         private System.Windows.Forms.MenuItem menuItem_OpenAsMessages;
+        private System.Windows.Forms.ColumnHeader HexOpCode;
+        private System.Windows.Forms.CheckBox checkBoxUseHex;
     }
 }
 
