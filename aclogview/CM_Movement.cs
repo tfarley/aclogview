@@ -676,6 +676,10 @@ class CM_Movement : MessageProcessor {
         public Position Position;
         public int unknown2;
         public int unknown3;
+        public int unknown4;
+        public int unknown5;
+        public int unknown6;
+        public int unknown7;
 
         public static LifestoneMaterialize read(BinaryReader binaryReader)
         {
@@ -685,6 +689,11 @@ class CM_Movement : MessageProcessor {
             newObj.Position = Position.read(binaryReader);
             newObj.unknown2 = binaryReader.ReadInt32();
             newObj.unknown3 = binaryReader.ReadInt32();
+            newObj.unknown4 = binaryReader.ReadInt32();
+            newObj.unknown5 = binaryReader.ReadInt32();
+            newObj.unknown6 = binaryReader.ReadInt32();
+            newObj.unknown7 = binaryReader.ReadInt32();
+
             return newObj;
         }
 
@@ -699,6 +708,10 @@ class CM_Movement : MessageProcessor {
             posNode.ExpandAll();
             rootNode.Nodes.Add("unknown2 = " + unknown2);
             rootNode.Nodes.Add("unknown3 = " + unknown3);
+            rootNode.Nodes.Add("unknown4 = " + unknown4);
+            rootNode.Nodes.Add("unknown5 = " + unknown5);
+            rootNode.Nodes.Add("unknown6 = " + unknown6);
+            rootNode.Nodes.Add("unknown7 = " + unknown7);
             treeView.Nodes.Add(rootNode);
         }
     }
