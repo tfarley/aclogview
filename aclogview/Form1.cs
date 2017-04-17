@@ -832,7 +832,7 @@ namespace aclogview
         {
             if (listView_Packets.SelectedIndices.Count > 0)
             {
-                int nextRow = listView_Packets.Items[listView_Packets.SelectedIndices[0]].Index + 1;
+                int nextRow = listView_Packets.SelectedIndices[0] + 1;
                 if (nextRow < listView_Packets.Items.Count)
                 {
                     listView_Packets.Items[nextRow].Selected = true;
@@ -847,15 +847,13 @@ namespace aclogview
         {
             if (listView_Packets.SelectedIndices.Count > 0)
             {
-                int prevRow = listView_Packets.Items[listView_Packets.SelectedIndices[0]].Index - 1;
+                int prevRow = listView_Packets.SelectedIndices[0] - 1;
                 if (prevRow >= 0)
                 {
-                    {
-                        listView_Packets.Items[prevRow].Selected = true;
-                        listView_Packets.Items[prevRow].Focused = true;
-                        listView_Packets.EnsureVisible(prevRow);
-                        updateData();
-                    }
+                    listView_Packets.Items[prevRow].Selected = true;
+                    listView_Packets.Items[prevRow].Focused = true;
+                    listView_Packets.EnsureVisible(prevRow);
+                    updateData();
                 }
             }
         }

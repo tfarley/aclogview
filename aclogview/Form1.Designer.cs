@@ -41,6 +41,7 @@
             this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
             this.menuItem_File = new System.Windows.Forms.MenuItem();
             this.menuItem_Open = new System.Windows.Forms.MenuItem();
+            this.menuItem_OpenAsMessages = new System.Windows.Forms.MenuItem();
             this.menuItem_Edit = new System.Windows.Forms.MenuItem();
             this.mnuItem_EditPreviousHighlightedRow = new System.Windows.Forms.MenuItem();
             this.mnuItem_EditNextHighlightedRow = new System.Windows.Forms.MenuItem();
@@ -63,7 +64,6 @@
             this.cmdforward = new System.Windows.Forms.Button();
             this.cmdbackward = new System.Windows.Forms.Button();
             this.lblTracker = new System.Windows.Forms.Label();
-            this.menuItem_OpenAsMessages = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -232,6 +232,12 @@
             this.menuItem_Open.Text = "Open";
             this.menuItem_Open.Click += new System.EventHandler(this.menuItem_Open_Click);
             // 
+            // menuItem_OpenAsMessages
+            // 
+            this.menuItem_OpenAsMessages.Index = 1;
+            this.menuItem_OpenAsMessages.Text = "Open As Messages";
+            this.menuItem_OpenAsMessages.Click += new System.EventHandler(this.menuItem_OpenAsMessages_Click);
+            // 
             // menuItem_Edit
             // 
             this.menuItem_Edit.Index = 1;
@@ -399,7 +405,6 @@
             this.cmdbackward.Text = "<";
             this.cmdbackward.UseVisualStyleBackColor = true;
             this.cmdbackward.Click += new System.EventHandler(this.cmdbackward_Click);
-            // menuItem_OpenAsMessages
             // 
             // lblTracker
             // 
@@ -410,9 +415,6 @@
             this.lblTracker.Size = new System.Drawing.Size(86, 17);
             this.lblTracker.TabIndex = 8;
             this.lblTracker.Text = "Viewing #0";
-            this.menuItem_OpenAsMessages.Index = 1;
-            this.menuItem_OpenAsMessages.Text = "Open As Messages";
-            this.menuItem_OpenAsMessages.Click += new System.EventHandler(this.menuItem_OpenAsMessages_Click);
             // 
             // Form1
             // 
