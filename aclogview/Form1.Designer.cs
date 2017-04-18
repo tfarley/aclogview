@@ -41,6 +41,7 @@
             this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
             this.menuItem_File = new System.Windows.Forms.MenuItem();
             this.menuItem_Open = new System.Windows.Forms.MenuItem();
+            this.menuItem_OpenAsMessages = new System.Windows.Forms.MenuItem();
             this.menuItem_Edit = new System.Windows.Forms.MenuItem();
             this.mnuItem_EditPreviousHighlightedRow = new System.Windows.Forms.MenuItem();
             this.mnuItem_EditNextHighlightedRow = new System.Windows.Forms.MenuItem();
@@ -59,7 +60,10 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.checkBox_HideHeaderOnly = new System.Windows.Forms.CheckBox();
             this.checkBox_useHighlighting = new System.Windows.Forms.CheckBox();
-            this.menuItem_OpenAsMessages = new System.Windows.Forms.MenuItem();
+            this.CmdLock = new System.Windows.Forms.Button();
+            this.cmdforward = new System.Windows.Forms.Button();
+            this.cmdbackward = new System.Windows.Forms.Button();
+            this.lblTracker = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -197,7 +201,6 @@
             this.CopyCmd});
             this.parsedContextMenu.Name = "parsedContextMenu";
             this.parsedContextMenu.Size = new System.Drawing.Size(96, 26);
-            this.parsedContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.parsedContextMenu_Opening);
             this.parsedContextMenu.Click += new System.EventHandler(this.parsedContextMenu_Click);
             // 
             // CopyCmd
@@ -228,6 +231,12 @@
             this.menuItem_Open.Index = 0;
             this.menuItem_Open.Text = "Open";
             this.menuItem_Open.Click += new System.EventHandler(this.menuItem_Open_Click);
+            // 
+            // menuItem_OpenAsMessages
+            // 
+            this.menuItem_OpenAsMessages.Index = 1;
+            this.menuItem_OpenAsMessages.Text = "Open As Messages";
+            this.menuItem_OpenAsMessages.Click += new System.EventHandler(this.menuItem_OpenAsMessages_Click);
             // 
             // menuItem_Edit
             // 
@@ -367,17 +376,55 @@
             this.checkBox_useHighlighting.UseVisualStyleBackColor = true;
             this.checkBox_useHighlighting.CheckedChanged += new System.EventHandler(this.checkBox_useHighlighting_CheckedChanged);
             // 
-            // menuItem_OpenAsMessages
+            // CmdLock
             // 
-            this.menuItem_OpenAsMessages.Index = 1;
-            this.menuItem_OpenAsMessages.Text = "Open As Messages";
-            this.menuItem_OpenAsMessages.Click += new System.EventHandler(this.menuItem_OpenAsMessages_Click);
+            this.CmdLock.Location = new System.Drawing.Point(2, 1);
+            this.CmdLock.Name = "CmdLock";
+            this.CmdLock.Size = new System.Drawing.Size(75, 23);
+            this.CmdLock.TabIndex = 5;
+            this.CmdLock.Text = "Lock";
+            this.CmdLock.UseVisualStyleBackColor = true;
+            this.CmdLock.Click += new System.EventHandler(this.CmdLock_Click);
+            // 
+            // cmdforward
+            // 
+            this.cmdforward.Location = new System.Drawing.Point(83, 1);
+            this.cmdforward.Name = "cmdforward";
+            this.cmdforward.Size = new System.Drawing.Size(75, 23);
+            this.cmdforward.TabIndex = 6;
+            this.cmdforward.Text = ">";
+            this.cmdforward.UseVisualStyleBackColor = true;
+            this.cmdforward.Click += new System.EventHandler(this.cmdforward_Click);
+            // 
+            // cmdbackward
+            // 
+            this.cmdbackward.Location = new System.Drawing.Point(164, 2);
+            this.cmdbackward.Name = "cmdbackward";
+            this.cmdbackward.Size = new System.Drawing.Size(75, 23);
+            this.cmdbackward.TabIndex = 7;
+            this.cmdbackward.Text = "<";
+            this.cmdbackward.UseVisualStyleBackColor = true;
+            this.cmdbackward.Click += new System.EventHandler(this.cmdbackward_Click);
+            // 
+            // lblTracker
+            // 
+            this.lblTracker.AutoSize = true;
+            this.lblTracker.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTracker.Location = new System.Drawing.Point(245, 3);
+            this.lblTracker.Name = "lblTracker";
+            this.lblTracker.Size = new System.Drawing.Size(86, 17);
+            this.lblTracker.TabIndex = 8;
+            this.lblTracker.Text = "Viewing #0";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1520, 852);
+            this.Controls.Add(this.lblTracker);
+            this.Controls.Add(this.cmdbackward);
+            this.Controls.Add(this.cmdforward);
+            this.Controls.Add(this.CmdLock);
             this.Controls.Add(this.checkBox_useHighlighting);
             this.Controls.Add(this.checkBox_HideHeaderOnly);
             this.Controls.Add(this.splitContainer_Main);
@@ -442,6 +489,10 @@
         private System.Windows.Forms.MenuItem mnuItem_ToolFragDatListTool;
         private System.Windows.Forms.ContextMenuStrip parsedContextMenu;
         private System.Windows.Forms.ToolStripMenuItem CopyCmd;
+        private System.Windows.Forms.Button CmdLock;
+        private System.Windows.Forms.Button cmdforward;
+        private System.Windows.Forms.Button cmdbackward;
+        private System.Windows.Forms.Label lblTracker;
         private System.Windows.Forms.MenuItem menuItem_OpenAsMessages;
     }
 }
