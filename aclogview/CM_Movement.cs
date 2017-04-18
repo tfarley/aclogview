@@ -13,7 +13,12 @@ class CM_Movement : MessageProcessor {
 
         PacketOpcode opcode = Util.readOpcode(messageDataReader);
         switch (opcode) {
-            // TODO: PacketOpcode.Evt_Movement__PositionAndMovement_ID
+            case PacketOpcode.LIFESTONE_MATERIALIZE:
+                {
+                    LifestoneMaterialize message = LifestoneMaterialize.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Movement__Jump_ID: {
                     Jump message = Jump.read(messageDataReader);
                     message.contributeToTreeView(outputTreeView);
@@ -660,6 +665,53 @@ class CM_Movement : MessageProcessor {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
             rootNode.Nodes.Add("i_extent = " + i_extent);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class LifestoneMaterialize : Message
+    {
+        public uint ObjectId;
+        public int unknown1;
+        public Position Position;
+        public int unknown2;
+        public int unknown3;
+        public int unknown4;
+        public int unknown5;
+        public int unknown6;
+        public int unknown7;
+
+        public static LifestoneMaterialize read(BinaryReader binaryReader)
+        {
+            LifestoneMaterialize newObj = new LifestoneMaterialize();
+            newObj.ObjectId = binaryReader.ReadUInt32();
+            newObj.unknown1 = binaryReader.ReadInt32();
+            newObj.Position = Position.read(binaryReader);
+            newObj.unknown2 = binaryReader.ReadInt32();
+            newObj.unknown3 = binaryReader.ReadInt32();
+            newObj.unknown4 = binaryReader.ReadInt32();
+            newObj.unknown5 = binaryReader.ReadInt32();
+            newObj.unknown6 = binaryReader.ReadInt32();
+            newObj.unknown7 = binaryReader.ReadInt32();
+
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("player_id = " + ObjectId);
+            rootNode.Nodes.Add("unknown1 = " + unknown1);
+            TreeNode posNode = rootNode.Nodes.Add("position = ");
+            Position.contributeToTreeNode(posNode);
+            posNode.ExpandAll();
+            rootNode.Nodes.Add("unknown2 = " + unknown2);
+            rootNode.Nodes.Add("unknown3 = " + unknown3);
+            rootNode.Nodes.Add("unknown4 = " + unknown4);
+            rootNode.Nodes.Add("unknown5 = " + unknown5);
+            rootNode.Nodes.Add("unknown6 = " + unknown6);
+            rootNode.Nodes.Add("unknown7 = " + unknown7);
             treeView.Nodes.Add(rootNode);
         }
     }
