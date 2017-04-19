@@ -879,14 +879,7 @@ public class CM_Physics : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();            
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("object_id = " + "0x" + this.object_id.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("object_id = " + this.object_id);
-            }
+            rootNode.Nodes.Add("object_id = " + Utility.FormatGuid(this.object_id));
             TreeNode descNode = rootNode.Nodes.Add("desc = ");
             desc.contributeToTreeNode(descNode);
             TreeNode timestampsNode = rootNode.Nodes.Add("timestamps = ");
@@ -913,14 +906,7 @@ public class CM_Physics : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("object_id = " + "0x" + this.object_id.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("object_id = " + this.object_id);
-            }
+            rootNode.Nodes.Add("object_id = " + Utility.FormatGuid(this.object_id));
             TreeNode objdescNode = rootNode.Nodes.Add("objdesc = ");
             objdesc.contributeToTreeNode(objdescNode);
             TreeNode physicsdescNode = rootNode.Nodes.Add("physicsdesc = ");
@@ -943,14 +929,7 @@ public class CM_Physics : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("object_id = " + "0x" + this.object_id.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("object_id = " + this.object_id);
-            }
+            rootNode.Nodes.Add("object_id = " + Utility.FormatGuid(this.object_id));
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -969,14 +948,7 @@ public class CM_Physics : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("object_id = " + "0x" + this.object_id.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("object_id = " + this.object_id);
-            }
+            rootNode.Nodes.Add("object_id = " + Utility.FormatGuid(this.object_id));
             rootNode.Nodes.Add("instance_timestamp = " + instance_timestamp);
             treeView.Nodes.Add(rootNode);
         }
@@ -1002,16 +974,8 @@ public class CM_Physics : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("object_id = " + "0x" + this.object_id.ToString("X"));
-                rootNode.Nodes.Add("child_id = " + "0x" + this.child_id.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("object_id = " + this.object_id);
-                rootNode.Nodes.Add("child_id = " + this.child_id);
-            }            
+            rootNode.Nodes.Add("object_id = " + Utility.FormatGuid(this.object_id));
+            rootNode.Nodes.Add("child_id = " + Utility.FormatGuid(this.child_id));          
             rootNode.Nodes.Add("child_location = " + child_location);
             rootNode.Nodes.Add("placement_id = " + placement_id);
             TreeNode timestampsNode = rootNode.Nodes.Add("timestamps = ");
@@ -1034,14 +998,7 @@ public class CM_Physics : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("object_id = " + "0x" + this.object_id.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("object_id = " + this.object_id);
-            }
+            rootNode.Nodes.Add("object_id = " + Utility.FormatGuid(this.object_id));
             TreeNode timestampsNode = rootNode.Nodes.Add("timestamps = ");
             timestamps.contributeToTreeNode(timestampsNode);
             treeView.Nodes.Add(rootNode);
@@ -1064,14 +1021,7 @@ public class CM_Physics : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("object_id = " + "0x" + this.object_id.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("object_id = " + this.object_id);
-            }
+            rootNode.Nodes.Add("object_id = " + Utility.FormatGuid(this.object_id));
             rootNode.Nodes.Add("new_state = " + new_state);
             TreeNode timestampsNode = rootNode.Nodes.Add("timestamps = ");
             timestamps.contributeToTreeNode(timestampsNode);
@@ -1097,14 +1047,7 @@ public class CM_Physics : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("object_id = " + "0x" + this.object_id.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("object_id = " + this.object_id);
-            }
+            rootNode.Nodes.Add("object_id = " + Utility.FormatGuid(this.object_id));
             rootNode.Nodes.Add("velocity = " + velocity);
             rootNode.Nodes.Add("omega = " + omega);
             TreeNode timestampsNode = rootNode.Nodes.Add("timestamps = ");
@@ -1129,14 +1072,7 @@ public class CM_Physics : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("object_id = " + "0x" + this.object_id.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("object_id = " + this.object_id);
-            }
+            rootNode.Nodes.Add("object_id = " + Utility.FormatGuid(this.object_id));
             rootNode.Nodes.Add("sound = " + sound);
             rootNode.Nodes.Add("volume = " + volume);
             treeView.Nodes.Add(rootNode);
@@ -1174,14 +1110,7 @@ public class CM_Physics : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("object_id = " + "0x" + this.object_id.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("object_id = " + this.object_id);
-            }
+            rootNode.Nodes.Add("object_id = " + Utility.FormatGuid(this.object_id));
             rootNode.Nodes.Add("script_id = " + script_id);
             treeView.Nodes.Add(rootNode);
         }
@@ -1203,14 +1132,7 @@ public class CM_Physics : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("object_id = " + "0x" + this.object_id.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("object_id = " + this.object_id);
-            }
+            rootNode.Nodes.Add("object_id = " + Utility.FormatGuid(this.object_id));
             rootNode.Nodes.Add("script_type = " + script_type);
             rootNode.Nodes.Add("mod = " + mod);
             treeView.Nodes.Add(rootNode);
@@ -1235,14 +1157,7 @@ public class CM_Physics : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("object_id = " + "0x" + this.object_id.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("object_id = " + this.object_id);
-            }
+            rootNode.Nodes.Add("object_id = " + Utility.FormatGuid(this.object_id));
             TreeNode objdescNode = rootNode.Nodes.Add("objdesc = ");
             objdesc.contributeToTreeNode(objdescNode);
             TreeNode physicsdescNode = rootNode.Nodes.Add("physicsdesc = ");

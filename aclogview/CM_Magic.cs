@@ -95,16 +95,8 @@ public class CM_Magic : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("i_target = " + "0x" + this.i_target.ToString("X"));
-                rootNode.Nodes.Add("i_spell_id = " + "0x" + this.i_spell_id.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("i_target" + this.i_target);
-                rootNode.Nodes.Add("i_spell_id = " + this.i_spell_id);
-            }                     
+            rootNode.Nodes.Add("i_target" + Utility.FormatGuid(this.i_target));
+            rootNode.Nodes.Add("i_spell_id = " + Utility.FormatGuid((uint)this.i_spell_id));           
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -122,14 +114,7 @@ public class CM_Magic : MessageProcessor {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
             rootNode.Expand();
-            if (Globals.UseHex)
-            {                
-                rootNode.Nodes.Add("i_spell_id = " + "0x" + this.i_spell_id.ToString("X"));
-            }
-            else
-            {               
-                rootNode.Nodes.Add("i_spell_id = " + this.i_spell_id);
-            }
+            rootNode.Nodes.Add("i_spell_id = " + Utility.FormatGuid((uint)this.i_spell_id));
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -145,15 +130,7 @@ public class CM_Magic : MessageProcessor {
 
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
-            rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("i_spell_id = " + "0x" + this.i_spell_id.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("i_spell_id = " + this.i_spell_id);
-            }
+            rootNode.Nodes.Add("i_spell_id = " + Utility.FormatGuid((uint)this.i_spell_id));
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -170,14 +147,7 @@ public class CM_Magic : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("i_spell_id = " + "0x" + this.i_spell_id.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("i_spell_id = " + this.i_spell_id);
-            }
+            rootNode.Nodes.Add("i_spell_id = " + Utility.FormatGuid((uint)this.i_spell_id));
             treeView.Nodes.Add(rootNode);
         }
     }

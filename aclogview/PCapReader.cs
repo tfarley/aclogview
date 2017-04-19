@@ -121,8 +121,6 @@ namespace aclogview
                 if (abort)
                     break;
 
-                curPacket++;
-
                 PcapRecordHeader recordHeader;
                 try
                 {
@@ -144,7 +142,7 @@ namespace aclogview
                 {
                     if (asMessages)
                     {
-                        if (!readMessageData(binaryReader, recordHeader.inclLen, recordHeader.tsSec, curPacket, results, incompletePacketMap))
+                        if (!readMessageData(binaryReader, recordHeader.inclLen, recordHeader.tsSec, results, incompletePacketMap))
                             break;
                     }
                     else
@@ -155,6 +153,7 @@ namespace aclogview
                             break;
 
                         results.Add(packetRecord);
+                        curPacket++;
                     }
                 }
                 catch (Exception e)
@@ -203,8 +202,6 @@ namespace aclogview
                 if (abort)
                     break;
 
-                curPacket++;
-
                 long blockStartPos = binaryReader.BaseStream.Position;
 
                 PcapngBlockHeader blockHeader;
@@ -228,7 +225,7 @@ namespace aclogview
                 {
                     if (asMessages)
                     {
-                        if (!readMessageData(binaryReader, blockHeader.capturedLen, blockHeader.tsLow, curPacket, results, incompletePacketMap))
+                        if (!readMessageData(binaryReader, blockHeader.capturedLen, blockHeader.tsLow, results, incompletePacketMap))
                             break;
                     }
                     else
@@ -239,6 +236,7 @@ namespace aclogview
                             break;
 
                         results.Add(packetRecord);
+                        curPacket++;
                     }
                 }
                 catch (Exception e)
@@ -298,7 +296,7 @@ namespace aclogview
             StringBuilder packetTypeStr = new StringBuilder();
 
             PacketRecord packet = new PacketRecord();
-            packet.index = (curPacket - 1);
+            packet.index = curPacket;
             packet.isSend = isSend;
             packet.tsSec = tsSec;
             packet.extraInfo = "";
@@ -360,7 +358,7 @@ namespace aclogview
             return packet;
         }
 
-        private static bool readMessageData(BinaryReader binaryReader, long len, uint tsSec, int curPacket, List<PacketRecord> results, Dictionary<ulong, PacketRecord> incompletePacketMap)
+        private static bool readMessageData(BinaryReader binaryReader, long len, uint tsSec, List<PacketRecord> results, Dictionary<ulong, PacketRecord> incompletePacketMap)
         {
             // Begin reading headers
             long packetStartPos = binaryReader.BaseStream.Position;

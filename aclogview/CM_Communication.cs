@@ -254,14 +254,7 @@ public class CM_Communication : MessageProcessor {
             rootNode.Expand();
             rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
             rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("SenderID = " + "0x" + this.SenderID.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("SenderID = " + this.SenderID);
-            }            
+            rootNode.Nodes.Add("SenderID = " + Utility.FormatGuid(this.SenderID));                        
             rootNode.Nodes.Add("ChatMessageType = " + ChatMessageType);
             treeView.Nodes.Add(rootNode);
         }
@@ -292,14 +285,7 @@ public class CM_Communication : MessageProcessor {
             rootNode.Expand();
             rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
             rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("SenderID = " + "0x" + this.SenderID.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("SenderID = " + this.SenderID);
-            }
+            rootNode.Nodes.Add("SenderID = " +Utility.FormatGuid(this.SenderID));
             rootNode.Nodes.Add("Range = " + Range);
             rootNode.Nodes.Add("ChatMessageType = " + ChatMessageType);
             treeView.Nodes.Add(rootNode);
@@ -333,16 +319,8 @@ public class CM_Communication : MessageProcessor {
             rootNode.Expand();
             rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
             rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("SenderID = " + "0x" + this.SenderID.ToString("X"));
-                rootNode.Nodes.Add("TargetID = " + "0x" + this.TargetID.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("SenderID = " + this.SenderID);
-                rootNode.Nodes.Add("TargetID = " + this.TargetID);
-            }                      
+            rootNode.Nodes.Add("SenderID = " + Utility.FormatGuid(this.SenderID));
+            rootNode.Nodes.Add("TargetID = " + Utility.FormatGuid(this.TargetID));                    
             rootNode.Nodes.Add("ChatMessageType = " + ChatMessageType);
             rootNode.Nodes.Add("Unknown = " + Unknown);
             treeView.Nodes.Add(rootNode);

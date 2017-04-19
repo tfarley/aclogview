@@ -73,14 +73,7 @@ public class CM_Combat : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("i_targetID = " + "0x" + i_targetID.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("i_targetID = " + this.i_targetID);
-            }
+            rootNode.Nodes.Add("i_targetID = " + Utility.FormatGuid(this.i_targetID));            
             
             rootNode.Nodes.Add("i_ah = " + i_ah);
             rootNode.Nodes.Add("i_power_level = " + i_power_level);
@@ -105,14 +98,7 @@ public class CM_Combat : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("i_targetID = " + "0x" + i_targetID.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("i_target_id = " + this.i_targetID);
-            }            
+            rootNode.Nodes.Add("i_target_id = " + Utility.FormatGuid(this.i_targetID));
             rootNode.Nodes.Add("i_ah = " + i_ah);
             rootNode.Nodes.Add("i_accuracy_level = " + i_accuracy_level);
             treeView.Nodes.Add(rootNode);
@@ -150,14 +136,7 @@ public class CM_Combat : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("i_target = " + "0x" + i_target.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("i_target_ = " + this.i_target);
-            }            
+            rootNode.Nodes.Add("i_target_ = " + Utility.FormatGuid(this.i_target));
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -177,14 +156,7 @@ public class CM_Combat : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("target = " + "0x" + target.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("target = " + this.target);
-            }            
+            rootNode.Nodes.Add("target = " +Utility.FormatGuid(this.target));
             rootNode.Nodes.Add("health = " + health);
             treeView.Nodes.Add(rootNode);
         }

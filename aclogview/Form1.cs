@@ -13,8 +13,10 @@ using System.Windows.Forms;
 
 using aclogview.Properties;
 
-namespace aclogview {
-    public partial class Form1 : Form {
+namespace aclogview
+{
+    public partial class Form1 : Form
+    {
         private ListViewItemComparer comparer = new ListViewItemComparer();
         public List<MessageProcessor> messageProcessors = new List<MessageProcessor>();
         private long curPacket;
@@ -30,13 +32,15 @@ namespace aclogview {
 
         private StringBuilder strbuilder = new StringBuilder();
 
-        public Form1(string[] args) {
+        public Form1(string[] args)
+        {
             InitializeComponent();
 
             this.args = args;
         }
 
-        private void Form1_Load(object sender, EventArgs e) {
+        private void Form1_Load(object sender, EventArgs e)
+        {
             Util.initReaders();
             messageProcessors.Add(new CM_Admin());
             messageProcessors.Add(new CM_Advocate());
@@ -117,18 +121,23 @@ namespace aclogview {
                 }
             }
 
-            if (!dontList && records.Count > 0) {
+            if (!dontList && records.Count > 0)
+            {
                 listView_Packets.VirtualListSize = records.Count;
 
                 listView_Packets.RedrawItems(0, records.Count - 1, false);
                 updateData();
-            } else {
+            }
+            else
+            {
                 listView_Packets.VirtualListSize = 0;
             }
         }
 
-        private void listView_Packets_ColumnClick(object sender, ColumnClickEventArgs e) {
-            if (comparer.col == e.Column) {
+        private void listView_Packets_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            if (comparer.col == e.Column)
+            {
                 comparer.reverse = !comparer.reverse;
             }
             comparer.col = e.Column;
@@ -138,43 +147,58 @@ namespace aclogview {
             updateData();
         }
 
-        class ListViewItemComparer : IComparer<ListViewItem> {
+        class ListViewItemComparer : IComparer<ListViewItem>
+        {
             public int col;
             public bool reverse;
 
-            public int Compare(ListViewItem x, ListViewItem y) {
+            public int Compare(ListViewItem x, ListViewItem y)
+            {
                 int result = 0;
-                if (col == 0 || col == 2 || col == 5) {
+                if (col == 0 || col == 2 || col == 5)
+                {
                     result = CompareUInt(x.SubItems[col].Text, y.SubItems[col].Text);
-                } else {
+                }
+                else
+                {
                     result = CompareString(x.SubItems[col].Text, y.SubItems[col].Text);
                 }
 
-                if (reverse) {
+                if (reverse)
+                {
                     result = -result;
                 }
 
                 return result;
             }
 
-            public int CompareUInt(string x, string y) {
+            public int CompareUInt(string x, string y)
+            {
                 return UInt32.Parse(x).CompareTo(UInt32.Parse(y));
             }
 
-            public int CompareString(string x, string y) {
+            public int CompareString(string x, string y)
+            {
                 return String.Compare(x, y);
             }
         }
 
-        private void updateData() {
+        private void updateData()
+        {
             updateText();
             updateTree();
+            if (listView_Packets.FocusedItem != null)
+            {
+                lblTracker.Text = "Viewing #" + listView_Packets.FocusedItem.Index;
+            }
         }
 
-        private void updateText() {
+        private void updateText()
+        {
             textBox_PacketData.Clear();
 
-            if (listView_Packets.SelectedIndices.Count > 0) {
+            if (listView_Packets.SelectedIndices.Count > 0)
+            {
                 PacketRecord record = records[Int32.Parse(listItems[listView_Packets.SelectedIndices[0]].SubItems[0].Text)];
                 byte[] data = record.data;
 
@@ -183,7 +207,8 @@ namespace aclogview {
                     int curFrag = 0;
                     int curLine = 0;
                     int dataConsumed = 0;
-                    while (dataConsumed < data.Length) {
+                    while (dataConsumed < data.Length)
+                    {
                         textBox_PacketData.SelectionColor = Color.Black;
                         textBox_PacketData.AppendText(string.Format("{0:X4}  ", curLine));
 
@@ -191,8 +216,10 @@ namespace aclogview {
                         int linecurFrag = curFrag;
 
                         int hexIndex = 0;
-                        for (; hexIndex < Math.Min(16, data.Length - dataConsumed); ++hexIndex) {
-                            if (hexIndex == 8) {
+                        for (; hexIndex < Math.Min(16, data.Length - dataConsumed); ++hexIndex)
+                        {
+                            if (hexIndex == 8)
+                            {
                                 textBox_PacketData.AppendText(" ");
                             }
 
@@ -200,8 +227,10 @@ namespace aclogview {
 
                             int selectedIndex = -1;
                             TreeNode selectedNode = treeView_ParsedData.SelectedNode;
-                            if (selectedNode != null) {
-                                while (selectedNode.Parent != null) {
+                            if (selectedNode != null)
+                            {
+                                while (selectedNode.Parent != null)
+                                {
                                     selectedNode = selectedNode.Parent;
                                 }
                                 selectedIndex = selectedNode.Index;
@@ -211,16 +240,20 @@ namespace aclogview {
                             textBox_PacketData.SelectionColor = Color.Red;
                             textBox_PacketData.SelectionBackColor = Color.White;
 
-                            if (dataIndex < 20) {
+                            if (dataIndex < 20)
+                            {
                                 // Protocol header
                                 textBox_PacketData.SelectionColor = Color.Blue;
-                            } else if (dataIndex < 20 + record.optionalHeadersLen) {
+                            }
+                            else if (dataIndex < 20 + record.optionalHeadersLen)
+                            {
                                 // Optional headers
                                 textBox_PacketData.SelectionColor = Color.Green;
                             } else if (record.frags.Count > 0) {
                                 if (curFrag < record.frags.Count) {
                                     int fragCurPos = dataIndex - fragStartPos;
-                                    if (fragCurPos < 16) {
+                                    if (fragCurPos < 16)
+                                    {
                                         // Fragment header
                                         textBox_PacketData.SelectionColor = Color.Magenta;
                                     } else if (fragCurPos == (16 + record.frags[curFrag].dat_.Length)) {
@@ -228,12 +261,15 @@ namespace aclogview {
                                         fragStartPos = dataIndex;
                                         curFrag++;
                                         textBox_PacketData.SelectionColor = Color.Magenta;
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         // Fragment data
                                         textBox_PacketData.SelectionColor = Color.Black;
                                     }
 
-                                    if (selectedIndex == curFrag) {
+                                    if (selectedIndex == curFrag)
+                                    {
                                         textBox_PacketData.SelectionBackColor = Color.LightGray;
                                     }
                                 }
@@ -279,7 +315,8 @@ namespace aclogview {
                             } else if (record.frags.Count > 0) {
                                 if (curFrag < record.frags.Count) {
                                     int fragCurPos = dataIndex - fragStartPos;
-                                    if (fragCurPos < 16) {
+                                    if (fragCurPos < 16)
+                                    {
                                         // Fragment header
                                         textBox_PacketData.SelectionColor = Color.Magenta;
                                     } else if (fragCurPos == (16 + record.frags[curFrag].dat_.Length)) {
@@ -754,12 +791,6 @@ namespace aclogview {
             updateText();
         }
 
-        private void parsedContextMenu_Opening(object sender, CancelEventArgs e)
-        {
-
-        }
-
-
         private void parsedContextMenu_Click(object sender, EventArgs e)
         {
 
@@ -788,5 +819,52 @@ namespace aclogview {
         {
             Globals.UseHex = this.checkBoxUseHex.Checked;
         }
+
+
+        private void CmdLock_Click(object sender, EventArgs e)
+        {
+            if (CmdLock.Text == "Lock")
+            {
+                CmdLock.Text = "UnLock";
+                listView_Packets.Enabled = false;
+            }
+            else
+            {
+                CmdLock.Text = "Lock";
+                listView_Packets.Enabled = true;
+            }
+
+        }
+
+        private void cmdforward_Click(object sender, EventArgs e)
+        {
+            if (listView_Packets.SelectedIndices.Count > 0)
+            {
+                int nextRow = listView_Packets.SelectedIndices[0] + 1;
+                if (nextRow < listView_Packets.Items.Count)
+                {
+                    listView_Packets.Items[nextRow].Selected = true;
+                    listView_Packets.Items[nextRow].Focused = true;
+                    listView_Packets.EnsureVisible(nextRow);
+                    updateData();
+                }
+            }
+        }
+
+        private void cmdbackward_Click(object sender, EventArgs e)
+        {
+            if (listView_Packets.SelectedIndices.Count > 0)
+            {
+                int prevRow = listView_Packets.SelectedIndices[0] - 1;
+                if (prevRow >= 0)
+                {
+                    listView_Packets.Items[prevRow].Selected = true;
+                    listView_Packets.Items[prevRow].Focused = true;
+                    listView_Packets.EnsureVisible(prevRow);
+                    updateData();
+                }
+            }
+        }
     }
 }
+

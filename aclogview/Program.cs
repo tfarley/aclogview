@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace aclogview {
+    using Heading;   
 
     public class Globals
     {
-        private static bool _useHex;
+        private static bool _useHex;       
+
         public static bool UseHex
         {
             get
@@ -23,8 +25,19 @@ namespace aclogview {
                 _useHex = value;
             }
         }
+
+        public string FormatGuid(uint theValue)
+        {
+            if (Globals.UseHex)
+            {
+                return "0x" + theValue.ToString("X");
+            }
+
+            return theValue.ToString();
+        }
     }
 
+  
     static class Program {
         /// <summary>
         /// The main entry point for the application.

@@ -169,16 +169,8 @@ public class CM_Inventory : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("i_object = " + "0x" + this.i_object.ToString("X"));
-                rootNode.Nodes.Add("i_target = " + "0x" + i_target.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("i_object = " + this.i_object);
-                rootNode.Nodes.Add("i_target = " + i_target);
-            }
+            rootNode.Nodes.Add("i_object = " + Utility.FormatGuid(this.i_object));
+            rootNode.Nodes.Add("i_target = " + Utility.FormatGuid(this.i_target));
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -285,16 +277,8 @@ public class CM_Inventory : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            if (Globals.UseHex)
-            {
-                rootNode.Nodes.Add("i_targetID = " + "0x" + this.i_targetID.ToString("X"));
-                rootNode.Nodes.Add("i_objectID = " + "0x" + this.i_objectID.ToString("X"));
-            }
-            else
-            {
-                rootNode.Nodes.Add("i_targetID = " + this.i_targetID);
-                rootNode.Nodes.Add("i_ObjectID = " + this.i_objectID);
-            }    
+            rootNode.Nodes.Add("i_targetID = " + Utility.FormatGuid(this.i_targetID));
+            rootNode.Nodes.Add("i_ObjectID = " + Utility.FormatGuid(this.i_objectID));
             rootNode.Nodes.Add("i_amount = " + i_amount);
             treeView.Nodes.Add(rootNode);
         }
