@@ -25,16 +25,6 @@ namespace aclogview {
                 _useHex = value;
             }
         }
-
-        public string FormatGuid(uint theValue)
-        {
-            if (Globals.UseHex)
-            {
-                return "0x" + theValue.ToString("X");
-            }
-
-            return theValue.ToString();
-        }
     }
 
   

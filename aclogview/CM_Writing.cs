@@ -1,4 +1,5 @@
-﻿using System;
+﻿using aclogview;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -66,7 +67,7 @@ public class CM_Writing : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_objectid = " + i_objectid.ToString("X"));
+            rootNode.Nodes.Add("i_objectid = " + Utility.FormatGuid(i_objectid));
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -87,7 +88,7 @@ public class CM_Writing : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_objectid = " + i_objectid.ToString("X"));
+            rootNode.Nodes.Add("i_objectid = " + Utility.FormatGuid(i_objectid));
             rootNode.Nodes.Add("i_pageNum = " + i_pageNum);
             rootNode.Nodes.Add("i_pageText = " + i_pageText);
             treeView.Nodes.Add(rootNode);
@@ -106,7 +107,7 @@ public class CM_Writing : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_objectid = " + i_objectid.ToString("X"));
+            rootNode.Nodes.Add("i_objectid = " + Utility.FormatGuid(i_objectid));
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -125,7 +126,7 @@ public class CM_Writing : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_objectid = " + i_objectid.ToString("X"));
+            rootNode.Nodes.Add("i_objectid = " + Utility.FormatGuid(i_objectid));
             rootNode.Nodes.Add("i_pageNum = " + i_pageNum);
             treeView.Nodes.Add(rootNode);
         }
@@ -145,7 +146,7 @@ public class CM_Writing : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_objectid = " + i_objectid.ToString("X"));
+            rootNode.Nodes.Add("i_objectid = " + Utility.FormatGuid(i_objectid));
             rootNode.Nodes.Add("i_pageNum = " + i_pageNum);
             treeView.Nodes.Add(rootNode);
         }
@@ -165,7 +166,7 @@ public class CM_Writing : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_objectid = " + i_objectid.ToString("X"));
+            rootNode.Nodes.Add("i_objectid = " + Utility.FormatGuid(i_objectid));
             rootNode.Nodes.Add("i_inscription = " + i_inscription);
             treeView.Nodes.Add(rootNode);
         }

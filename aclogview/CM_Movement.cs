@@ -492,8 +492,8 @@ class CM_Movement : MessageProcessor {
             rootNode.Nodes.Add("style = " + style);
             TreeNode motionStateNode = rootNode.Nodes.Add("motionState__guessedname = ");
             motionState__guessedname.contributeToTreeNode(motionStateNode);
-            rootNode.Nodes.Add("stickToObject = " + stickToObject.ToString("X"));
-            rootNode.Nodes.Add("moveToObject = " + moveToObject.ToString("X"));
+            rootNode.Nodes.Add("stickToObject = " + Utility.FormatGuid(stickToObject));
+            rootNode.Nodes.Add("moveToObject = " + Utility.FormatGuid(moveToObject));
             TreeNode posNode = rootNode.Nodes.Add("moveToPos = ");
             moveToPos.contributeToTreeNode(posNode);
             rootNode.Nodes.Add("my_run_rate = " + my_run_rate);
