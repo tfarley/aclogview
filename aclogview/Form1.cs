@@ -117,7 +117,8 @@ namespace aclogview
                     newItem.SubItems.Add(record.data.Length.ToString());
                     newItem.SubItems.Add(record.extraInfo);
                     // This one requires special handling and cannot use function.
-                    newItem.SubItems.Add(record.opcodes[0].ToString("X").Substring(4, 4));
+                    if (record.opcodes.Count == 0) newItem.SubItems.Add(string.Empty);
+                    else newItem.SubItems.Add(record.opcodes[0].ToString("X").Substring(4, 4));
                     listItems.Add(newItem);
                 }
             }

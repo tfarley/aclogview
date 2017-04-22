@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace aclogview {
-    using Heading;   
 
     public class Globals
     {
