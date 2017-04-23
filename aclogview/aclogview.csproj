@@ -139,6 +139,7 @@
     <Compile Include="TextPopup.Designer.cs">
       <DependentUpon>TextPopup.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utility.cs" />
     <EmbeddedResource Include="FindOpcodeInFilesForm.resx">
       <DependentUpon>FindOpcodeInFilesForm.cs</DependentUpon>
     </EmbeddedResource>

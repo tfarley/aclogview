@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using aclogview;
 
 public class CM_Communication : MessageProcessor {
 
@@ -253,7 +254,7 @@ public class CM_Communication : MessageProcessor {
             rootNode.Expand();
             rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
             rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
-            rootNode.Nodes.Add("SenderID = " + SenderID);
+            rootNode.Nodes.Add("SenderID = " + Utility.FormatGuid(this.SenderID));                        
             rootNode.Nodes.Add("ChatMessageType = " + ChatMessageType);
             treeView.Nodes.Add(rootNode);
         }
@@ -284,7 +285,7 @@ public class CM_Communication : MessageProcessor {
             rootNode.Expand();
             rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
             rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
-            rootNode.Nodes.Add("SenderID = " + SenderID);
+            rootNode.Nodes.Add("SenderID = " +Utility.FormatGuid(this.SenderID));
             rootNode.Nodes.Add("Range = " + Range);
             rootNode.Nodes.Add("ChatMessageType = " + ChatMessageType);
             treeView.Nodes.Add(rootNode);
@@ -318,8 +319,8 @@ public class CM_Communication : MessageProcessor {
             rootNode.Expand();
             rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
             rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
-            rootNode.Nodes.Add("SenderID = " + SenderID);
-            rootNode.Nodes.Add("TargetID = " + TargetID);
+            rootNode.Nodes.Add("SenderID = " + Utility.FormatGuid(this.SenderID));
+            rootNode.Nodes.Add("TargetID = " + Utility.FormatGuid(this.TargetID));                    
             rootNode.Nodes.Add("ChatMessageType = " + ChatMessageType);
             rootNode.Nodes.Add("Unknown = " + Unknown);
             treeView.Nodes.Add(rootNode);

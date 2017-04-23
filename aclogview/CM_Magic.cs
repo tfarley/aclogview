@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using aclogview;
+
 public class CM_Magic : MessageProcessor {
 
     public override bool acceptMessageData(BinaryReader messageDataReader, TreeView outputTreeView) {
@@ -93,8 +95,8 @@ public class CM_Magic : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_target = " + i_target);
-            rootNode.Nodes.Add("i_spell_id = " + i_spell_id);
+            rootNode.Nodes.Add("i_target = " + Utility.FormatGuid(this.i_target));
+            rootNode.Nodes.Add("i_spell_id = " + Utility.FormatGuid((uint)this.i_spell_id));           
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -110,8 +112,8 @@ public class CM_Magic : MessageProcessor {
 
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
-            rootNode.Expand();
-            rootNode.Nodes.Add("i_spell_id = " + i_spell_id);
+            rootNode.Expand();          
+            rootNode.Nodes.Add("i_spell_id = " + Utility.FormatGuid((uint)this.i_spell_id));
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -128,7 +130,7 @@ public class CM_Magic : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_spell_id = " + i_spell_id);
+            rootNode.Nodes.Add("i_spell_id = " + Utility.FormatGuid((uint)this.i_spell_id));
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -145,7 +147,7 @@ public class CM_Magic : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_spell_id = " + i_spell_id);
+            rootNode.Nodes.Add("i_spell_id = " + Utility.FormatGuid((uint)this.i_spell_id));
             treeView.Nodes.Add(rootNode);
         }
     }

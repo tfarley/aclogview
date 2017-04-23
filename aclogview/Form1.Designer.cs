@@ -33,6 +33,7 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.HexOpCode = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.splitContainer_Bottom = new System.Windows.Forms.SplitContainer();
             this.textBox_PacketData = new System.Windows.Forms.RichTextBox();
             this.treeView_ParsedData = new System.Windows.Forms.TreeView();
@@ -60,6 +61,7 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.checkBox_HideHeaderOnly = new System.Windows.Forms.CheckBox();
             this.checkBox_useHighlighting = new System.Windows.Forms.CheckBox();
+            this.checkBoxUseHex = new System.Windows.Forms.CheckBox();
             this.CmdLock = new System.Windows.Forms.Button();
             this.cmdforward = new System.Windows.Forms.Button();
             this.cmdbackward = new System.Windows.Forms.Button();
@@ -107,7 +109,8 @@
             this.columnHeader7,
             this.columnHeader3,
             this.columnHeader4,
-            this.columnHeader6});
+            this.columnHeader6,
+            this.HexOpCode});
             this.listView_Packets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView_Packets.FullRowSelect = true;
             this.listView_Packets.HideSelection = false;
@@ -146,7 +149,7 @@
             // columnHeader3
             // 
             this.columnHeader3.Text = "Type";
-            this.columnHeader3.Width = 500;
+            this.columnHeader3.Width = 391;
             // 
             // columnHeader4
             // 
@@ -155,7 +158,12 @@
             // columnHeader6
             // 
             this.columnHeader6.Text = "Extra Info";
-            this.columnHeader6.Width = 250;
+            this.columnHeader6.Width = 66;
+            // 
+            // HexOpCode
+            // 
+            this.HexOpCode.Text = "OpCode";
+            this.HexOpCode.Width = 66;
             // 
             // splitContainer_Bottom
             // 
@@ -355,9 +363,9 @@
             // 
             // checkBox_HideHeaderOnly
             // 
-            this.checkBox_HideHeaderOnly.Location = new System.Drawing.Point(805, 3);
+            this.checkBox_HideHeaderOnly.Location = new System.Drawing.Point(737, 3);
             this.checkBox_HideHeaderOnly.Name = "checkBox_HideHeaderOnly";
-            this.checkBox_HideHeaderOnly.Size = new System.Drawing.Size(138, 17);
+            this.checkBox_HideHeaderOnly.Size = new System.Drawing.Size(154, 17);
             this.checkBox_HideHeaderOnly.TabIndex = 0;
             this.checkBox_HideHeaderOnly.Text = "Hide Header Only";
             this.checkBox_HideHeaderOnly.UseVisualStyleBackColor = true;
@@ -368,14 +376,26 @@
             // 
             this.checkBox_useHighlighting.Checked = true;
             this.checkBox_useHighlighting.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_useHighlighting.Location = new System.Drawing.Point(949, 2);
+            this.checkBox_useHighlighting.Location = new System.Drawing.Point(1024, 3);
             this.checkBox_useHighlighting.Name = "checkBox_useHighlighting";
-            this.checkBox_useHighlighting.Size = new System.Drawing.Size(156, 17);
+            this.checkBox_useHighlighting.Size = new System.Drawing.Size(209, 17);
             this.checkBox_useHighlighting.TabIndex = 4;
             this.checkBox_useHighlighting.Text = "Use Highlighting (Slower!)";
             this.checkBox_useHighlighting.UseVisualStyleBackColor = true;
             this.checkBox_useHighlighting.CheckedChanged += new System.EventHandler(this.checkBox_useHighlighting_CheckedChanged);
             // 
+            // checkBoxUseHex
+            // 
+            this.checkBoxUseHex.AutoSize = true;
+            this.checkBoxUseHex.Checked = true;
+            this.checkBoxUseHex.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxUseHex.Location = new System.Drawing.Point(897, 2);
+            this.checkBoxUseHex.Name = "checkBoxUseHex";
+            this.checkBoxUseHex.Size = new System.Drawing.Size(121, 17);
+            this.checkBoxUseHex.TabIndex = 5;
+            this.checkBoxUseHex.Text = "Display Guid as Hex";
+            this.checkBoxUseHex.UseVisualStyleBackColor = true;
+            this.checkBoxUseHex.CheckedChanged += new System.EventHandler(this.checkBoxUseHex_CheckedChanged);
             // CmdLock
             // 
             this.CmdLock.Location = new System.Drawing.Point(2, 1);
@@ -421,6 +441,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1520, 852);
+            this.Controls.Add(this.checkBoxUseHex);
             this.Controls.Add(this.lblTracker);
             this.Controls.Add(this.cmdbackward);
             this.Controls.Add(this.cmdforward);
@@ -494,6 +515,8 @@
         private System.Windows.Forms.Button cmdbackward;
         private System.Windows.Forms.Label lblTracker;
         private System.Windows.Forms.MenuItem menuItem_OpenAsMessages;
+        private System.Windows.Forms.ColumnHeader HexOpCode;
+        private System.Windows.Forms.CheckBox checkBoxUseHex;
     }
 }
 

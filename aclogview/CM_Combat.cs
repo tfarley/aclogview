@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using aclogview;
 
 public class CM_Combat : MessageProcessor {
 
@@ -72,7 +73,8 @@ public class CM_Combat : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_targetID = " + i_targetID);
+            rootNode.Nodes.Add("i_targetID = " + Utility.FormatGuid(this.i_targetID));            
+            
             rootNode.Nodes.Add("i_ah = " + i_ah);
             rootNode.Nodes.Add("i_power_level = " + i_power_level);
             treeView.Nodes.Add(rootNode);
@@ -96,7 +98,7 @@ public class CM_Combat : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_targetID = " + i_targetID);
+            rootNode.Nodes.Add("i_target_id = " + Utility.FormatGuid(this.i_targetID));
             rootNode.Nodes.Add("i_ah = " + i_ah);
             rootNode.Nodes.Add("i_accuracy_level = " + i_accuracy_level);
             treeView.Nodes.Add(rootNode);
@@ -134,7 +136,7 @@ public class CM_Combat : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_target = " + i_target);
+            rootNode.Nodes.Add("i_target_ = " + Utility.FormatGuid(this.i_target));
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -154,7 +156,7 @@ public class CM_Combat : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("target = " + target);
+            rootNode.Nodes.Add("target = " +Utility.FormatGuid(this.target));
             rootNode.Nodes.Add("health = " + health);
             treeView.Nodes.Add(rootNode);
         }

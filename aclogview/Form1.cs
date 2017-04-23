@@ -67,7 +67,8 @@ namespace aclogview
             messageProcessors.Add(new CM_Vendor());
             messageProcessors.Add(new CM_Writing());
             messageProcessors.Add(new Proto_UI());
-
+            Globals.UseHex = this.checkBoxUseHex.Checked;
+            
             if (args != null && args.Length >= 2)
             {
                 int opcode;
@@ -112,9 +113,12 @@ namespace aclogview
                     newItem.SubItems.Add(record.isSend ? "Send" : "Recv");
                     newItem.SubItems.Add(record.tsSec.ToString());
                     newItem.SubItems.Add(record.packetHeadersStr);
-                    newItem.SubItems.Add(record.packetTypeStr);
+                    newItem.SubItems.Add(record.packetTypeStr);                   
                     newItem.SubItems.Add(record.data.Length.ToString());
                     newItem.SubItems.Add(record.extraInfo);
+                    // This one requires special handling and cannot use function.
+                    if (record.opcodes.Count == 0) newItem.SubItems.Add(string.Empty);
+                    else newItem.SubItems.Add(record.opcodes[0].ToString("X").Substring(4, 4));
                     listItems.Add(newItem);
                 }
             }
@@ -813,6 +817,12 @@ namespace aclogview
             }
         }
 
+        private void checkBoxUseHex_CheckedChanged(object sender, EventArgs e)
+        {
+            Globals.UseHex = this.checkBoxUseHex.Checked;
+        }
+
+
         private void CmdLock_Click(object sender, EventArgs e)
         {
             if (CmdLock.Text == "Lock")
@@ -859,3 +869,4 @@ namespace aclogview
         }
     }
 }
+

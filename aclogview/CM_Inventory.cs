@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using aclogview;
+
 public class CM_Inventory : MessageProcessor {
 
     public override bool acceptMessageData(BinaryReader messageDataReader, TreeView outputTreeView) {
@@ -167,8 +169,8 @@ public class CM_Inventory : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_object = " + i_object);
-            rootNode.Nodes.Add("i_target = " + i_target);
+            rootNode.Nodes.Add("i_object = " + Utility.FormatGuid(this.i_object));
+            rootNode.Nodes.Add("i_target = " + Utility.FormatGuid(this.i_target));
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -275,8 +277,8 @@ public class CM_Inventory : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_targetID = " + i_targetID);
-            rootNode.Nodes.Add("i_objectID = " + i_objectID);
+            rootNode.Nodes.Add("i_targetID = " + Utility.FormatGuid(this.i_targetID));
+            rootNode.Nodes.Add("i_ObjectID = " + Utility.FormatGuid(this.i_objectID));
             rootNode.Nodes.Add("i_amount = " + i_amount);
             treeView.Nodes.Add(rootNode);
         }
