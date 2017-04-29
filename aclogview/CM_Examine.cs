@@ -473,25 +473,25 @@ public class CM_Examine : MessageProcessor {
             TreeNode didStatsNode = node.Nodes.Add("_didStatsTable = ");
             _didStatsTable.contributeToTreeNode(didStatsNode);
 
-            TreeNode spellStatsNode = node.Nodes.Add("_spellStatsTable = ");
+            TreeNode spellStatsNode = node.Nodes.Add("_spellBook = ");
             _spellsTable.contributeToTreeNode(spellStatsNode);
 
-            TreeNode armorProfileStatsNode = node.Nodes.Add("_armorProfileStatsTable = ");
+            TreeNode armorProfileStatsNode = node.Nodes.Add("_armorProfile = ");
             if ((header & (uint)AppraisalProfilePackHeader.Packed_ArmorProfile) != 0)
             {
                 _armorProfileTable.contributeToTreeNode(armorProfileStatsNode);
             }
-            TreeNode creatureProfileStatsNode = node.Nodes.Add("_creatureProfileStatsTable = ");
+            TreeNode creatureProfileStatsNode = node.Nodes.Add("_creatureProfile = ");
             if ((header & (uint)AppraisalProfilePackHeader.Packed_CreatureProfile) != 0)
             {
                 _creatureProfileTable.contributeToTreeNode(creatureProfileStatsNode);
             }
-            TreeNode weaponProfileStatsNode = node.Nodes.Add("_weaponProfileStatsTable = ");
+            TreeNode weaponProfileStatsNode = node.Nodes.Add("_weaponProfile = ");
             if ((header & (uint)AppraisalProfilePackHeader.Packed_WeaponProfile) != 0)
             {
                 _weaponProfileTable.contributeToTreeNode(weaponProfileStatsNode);
             }
-            TreeNode hookStatsNode = node.Nodes.Add("_hookStatsTable = ");
+            TreeNode hookStatsNode = node.Nodes.Add("_hookProfile = ");
             if ((header & (uint)AppraisalProfilePackHeader.Packed_HookProfile) != 0)
             {
                 _hookProfileTable.contributeToTreeNode(hookStatsNode);
@@ -502,7 +502,7 @@ public class CM_Examine : MessageProcessor {
             TreeNode weaponEnchantmentStatsNode = node.Nodes.Add("_weaponEnchanmentBitField = " + _weaponEnchantment);
             TreeNode resistEnchantmentStatsNode = node.Nodes.Add("_resistEnchantmentBitField = " + _resistEnchantment);
 
-            TreeNode armorLevelsStatsNode = node.Nodes.Add("_armorLevelsTable = ");
+            TreeNode armorLevelsStatsNode = node.Nodes.Add("_armorLevels = ");
             if ((header & (uint)AppraisalProfilePackHeader.Packed_ArmorLevels) != 0)
             {
                 _armorLevelsTable.contributeToTreeNode(armorLevelsStatsNode);
