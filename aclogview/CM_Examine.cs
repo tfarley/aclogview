@@ -57,7 +57,231 @@ public class CM_Examine : MessageProcessor {
             BF_MAX_MANA_HI = (1 << 24)
         }
 
+        public uint _header;
+        public uint _strength;
+        public uint _endurance;
+        public uint _quickness;
+        public uint _coordination;
+        public uint _focus;
+        public uint _self;
+        public uint _stamina;
+        public uint _health;
+        public uint _mana;
+        public uint _max_health;
+        public uint _max_stamina;
+        public uint _max_mana;
+        public uint enchantment_bitfield;
 
+        public static CreatureAppraisalProfile read(BinaryReader binaryReader)
+        {
+            CreatureAppraisalProfile newObj = new CreatureAppraisalProfile();
+            newObj._header = binaryReader.ReadUInt32();
+            newObj._health = binaryReader.ReadUInt32();
+            newObj._max_health = binaryReader.ReadUInt32();
+            if ((newObj._header & (uint)CreatureAppraisalProfilePackHeader.Packed_Attributes) != 0)
+            {
+                newObj._strength = binaryReader.ReadUInt32();
+                newObj._endurance = binaryReader.ReadUInt32();
+                newObj._quickness = binaryReader.ReadUInt32();
+                newObj._coordination = binaryReader.ReadUInt32();
+                newObj._focus = binaryReader.ReadUInt32();
+                newObj._self = binaryReader.ReadUInt32();
+                newObj._stamina = binaryReader.ReadUInt32();
+                newObj._mana = binaryReader.ReadUInt32();
+                newObj._max_stamina = binaryReader.ReadUInt32();
+                newObj._max_mana = binaryReader.ReadUInt32();
+            }
+            if ((newObj._header & (uint)CreatureAppraisalProfilePackHeader.Packed_Enchantments) != 0)
+            {
+                // TODO: Decode this message further using Enchantment_BFIndex
+                newObj.enchantment_bitfield = binaryReader.ReadUInt32();
+            }
+            return newObj;
+        }
+
+        public void contributeToTreeNode(TreeNode node)
+        {
+            node.Nodes.Add("_header = " + _header);
+            node.Nodes.Add("_health = " + _health);
+            node.Nodes.Add("_max_health = " + _max_health);
+            if ((_header & 0x8) != 0)
+            {
+                node.Nodes.Add("_strength = " + _strength);
+                node.Nodes.Add("_endurance = " + _endurance);
+                node.Nodes.Add("_quickness = " + _quickness);
+                node.Nodes.Add("_coordination = " + _coordination);
+                node.Nodes.Add("_focus = " + _focus);
+                node.Nodes.Add("_self = " + _self);
+                node.Nodes.Add("_stamina = " + _stamina);
+                node.Nodes.Add("_mana = " + _mana);
+                node.Nodes.Add("_max_stamina = " + _max_stamina);
+                node.Nodes.Add("_max_mana = " + _max_mana);
+            }
+            if ((_header & 0x1) != 0)
+            {
+                node.Nodes.Add("enchantment_bitfield = " + enchantment_bitfield);
+            }
+        }
+    }
+
+    public class ArmorLevels
+    {
+        public uint _base_armor_head;
+        public uint _base_armor_chest;
+        public uint _base_armor_groin;
+        public uint _base_armor_bicep;
+        public uint _base_armor_wrist;
+        public uint _base_armor_hand;
+        public uint _base_armor_thigh;
+        public uint _base_armor_shin;
+        public uint _base_armor_foot;
+
+        public static ArmorLevels read(BinaryReader binaryReader)
+        {
+            ArmorLevels newObj = new ArmorLevels();
+            newObj._base_armor_head = binaryReader.ReadUInt32();
+            newObj._base_armor_chest = binaryReader.ReadUInt32();
+            newObj._base_armor_groin = binaryReader.ReadUInt32();
+            newObj._base_armor_bicep = binaryReader.ReadUInt32();
+            newObj._base_armor_wrist = binaryReader.ReadUInt32();
+            newObj._base_armor_hand = binaryReader.ReadUInt32();
+            newObj._base_armor_thigh = binaryReader.ReadUInt32();
+            newObj._base_armor_shin = binaryReader.ReadUInt32();
+            newObj._base_armor_foot = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public void contributeToTreeNode(TreeNode node)
+        {
+            node.Nodes.Add("_base_armor_head = " + _base_armor_head);
+            node.Nodes.Add("_base_armor_chest = " + _base_armor_chest);
+            node.Nodes.Add("_base_armor_groin = " + _base_armor_groin);
+            node.Nodes.Add("_base_armor_bicep = " + _base_armor_bicep);
+            node.Nodes.Add("_base_armor_wrist = " + _base_armor_wrist);
+            node.Nodes.Add("_base_armor_hand = " + _base_armor_hand);
+            node.Nodes.Add("_base_armor_thigh = " + _base_armor_thigh);
+            node.Nodes.Add("_base_armor_shin = " + _base_armor_shin);
+            node.Nodes.Add("_base_armor_foot = " + _base_armor_foot);
+        }
+    }
+
+    public class ArmorProfile
+    {
+        public float _mod_vs_slash;
+        public float _mod_vs_pierce;
+        public float _mod_vs_bludgeon;
+        public float _mod_vs_cold;
+        public float _mod_vs_fire;
+        public float _mod_vs_acid;
+        public float _mod_vs_electric;
+        public float _mod_vs_nether;
+
+        public static ArmorProfile read(BinaryReader binaryReader)
+        {
+            ArmorProfile newObj = new ArmorProfile();
+            newObj._mod_vs_slash = binaryReader.ReadSingle();
+            newObj._mod_vs_pierce = binaryReader.ReadSingle();
+            newObj._mod_vs_bludgeon = binaryReader.ReadSingle();
+            newObj._mod_vs_cold = binaryReader.ReadSingle();
+            newObj._mod_vs_fire = binaryReader.ReadSingle();
+            newObj._mod_vs_acid = binaryReader.ReadSingle();
+            newObj._mod_vs_electric = binaryReader.ReadSingle();
+            newObj._mod_vs_nether = binaryReader.ReadSingle();
+            return newObj;
+        }
+
+        public void contributeToTreeNode(TreeNode node)
+        {
+            node.Nodes.Add("_mod_vs_slash = " + _mod_vs_slash);
+            node.Nodes.Add("_mod_vs_pierce = " + _mod_vs_pierce);
+            node.Nodes.Add("_mod_vs_bludgeon = " + _mod_vs_bludgeon);
+            node.Nodes.Add("_mod_vs_cold = " + _mod_vs_cold);
+            node.Nodes.Add("_mod_vs_fire = " + _mod_vs_fire);
+            node.Nodes.Add("_mod_vs_acid = " + _mod_vs_acid);
+            node.Nodes.Add("_mod_vs_electric = " + _mod_vs_electric);
+            node.Nodes.Add("_mod_vs_nether = " + _mod_vs_nether);
+        }
+    }
+
+    public class HookAppraisalProfile
+    {
+        public uint _bitField;
+        public uint _validLocations;
+        public uint _ammoType;
+        public bool isInscribable;
+        public bool isHealer;
+        public bool isLockpick;
+
+        public static HookAppraisalProfile read(BinaryReader binaryReader)
+        {
+            HookAppraisalProfile newObj = new HookAppraisalProfile();
+            newObj._bitField = binaryReader.ReadUInt32();
+            newObj._validLocations = binaryReader.ReadUInt32();
+            newObj._ammoType = binaryReader.ReadUInt32();
+
+            if ((newObj._bitField & 0x1) != 0)
+                newObj.isInscribable = true;
+            if ((newObj._bitField & 0x2) != 0)
+                newObj.isHealer = true;
+            if ((newObj._bitField & 0x4) != 0)
+                newObj.isLockpick = true;
+
+            return newObj;
+        }
+
+        public void contributeToTreeNode(TreeNode node)
+        {
+            node.Nodes.Add("_bitField = " + _bitField);
+            node.Nodes.Add("_validLocations = " + _validLocations);
+            node.Nodes.Add("_ammoType = " + _ammoType);
+            node.Nodes.Add("isInscribable = " + isInscribable);
+            node.Nodes.Add("isHealer = " + isHealer);
+            node.Nodes.Add("isLockpick = " + isLockpick);
+        }
+    }
+
+    public class WeaponAppraisalProfile
+    {
+        public uint _damage_type;
+        public uint _weapon_time;
+        public uint _weapon_skill;
+        public uint _weapon_damage;
+        public double _damage_variance;
+        public double _damage_mod;
+        public double _weapon_length;
+        public double _max_velocity;
+        public double _weapon_offense;
+        public uint _max_velocity_estimated;
+
+        public static WeaponAppraisalProfile read(BinaryReader binaryReader)
+        {
+            WeaponAppraisalProfile newObj = new WeaponAppraisalProfile();
+            newObj._damage_type = binaryReader.ReadUInt32();
+            newObj._weapon_time = binaryReader.ReadUInt32();
+            newObj._weapon_skill = binaryReader.ReadUInt32();
+            newObj._weapon_damage = binaryReader.ReadUInt32();
+            newObj._damage_variance = binaryReader.ReadDouble();
+            newObj._damage_mod = binaryReader.ReadDouble();
+            newObj._weapon_length = binaryReader.ReadDouble();
+            newObj._max_velocity = binaryReader.ReadDouble();
+            newObj._weapon_offense = binaryReader.ReadDouble();
+            newObj._max_velocity_estimated = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public void contributeToTreeNode(TreeNode node)
+        {
+            node.Nodes.Add("_damage_type = " + _damage_type);
+            node.Nodes.Add("_weapon_time = " + _weapon_time);
+            node.Nodes.Add("_weapon_skill = " + _weapon_skill);
+            node.Nodes.Add("_weapon_damage = " + _weapon_damage);
+            node.Nodes.Add("_damage_variance = " + _damage_variance);
+            node.Nodes.Add("_damage_mod = " + _damage_mod);
+            node.Nodes.Add("_weapon_length = " + _weapon_length);
+            node.Nodes.Add("_max_velocity = " + _max_velocity);
+            node.Nodes.Add("_weapon_offense = " + _weapon_offense);
+            node.Nodes.Add("_max_velocity_estimated = " + _max_velocity_estimated);
+        }
     }
 
     public class AppraisalProfile {
@@ -161,6 +385,16 @@ public class CM_Examine : MessageProcessor {
         public PackableHashTable<STypeString, PStringChar> _strStatsTable = new PackableHashTable<STypeString, PStringChar>();
         public PackableHashTable<STypeDID, uint> _didStatsTable = new PackableHashTable<STypeDID, uint>();
 
+        public PList<SpellID> _spellsTable = new PList<SpellID>();
+        public ArmorProfile _armorProfileTable = new ArmorProfile();
+        public CreatureAppraisalProfile _creatureProfileTable = new CreatureAppraisalProfile();
+        public WeaponAppraisalProfile _weaponProfileTable = new WeaponAppraisalProfile();
+        public HookAppraisalProfile _hookProfileTable = new HookAppraisalProfile();
+        public uint _armorEnchantment;
+        public uint _weaponEnchantment;
+        public uint _resistEnchantment;
+        public ArmorLevels _armorLevelsTable = new ArmorLevels();
+
         public static AppraisalProfile read(BinaryReader binaryReader) {
             AppraisalProfile newObj = new AppraisalProfile();
             newObj.header = binaryReader.ReadUInt32();
@@ -183,7 +417,43 @@ public class CM_Examine : MessageProcessor {
             if ((newObj.header & (uint)AppraisalProfilePackHeader.Packed_DataIDStats) != 0) {
                 newObj._didStatsTable = PackableHashTable<STypeDID, uint>.read(binaryReader);
             }
-            // TODO: Lots more to read here
+            if ((newObj.header & (uint)AppraisalProfilePackHeader.Packed_SpellList) != 0)
+            {
+                newObj._spellsTable = PList<SpellID>.read(binaryReader);
+            }
+            if ((newObj.header & (uint)AppraisalProfilePackHeader.Packed_ArmorProfile) != 0)
+            {
+                newObj._armorProfileTable = ArmorProfile.read(binaryReader);
+            }
+            if ((newObj.header & (uint)AppraisalProfilePackHeader.Packed_CreatureProfile) != 0)
+            {
+                newObj._creatureProfileTable = CreatureAppraisalProfile.read(binaryReader);
+            }
+            if ((newObj.header & (uint)AppraisalProfilePackHeader.Packed_WeaponProfile) != 0)
+            {
+                newObj._weaponProfileTable = WeaponAppraisalProfile.read(binaryReader);
+            }
+            // TODO: Find an actual example of this to test it!
+            if ((newObj.header & (uint)AppraisalProfilePackHeader.Packed_HookProfile) != 0)
+            {
+                newObj._hookProfileTable = HookAppraisalProfile.read(binaryReader);
+            }
+            if ((newObj.header & (uint)AppraisalProfilePackHeader.Packed_ArmorEnchant) != 0)
+            {
+                newObj._armorEnchantment = binaryReader.ReadUInt32();
+            }
+            if ((newObj.header & (uint)AppraisalProfilePackHeader.Packed_WeaponEnchant) != 0)
+            {
+                newObj._weaponEnchantment = binaryReader.ReadUInt32();
+            }
+            if ((newObj.header & (uint)AppraisalProfilePackHeader.Packed_ResistEnchant) != 0)
+            {
+                newObj._resistEnchantment = binaryReader.ReadUInt32();
+            }
+            if ((newObj.header & (uint)AppraisalProfilePackHeader.Packed_ArmorLevels) != 0)
+            {
+                newObj._armorLevelsTable = ArmorLevels.read(binaryReader);
+            }
             return newObj;
         }
 
@@ -202,7 +472,42 @@ public class CM_Examine : MessageProcessor {
             _strStatsTable.contributeToTreeNode(strStatsNode);
             TreeNode didStatsNode = node.Nodes.Add("_didStatsTable = ");
             _didStatsTable.contributeToTreeNode(didStatsNode);
-            // TODO: Lots more to read here
+
+            TreeNode spellStatsNode = node.Nodes.Add("_spellStatsTable = ");
+            _spellsTable.contributeToTreeNode(spellStatsNode);
+
+            TreeNode armorProfileStatsNode = node.Nodes.Add("_armorProfileStatsTable = ");
+            if ((header & (uint)AppraisalProfilePackHeader.Packed_ArmorProfile) != 0)
+            {
+                _armorProfileTable.contributeToTreeNode(armorProfileStatsNode);
+            }
+            TreeNode creatureProfileStatsNode = node.Nodes.Add("_creatureProfileStatsTable = ");
+            if ((header & (uint)AppraisalProfilePackHeader.Packed_CreatureProfile) != 0)
+            {
+                _creatureProfileTable.contributeToTreeNode(creatureProfileStatsNode);
+            }
+            TreeNode weaponProfileStatsNode = node.Nodes.Add("_weaponProfileStatsTable = ");
+            if ((header & (uint)AppraisalProfilePackHeader.Packed_WeaponProfile) != 0)
+            {
+                _weaponProfileTable.contributeToTreeNode(weaponProfileStatsNode);
+            }
+            TreeNode hookStatsNode = node.Nodes.Add("_hookStatsTable = ");
+            if ((header & (uint)AppraisalProfilePackHeader.Packed_HookProfile) != 0)
+            {
+                _hookProfileTable.contributeToTreeNode(hookStatsNode);
+            }
+
+            // TODO - Decode these further using the BFIndex settings up above
+            TreeNode armorEnchantmentStatsNode = node.Nodes.Add("_armorEnchantmentBitField = " + _armorEnchantment);
+            TreeNode weaponEnchantmentStatsNode = node.Nodes.Add("_weaponEnchanmentBitField = " + _weaponEnchantment);
+            TreeNode resistEnchantmentStatsNode = node.Nodes.Add("_resistEnchantmentBitField = " + _resistEnchantment);
+
+            TreeNode armorLevelsStatsNode = node.Nodes.Add("_armorLevelsTable = ");
+            if ((header & (uint)AppraisalProfilePackHeader.Packed_ArmorLevels) != 0)
+            {
+                _armorLevelsTable.contributeToTreeNode(armorLevelsStatsNode);
+            }
+
         }
     }
 
