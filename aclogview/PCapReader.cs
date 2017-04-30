@@ -153,8 +153,9 @@ namespace aclogview
                             break;
 
                         results.Add(packetRecord);
-                        curPacket++;
                     }
+
+                    curPacket++;
                 }
                 catch (Exception e)
                 {
@@ -172,6 +173,8 @@ namespace aclogview
                 throw new InvalidDataException("Stream cut short (packet " + curPacket + "), stopping read: " + (binaryReader.BaseStream.Length - binaryReader.BaseStream.Position));
             }
 
+            long blockStartPos = binaryReader.BaseStream.Position;
+
             PcapngBlockHeader blockHeader = PcapngBlockHeader.read(binaryReader);
 
             if (blockHeader.capturedLen > 50000)
@@ -182,7 +185,7 @@ namespace aclogview
             // Make sure there's enough room for an ethernet header
             if (blockHeader.capturedLen < 14)
             {
-                binaryReader.BaseStream.Position += blockHeader.capturedLen;
+                binaryReader.BaseStream.Position += blockHeader.blockTotalLength - (binaryReader.BaseStream.Position - blockStartPos);
                 return null;
             }
 
@@ -236,8 +239,9 @@ namespace aclogview
                             break;
 
                         results.Add(packetRecord);
-                        curPacket++;
                     }
+
+                    curPacket++;
                 }
                 catch (Exception e)
                 {
