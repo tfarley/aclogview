@@ -384,7 +384,6 @@ public class CM_Examine : MessageProcessor {
         public PackableHashTable<STypeFloat, double> _floatStatsTable = new PackableHashTable<STypeFloat, double>();
         public PackableHashTable<STypeString, PStringChar> _strStatsTable = new PackableHashTable<STypeString, PStringChar>();
         public PackableHashTable<STypeDID, uint> _didStatsTable = new PackableHashTable<STypeDID, uint>();
-
         public PList<SpellID> _spellsTable = new PList<SpellID>();
         public ArmorProfile _armorProfileTable = new ArmorProfile();
         public CreatureAppraisalProfile _creatureProfileTable = new CreatureAppraisalProfile();
@@ -507,7 +506,6 @@ public class CM_Examine : MessageProcessor {
             {
                 _armorLevelsTable.contributeToTreeNode(armorLevelsStatsNode);
             }
-
         }
     }
 
