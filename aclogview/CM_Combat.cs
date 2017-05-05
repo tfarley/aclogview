@@ -302,5 +302,4 @@ public class CM_Combat : MessageProcessor {
             treeView.Nodes.Add(rootNode);
         }
     }
-
 }
