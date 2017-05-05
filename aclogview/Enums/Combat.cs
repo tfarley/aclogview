@@ -111,3 +111,36 @@ public enum PowerBarMode {
     PBM_JUMP,
     PBM_DDD
 }
+
+public enum BodyPart
+{
+    UNDEFINED,
+    HEAD,
+    CHEST,
+    ABDOMEN,
+    UPPER_ARM,
+    LOWER_ARM,
+    HAND,
+    UPPER_LEG,
+    LOWER_LEG,
+    FOOT,
+    HORN,
+    FRONT_LEG,
+    SKIP, // Skip 12
+    FRONT_FOOT,
+    REAR_LEG,
+    SKIP_2, // Skip 15
+    REAR_FOOT,
+    TORSO,
+    TAIL,
+    ARM,
+    LEG,
+    CLAW,
+    WINGS,
+    BREATH,
+    TENTACLE,
+    UPPER_TENTACLE,
+    LOWER_TENTACLE,
+    CLOAK,
+    NUM
+}
