@@ -1,4 +1,5 @@
-﻿using System;
+﻿using aclogview;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -523,7 +524,7 @@ public class CM_Examine : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_objid = " + i_objid);
+            rootNode.Nodes.Add("i_objid = " + Utility.FormatGuid(i_objid));
             TreeNode profileNode = rootNode.Nodes.Add("i_prof = ");
             i_prof.contributeToTreeNode(profileNode);
             treeView.Nodes.Add(rootNode);

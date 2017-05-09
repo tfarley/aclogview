@@ -73,7 +73,7 @@ public class CM_Item : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_objectID = " + i_objectID);
+            rootNode.Nodes.Add("i_objectID = " + Utility.FormatGuid(i_objectID));
             treeView.Nodes.Add(rootNode);
         }
     }
