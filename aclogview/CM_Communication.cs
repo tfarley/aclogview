@@ -107,7 +107,7 @@ public class CM_Communication : MessageProcessor {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
             rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
-            rootNode.Nodes.Add("TargetID = " + TargetID.ToString());
+            rootNode.Nodes.Add("TargetID = " + Utility.FormatGuid(TargetID));
             treeView.Nodes.Add(rootNode);
         }
     }
