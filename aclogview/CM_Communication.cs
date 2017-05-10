@@ -14,6 +14,12 @@ public class CM_Communication : MessageProcessor {
 
         PacketOpcode opcode = Util.readOpcode(messageDataReader);
         switch (opcode) {
+            case PacketOpcode.Evt_Communication__TalkDirect_ID: // 0x0032
+                {
+                    var message = TalkDirect.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Communication__TalkDirectByName_ID: // 0x005D
                 {
                     var message = TalkDirectByName.read(messageDataReader);
@@ -81,6 +87,29 @@ public class CM_Communication : MessageProcessor {
         }
 
         return handled;
+    }
+
+    public class TalkDirect : Message
+    {
+        public PStringChar MessageText;
+        public uint TargetID;
+
+        public static TalkDirect read(BinaryReader binaryReader)
+        {
+            var newObj = new TalkDirect();
+            newObj.MessageText = PStringChar.read(binaryReader);
+            newObj.TargetID = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
+            rootNode.Nodes.Add("TargetID = " + Utility.FormatGuid(TargetID));
+            treeView.Nodes.Add(rootNode);
+        }
     }
 
     public class TalkDirectByName : Message
