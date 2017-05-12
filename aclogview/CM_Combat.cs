@@ -186,13 +186,21 @@ public class CM_Combat : MessageProcessor {
         }
     }
 
+    public enum AttackCondition_BFIndex
+    {
+        // Could not find these defined as constants, so came up with appropriate names
+        CriticalAugPreventedCritical = (1 << 0), // "Your Critical Protection augmentation allows you to avoid a critical hit!"
+        Reckless = (1 << 1), // "Reckless!"
+        SneakAttack = (1 << 2), // "Sneak Attack!"
+    }
+
     public class AttackerNotificationEvent : Message
     {
         public PStringChar defenders_name;
         public uint damage_type;
         public double severity; // 0.0 to 1.0
         public uint damage;
-        public bool critical;
+        public uint critical;
         public ulong attack_conditions;
 
         public static AttackerNotificationEvent read(BinaryReader binaryReader)
@@ -202,7 +210,7 @@ public class CM_Combat : MessageProcessor {
             newObj.damage_type = binaryReader.ReadUInt32();
             newObj.severity = binaryReader.ReadDouble();
             newObj.damage = binaryReader.ReadUInt32();
-            newObj.critical = binaryReader.ReadBoolean();
+            newObj.critical = binaryReader.ReadUInt32();
             newObj.attack_conditions = binaryReader.ReadUInt64();
             Util.readToAlign(binaryReader);
             return newObj;
@@ -224,23 +232,23 @@ public class CM_Combat : MessageProcessor {
 
     public class DefenderNotificationEvent : Message
     {
-        public PStringChar defenders_name;
+        public PStringChar attackers_name;
         public uint damage_type;
         public double severity; // 0.0 to 1.0
         public uint damage;
         public uint part;
-        public bool critical;
+        public uint critical;
         public ulong attack_conditions;
 
         public static DefenderNotificationEvent read(BinaryReader binaryReader)
         {
             DefenderNotificationEvent newObj = new DefenderNotificationEvent();
-            newObj.defenders_name = PStringChar.read(binaryReader);
+            newObj.attackers_name = PStringChar.read(binaryReader);
             newObj.damage_type = binaryReader.ReadUInt32();
             newObj.severity = binaryReader.ReadDouble();
             newObj.damage = binaryReader.ReadUInt32();
             newObj.part = binaryReader.ReadUInt32();
-            newObj.critical = binaryReader.ReadBoolean();
+            newObj.critical = binaryReader.ReadUInt32();
             newObj.attack_conditions = binaryReader.ReadUInt64();
             Util.readToAlign(binaryReader);
             return newObj;
@@ -250,7 +258,7 @@ public class CM_Combat : MessageProcessor {
         {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("defenders_name = " + defenders_name);
+            rootNode.Nodes.Add("attackers_name = " + attackers_name);
             rootNode.Nodes.Add("damage_type = " + (DAMAGE_TYPE)damage_type);
             rootNode.Nodes.Add("severity = " + severity);
             rootNode.Nodes.Add("damage = " + damage);
@@ -263,12 +271,12 @@ public class CM_Combat : MessageProcessor {
 
     public class EvasionAttackerNotificationEvent : Message
     {
-        public PStringChar attacker;
+        public PStringChar defenders_name;
 
         public static EvasionAttackerNotificationEvent read(BinaryReader binaryReader)
         {
             EvasionAttackerNotificationEvent newObj = new EvasionAttackerNotificationEvent();
-            newObj.attacker = PStringChar.read(binaryReader);
+            newObj.defenders_name = PStringChar.read(binaryReader);
             Util.readToAlign(binaryReader);
             return newObj;
         }
@@ -277,19 +285,19 @@ public class CM_Combat : MessageProcessor {
         {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("attacker = " + attacker);
+            rootNode.Nodes.Add("defenders_name = " + defenders_name);
             treeView.Nodes.Add(rootNode);
         }
     }
 
     public class EvasionDefenderNotificationEvent : Message
     {
-        public PStringChar attacker;
+        public PStringChar attackers_name;
 
         public static EvasionDefenderNotificationEvent read(BinaryReader binaryReader)
         {
             EvasionDefenderNotificationEvent newObj = new EvasionDefenderNotificationEvent();
-            newObj.attacker = PStringChar.read(binaryReader);
+            newObj.attackers_name = PStringChar.read(binaryReader);
             Util.readToAlign(binaryReader);
             return newObj;
         }
@@ -298,7 +306,7 @@ public class CM_Combat : MessageProcessor {
         {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("defender = " + attacker);
+            rootNode.Nodes.Add("attackers_name = " + attackers_name);
             treeView.Nodes.Add(rootNode);
         }
     }
