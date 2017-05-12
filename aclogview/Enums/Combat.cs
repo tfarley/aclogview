@@ -144,3 +144,12 @@ public enum BodyPart
     CLOAK = 26,
     NUM = 27
 }
+
+public enum AttackConditions
+{
+    // Could not find these defined as constants, so came up with appropriate names
+    CriticalAugPreventedCritical = (1 << 0), // "Your Critical Protection augmentation allows you to avoid a critical hit!"
+    Reckless = (1 << 1), // "Reckless!"
+    SneakAttack = (1 << 2), // "Sneak Attack!"
+}
+
