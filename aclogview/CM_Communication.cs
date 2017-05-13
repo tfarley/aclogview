@@ -44,6 +44,18 @@ public class CM_Communication : MessageProcessor {
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }*/
+            case PacketOpcode.Evt_Communication__Emote_ID: // 0x01DF
+                {
+                    var message = Emote.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Communication__HearEmote_ID: // 0x01E0
+                {
+                    var message = HearEmote.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Communication__Recv_ChatRoomTracker_ID: // 0x0295
                 {
                     var message = Recv_ChatRoomTracker.read(messageDataReader);
@@ -201,6 +213,53 @@ public class CM_Communication : MessageProcessor {
             throw new NotImplementedException();
         }
     }*/
+
+    public class Emote : Message
+    {
+        public PStringChar emoteMessage;
+
+        public static Emote read(BinaryReader binaryReader)
+        {
+            var newObj = new Emote();
+            newObj.emoteMessage = PStringChar.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("emoteMessage = " + emoteMessage);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class HearEmote : Message
+    {
+        public PStringChar MessageText;
+        public PStringChar SenderName;
+        public uint SenderID;
+        public uint ChatMessageType;
+
+        public static HearEmote read(BinaryReader binaryReader)
+        {
+            var newObj = new HearEmote();
+            newObj.SenderID = binaryReader.ReadUInt32();
+            newObj.SenderName = PStringChar.read(binaryReader);
+            newObj.MessageText = PStringChar.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
+            rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
+            rootNode.Nodes.Add("SenderID = " + Utility.FormatGuid(this.SenderID));
+            treeView.Nodes.Add(rootNode);
+        }
+    }
 
     public class Recv_ChatRoomTracker : Message
     {
