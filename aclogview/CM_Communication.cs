@@ -56,6 +56,12 @@ public class CM_Communication : MessageProcessor {
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }
+            case PacketOpcode.Evt_Communication__SoulEmote_ID: // 0x01E1
+                {
+                    var message = SoulEmote.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Communication__HearSoulEmote_ID: // 0x01E2
                 {
                     var message = HearSoulEmote.read(messageDataReader);
@@ -265,7 +271,25 @@ public class CM_Communication : MessageProcessor {
             treeView.Nodes.Add(rootNode);
         }
     }
+    public class SoulEmote : Message
+    {
+        public PStringChar EmoteMessage;
 
+        public static SoulEmote read(BinaryReader binaryReader)
+        {
+            SoulEmote newObj = new SoulEmote();
+            newObj.EmoteMessage = PStringChar.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("EmoteMessage = " + EmoteMessage.m_buffer);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
     public class HearSoulEmote : Message
     {
         public PStringChar EmoteMessage;
