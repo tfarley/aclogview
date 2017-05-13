@@ -15,6 +15,18 @@ public class CM_Inventory : MessageProcessor {
 
         PacketOpcode opcode = Util.readOpcode(messageDataReader);
         switch (opcode) {
+            case PacketOpcode.INVENTORY_WIELD_OBJ_EVENT: // 0x0023
+                {
+                    WieldItem message = WieldItem.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.INVENTORY_REMOVE_OBJ_EVENT: // 0x0024
+                {
+                    RemoveObject message = RemoveObject.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Inventory__PutItemInContainer_ID: {
                     PutItemInContainer message = PutItemInContainer.read(messageDataReader);
                     message.contributeToTreeView(outputTreeView);
@@ -93,6 +105,49 @@ public class CM_Inventory : MessageProcessor {
         }
 
         return handled;
+    }
+
+    public class WieldItem : Message
+    {
+        public uint i_item;
+        public uint i_equipMask;
+
+        public static WieldItem read(BinaryReader binaryReader)
+        {
+            WieldItem newObj = new WieldItem();
+            newObj.i_item = binaryReader.ReadUInt32();
+            newObj.i_equipMask = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("i_item = " + Utility.FormatGuid(i_item));
+            rootNode.Nodes.Add("i_equipMask = " + Utility.FormatGuid(i_equipMask));
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class RemoveObject : Message
+    {
+        public uint i_item;
+
+        public static RemoveObject read(BinaryReader binaryReader)
+        {
+            RemoveObject newObj = new RemoveObject();
+            newObj.i_item = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("i_item = " + Utility.FormatGuid(i_item));
+            treeView.Nodes.Add(rootNode);
+        }
     }
 
     public class PutItemInContainer : Message {
