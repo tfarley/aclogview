@@ -56,6 +56,12 @@ public class CM_Communication : MessageProcessor {
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }
+            case PacketOpcode.Evt_Communication__HearSoulEmote_ID: // 0x01E2
+                {
+                    var message = HearSoulEmote.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Communication__Recv_ChatRoomTracker_ID: // 0x0295
                 {
                     var message = Recv_ChatRoomTracker.read(messageDataReader);
@@ -236,17 +242,16 @@ public class CM_Communication : MessageProcessor {
 
     public class HearEmote : Message
     {
-        public PStringChar MessageText;
+        public PStringChar EmoteMessage;
         public PStringChar SenderName;
         public uint SenderID;
-        public uint ChatMessageType;
 
         public static HearEmote read(BinaryReader binaryReader)
         {
             var newObj = new HearEmote();
             newObj.SenderID = binaryReader.ReadUInt32();
             newObj.SenderName = PStringChar.read(binaryReader);
-            newObj.MessageText = PStringChar.read(binaryReader);
+            newObj.EmoteMessage = PStringChar.read(binaryReader);
             return newObj;
         }
 
@@ -254,7 +259,33 @@ public class CM_Communication : MessageProcessor {
         {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
+            rootNode.Nodes.Add("EmoteMessage = " + EmoteMessage.m_buffer);
+            rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
+            rootNode.Nodes.Add("SenderID = " + Utility.FormatGuid(this.SenderID));
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class HearSoulEmote : Message
+    {
+        public PStringChar EmoteMessage;
+        public PStringChar SenderName;
+        public uint SenderID;
+
+        public static HearSoulEmote read(BinaryReader binaryReader)
+        {
+            var newObj = new HearSoulEmote();
+            newObj.SenderID = binaryReader.ReadUInt32();
+            newObj.SenderName = PStringChar.read(binaryReader);
+            newObj.EmoteMessage = PStringChar.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("EmoteMessage = " + EmoteMessage.m_buffer);
             rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
             rootNode.Nodes.Add("SenderID = " + Utility.FormatGuid(this.SenderID));
             treeView.Nodes.Add(rootNode);
