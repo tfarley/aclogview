@@ -15,6 +15,12 @@ public class CM_Inventory : MessageProcessor {
 
         PacketOpcode opcode = Util.readOpcode(messageDataReader);
         switch (opcode) {
+            case PacketOpcode.INVENTORY_PUT_OBJ_IN_CONTAINER_EVENT: //0x0022
+                {
+                    PutObjectInContainerEvent message = PutObjectInContainerEvent.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.INVENTORY_WIELD_OBJ_EVENT: // 0x0023
                 {
                     WieldItem message = WieldItem.read(messageDataReader);
@@ -106,6 +112,36 @@ public class CM_Inventory : MessageProcessor {
 
         return handled;
     }
+
+    public class PutObjectInContainerEvent : Message
+    {
+        public uint i_objectId;
+        public uint i_container;
+        public uint i_slot;
+        public uint i_type;
+
+        public static PutObjectInContainerEvent read(BinaryReader binaryReader)
+        {
+            PutObjectInContainerEvent newObj = new PutObjectInContainerEvent();
+            newObj.i_objectId = binaryReader.ReadUInt32();
+            newObj.i_container = binaryReader.ReadUInt32();
+            newObj.i_slot = binaryReader.ReadUInt32();
+            newObj.i_type = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("i_objectId = " + Utility.FormatGuid(i_objectId));
+            rootNode.Nodes.Add("i_container = " + Utility.FormatGuid(i_container));
+            rootNode.Nodes.Add("i_slot = " + i_slot);
+            rootNode.Nodes.Add("i_type = " + Utility.FormatGuid(i_type));
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
 
     public class WieldItem : Message
     {
