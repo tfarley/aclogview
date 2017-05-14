@@ -104,6 +104,12 @@ public class CM_Communication : MessageProcessor {
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }
+            case PacketOpcode.Evt_Communication__TransientString_ID: // 0x2EB
+                {
+                    var message = TransientString.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Communication__TextboxString_ID: // 0xF7E0
                 {
                     var message = TextBoxString.read(messageDataReader);
@@ -492,6 +498,26 @@ public class CM_Communication : MessageProcessor {
             rootNode.Nodes.Add("TargetID = " + Utility.FormatGuid(this.TargetID));                    
             rootNode.Nodes.Add("ChatMessageType = " + ChatMessageType);
             rootNode.Nodes.Add("Unknown = " + Unknown);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class TransientString : Message
+    {
+        public PStringChar StringMessage;
+
+        public static TransientString read(BinaryReader binaryReader)
+        {
+            var newObj = new TransientString();
+            newObj.StringMessage = PStringChar.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("StringMessage = " + StringMessage.m_buffer);
             treeView.Nodes.Add(rootNode);
         }
     }
