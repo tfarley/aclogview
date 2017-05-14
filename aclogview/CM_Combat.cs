@@ -14,6 +14,12 @@ public class CM_Combat : MessageProcessor {
 
         PacketOpcode opcode = Util.readOpcode(messageDataReader);
         switch (opcode) {
+            case PacketOpcode.ATTACK_DONE_EVENT: // 0x01A7
+                {
+                    AttackDone message = AttackDone.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Combat__CancelAttack_ID:
             case PacketOpcode.Evt_Combat__CommenceAttack_ID: {
                     EmptyMessage message = new EmptyMessage(opcode);
@@ -78,6 +84,26 @@ public class CM_Combat : MessageProcessor {
         }
 
         return handled;
+    }
+
+    public class AttackDone : Message
+    {
+        public uint NumberOfAttacks;
+
+        public static AttackDone read(BinaryReader binaryReader)
+        {
+            AttackDone newObj = new AttackDone();
+            newObj.NumberOfAttacks = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("NumberOfAttacks = " + this.NumberOfAttacks);
+            treeView.Nodes.Add(rootNode);
+        }
     }
 
     public class TargetedMeleeAttack : Message {
