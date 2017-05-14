@@ -459,8 +459,8 @@ public class CM_Physics : MessageProcessor {
             PWD_Packed_BlipColor = (1 << 20),
             PWD_Packed_Burden = (1 << 21), // NOTE: May be PWD_Packed_VendorClassID
             PWD_Packed_SpellID = (1 << 22),
-            PWD_Packed_RadarEnum = (1 << 23), // NOTE: May be PWD_Packed_RadarDistance
-            PWD_Packed_Workmanship = (1 << 24),
+            PWD_Packed_RadarEnum = (1 << 23), 
+            PWD_Packed_Workmanship = (1 << 24), // NOTE: May be PWD_Packed_RadarDistance
             PWD_Packed_HouseOwner = (1 << 25),
             PWD_Packed_HouseRestrictions = (1 << 26),
             PWD_Packed_PScript = (1 << 27),
@@ -916,6 +916,7 @@ public class CM_Physics : MessageProcessor {
         }
 
         public uint header;
+        public uint header2;
         public PStringChar _name;
         public PStringChar _plural_name;
         public uint _wcid;
@@ -935,7 +936,7 @@ public class CM_Physics : MessageProcessor {
         public ITEM_TYPE _targetType;
         public uint _effects;
         public AMMO_TYPE _ammoType;
-        public byte _combatUse;
+        public COMBAT_USE _combatUse;
         public ushort _structure;
         public ushort _maxStructure;
         public ushort _stackSize;
@@ -954,19 +955,15 @@ public class CM_Physics : MessageProcessor {
         public uint _monarch;
         public MaterialType _material_type;
 
-
         public static OldPublicWeenieDesc read(BinaryReader binaryReader)
         {
             OldPublicWeenieDesc newObj = new OldPublicWeenieDesc();
             newObj.header = binaryReader.ReadUInt32();
             newObj._name = PStringChar.read(binaryReader);
-            Util.readToAlign(binaryReader);
             newObj._wcid = Util.readWClassIDCompressed(binaryReader);
-            newObj._iconID = Util.readDataIDOfKnownType(0x6000000, binaryReader);
+            newObj._iconID = binaryReader.ReadUInt16() | 0x6000000u;
             newObj._type = (ITEM_TYPE)binaryReader.ReadUInt32();
             newObj._bitfield = binaryReader.ReadUInt32();
-
-            Util.readToAlign(binaryReader);
 
             if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_PluralName) != 0)
             {
@@ -1010,12 +1007,12 @@ public class CM_Physics : MessageProcessor {
 
             if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_AmmoType) != 0)
             {
-                newObj._ammoType = (AMMO_TYPE)binaryReader.ReadUInt16();
+                newObj._ammoType = (AMMO_TYPE)binaryReader.ReadByte();
             }
 
             if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_CombatUse) != 0)
             {
-                newObj._combatUse = binaryReader.ReadByte();
+                newObj._combatUse = (COMBAT_USE)binaryReader.ReadByte();
             }
 
             if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_Structure) != 0)
@@ -1141,6 +1138,10 @@ public class CM_Physics : MessageProcessor {
             node.Nodes.Add("_iconID = " + _iconID);
             node.Nodes.Add("_type = " + _type);
             node.Nodes.Add("_bitfield = " + _bitfield);
+            if ((_bitfield & (uint)BitfieldIndex.BF_INCLUDES_SECOND_HEADER) != 0)
+            {
+                node.Nodes.Add("header2 = " + header2);
+            }
             if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_PluralName) != 0)
             {
                 node.Nodes.Add("_plural_name = " + _plural_name);

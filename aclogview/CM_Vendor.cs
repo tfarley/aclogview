@@ -32,7 +32,7 @@ public class CM_Vendor : MessageProcessor {
                     break;
                 }
             // TODO: PacketOpcode.Evt_Vendor__RequestVendorInfo_ID
-            // TODO: PacketOpcode.VENDOR_INFO_EVENT:
+            // I could find no instance of this event in logs. Possibly a retired event?
             default: {
                     handled = false;
                     break;
@@ -118,20 +118,20 @@ public class CM_Vendor : MessageProcessor {
     }
 
     public class ItemProfile {
-        public uint amount;
+        public int amount;
         public uint iid;
         public CM_Physics.PublicWeenieDesc pwd;
         public CM_Physics.OldPublicWeenieDesc opwd;
 
         public static ItemProfile read(BinaryReader binaryReader) {
             ItemProfile newObj = new ItemProfile();
-            newObj.amount = binaryReader.ReadUInt32();
+            newObj.amount = binaryReader.ReadInt32();
             newObj.iid = binaryReader.ReadUInt32();
-            // TODO: If (amt & (1 << 24)) != 0, then this should actually read an OldPublicWeenieDesc!
-            if((newObj.amount & (1 << 24)) != 0)
-                newObj.opwd = CM_Physics.OldPublicWeenieDesc.read(binaryReader);
-            else
+            int descType = (newObj.amount >> 24);
+            if (descType == -1)
                 newObj.pwd = CM_Physics.PublicWeenieDesc.read(binaryReader);
+            else if (descType == 1)
+                newObj.opwd = CM_Physics.OldPublicWeenieDesc.read(binaryReader); // NOTE: I've not found an actual instance of this method being used.
             newObj.amount = newObj.amount & 0xFFFFFF;
             return newObj;
         }
@@ -170,10 +170,15 @@ public class CM_Vendor : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_vendorID = " + i_vendorID);
+            rootNode.Nodes.Add("i_vendorID = " + Utility.FormatGuid(i_vendorID));
             TreeNode stuffNode = rootNode.Nodes.Add("i_stuff = ");
-            i_stuff.contributeToTreeNode(stuffNode);
-            rootNode.Nodes.Add("i_alternateCurrencyID = " + i_alternateCurrencyID);
+            for (int i = 0; i < i_stuff.list.Count; i++)
+            {
+                TreeNode itemProfileNode = stuffNode.Nodes.Add("itemProfile = ");
+                ItemProfile thisProfile = i_stuff.list[i];
+                thisProfile.contributeToTreeNode(itemProfileNode);
+            }
+            rootNode.Nodes.Add("i_alternateCurrencyID = " + Utility.FormatGuid(i_alternateCurrencyID));
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -194,9 +199,14 @@ public class CM_Vendor : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_vendorID = " + i_vendorID);
+            rootNode.Nodes.Add("i_vendorID = " + Utility.FormatGuid(i_vendorID));
             TreeNode stuffNode = rootNode.Nodes.Add("i_stuff = ");
-            i_stuff.contributeToTreeNode(stuffNode);
+            for (int i = 0; i < i_stuff.list.Count; i++)
+            {
+                TreeNode itemProfileNode = stuffNode.Nodes.Add("itemProfile = ");
+                ItemProfile thisProfile = i_stuff.list[i];
+                thisProfile.contributeToTreeNode(itemProfileNode);
+            }
             treeView.Nodes.Add(rootNode);
         }
     }
