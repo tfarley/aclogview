@@ -41,6 +41,12 @@ public class CM_Inventory : MessageProcessor {
                     break;
                 }
             // TODO: Evt_Inventory__CommenceViewingContents_ID
+            case PacketOpcode.CLOSE_GROUND_CONTAINER_EVENT: // 0x0052
+                {
+                    CloseGroundContainer message = CloseGroundContainer.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Inventory__StackableMerge_ID: {
                     StackableMerge message = StackableMerge.read(messageDataReader);
                     message.contributeToTreeView(outputTreeView);
@@ -188,6 +194,26 @@ public class CM_Inventory : MessageProcessor {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
             rootNode.Nodes.Add("i_object = " + i_object);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class CloseGroundContainer : Message
+    {
+        public uint ObjectID;
+
+        public static CloseGroundContainer read(BinaryReader binaryReader)
+        {
+            CloseGroundContainer newObj = new CloseGroundContainer();
+            newObj.ObjectID = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("ObjectID = " + Utility.FormatGuid(ObjectID));
             treeView.Nodes.Add(rootNode);
         }
     }
