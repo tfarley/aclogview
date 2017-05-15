@@ -105,7 +105,7 @@ public class CM_Examine : MessageProcessor {
             node.Nodes.Add("_header = " + _header);
             node.Nodes.Add("_health = " + _health);
             node.Nodes.Add("_max_health = " + _max_health);
-            if ((_header & 0x8) != 0)
+            if ((_header & (uint)CreatureAppraisalProfilePackHeader.Packed_Attributes) != 0)
             {
                 node.Nodes.Add("_strength = " + _strength);
                 node.Nodes.Add("_endurance = " + _endurance);
@@ -118,7 +118,7 @@ public class CM_Examine : MessageProcessor {
                 node.Nodes.Add("_max_stamina = " + _max_stamina);
                 node.Nodes.Add("_max_mana = " + _max_mana);
             }
-            if ((_header & 0x1) != 0)
+            if ((_header & (uint)CreatureAppraisalProfilePackHeader.Packed_Enchantments) != 0)
             {
                 node.Nodes.Add("enchantment_bitfield = " + enchantment_bitfield);
             }
@@ -186,8 +186,8 @@ public class CM_Examine : MessageProcessor {
             newObj._mod_vs_cold = binaryReader.ReadSingle();
             newObj._mod_vs_fire = binaryReader.ReadSingle();
             newObj._mod_vs_acid = binaryReader.ReadSingle();
-            newObj._mod_vs_electric = binaryReader.ReadSingle();
             newObj._mod_vs_nether = binaryReader.ReadSingle();
+            newObj._mod_vs_electric = binaryReader.ReadSingle();
             return newObj;
         }
 
@@ -199,8 +199,8 @@ public class CM_Examine : MessageProcessor {
             node.Nodes.Add("_mod_vs_cold = " + _mod_vs_cold);
             node.Nodes.Add("_mod_vs_fire = " + _mod_vs_fire);
             node.Nodes.Add("_mod_vs_acid = " + _mod_vs_acid);
-            node.Nodes.Add("_mod_vs_electric = " + _mod_vs_electric);
             node.Nodes.Add("_mod_vs_nether = " + _mod_vs_nether);
+            node.Nodes.Add("_mod_vs_electric = " + _mod_vs_electric);
         }
     }
 
@@ -208,7 +208,7 @@ public class CM_Examine : MessageProcessor {
     {
         public uint _bitField;
         public uint _validLocations;
-        public uint _ammoType;
+        public AMMO_TYPE _ammoType;
         public bool isInscribable;
         public bool isHealer;
         public bool isLockpick;
@@ -218,13 +218,13 @@ public class CM_Examine : MessageProcessor {
             HookAppraisalProfile newObj = new HookAppraisalProfile();
             newObj._bitField = binaryReader.ReadUInt32();
             newObj._validLocations = binaryReader.ReadUInt32();
-            newObj._ammoType = binaryReader.ReadUInt32();
+            newObj._ammoType = (AMMO_TYPE)binaryReader.ReadUInt32();
 
-            if ((newObj._bitField & 0x1) != 0)
+            if ((newObj._bitField & (uint)Enchantment_BFIndex.BF_INSCRIBABLE) != 0)
                 newObj.isInscribable = true;
-            if ((newObj._bitField & 0x2) != 0)
+            if ((newObj._bitField & (uint)Enchantment_BFIndex.BF_HEALER) != 0)
                 newObj.isHealer = true;
-            if ((newObj._bitField & 0x4) != 0)
+            if ((newObj._bitField & (uint)Enchantment_BFIndex.BF_LOCKPICK) != 0)
                 newObj.isLockpick = true;
 
             return newObj;
@@ -241,7 +241,7 @@ public class CM_Examine : MessageProcessor {
         }
     }
 
-    public class WeaponAppraisalProfile
+    public class WeaponProfile
     {
         public uint _damage_type;
         public uint _weapon_time;
@@ -254,9 +254,9 @@ public class CM_Examine : MessageProcessor {
         public double _weapon_offense;
         public uint _max_velocity_estimated;
 
-        public static WeaponAppraisalProfile read(BinaryReader binaryReader)
+        public static WeaponProfile read(BinaryReader binaryReader)
         {
-            WeaponAppraisalProfile newObj = new WeaponAppraisalProfile();
+            WeaponProfile newObj = new WeaponProfile();
             newObj._damage_type = binaryReader.ReadUInt32();
             newObj._weapon_time = binaryReader.ReadUInt32();
             newObj._weapon_skill = binaryReader.ReadUInt32();
@@ -388,7 +388,7 @@ public class CM_Examine : MessageProcessor {
         public PList<SpellID> _spellsTable = new PList<SpellID>();
         public ArmorProfile _armorProfileTable = new ArmorProfile();
         public CreatureAppraisalProfile _creatureProfileTable = new CreatureAppraisalProfile();
-        public WeaponAppraisalProfile _weaponProfileTable = new WeaponAppraisalProfile();
+        public WeaponProfile _weaponProfileTable = new WeaponProfile();
         public HookAppraisalProfile _hookProfileTable = new HookAppraisalProfile();
         public uint _armorEnchantment;
         public uint _weaponEnchantment;
@@ -431,7 +431,7 @@ public class CM_Examine : MessageProcessor {
             }
             if ((newObj.header & (uint)AppraisalProfilePackHeader.Packed_WeaponProfile) != 0)
             {
-                newObj._weaponProfileTable = WeaponAppraisalProfile.read(binaryReader);
+                newObj._weaponProfileTable = WeaponProfile.read(binaryReader);
             }
             // TODO: Find an actual example of this to test it!
             if ((newObj.header & (uint)AppraisalProfilePackHeader.Packed_HookProfile) != 0)
@@ -461,51 +461,71 @@ public class CM_Examine : MessageProcessor {
             node.Nodes.Add("header = " + header);
             node.Nodes.Add("success_flag = " + success_flag);
             TreeNode intStatsNode = node.Nodes.Add("_intStatsTable = ");
-            _intStatsTable.contributeToTreeNode(intStatsNode);
+            if ((header & (uint)AppraisalProfilePackHeader.Packed_IntStats) != 0)
+            {
+                _intStatsTable.contributeToTreeNode(intStatsNode);
+            }
             TreeNode int64StatsNode = node.Nodes.Add("_int64StatsTable = ");
-            _int64StatsTable.contributeToTreeNode(int64StatsNode);
+            if ((header & (uint)AppraisalProfilePackHeader.Packed_Int64Stats) != 0)
+            {
+                _int64StatsTable.contributeToTreeNode(int64StatsNode);
+            }
             TreeNode boolStatsNode = node.Nodes.Add("_boolStatsTable = ");
-            _boolStatsTable.contributeToTreeNode(boolStatsNode);
+            if ((header & (uint)AppraisalProfilePackHeader.Packed_BoolStats) != 0)
+            {
+                _boolStatsTable.contributeToTreeNode(boolStatsNode);
+            }
             TreeNode floatStatsNode = node.Nodes.Add("_floatStatsTable = ");
-            _floatStatsTable.contributeToTreeNode(floatStatsNode);
+            if ((header & (uint)AppraisalProfilePackHeader.Packed_FloatStats) != 0)
+            {
+                _floatStatsTable.contributeToTreeNode(floatStatsNode);
+            }
             TreeNode strStatsNode = node.Nodes.Add("_strStatsTable = ");
-            _strStatsTable.contributeToTreeNode(strStatsNode);
+            if ((header & (uint)AppraisalProfilePackHeader.Packed_StringStats) != 0)
+            {
+                _strStatsTable.contributeToTreeNode(strStatsNode);
+            }
             TreeNode didStatsNode = node.Nodes.Add("_didStatsTable = ");
-            _didStatsTable.contributeToTreeNode(didStatsNode);
+            if ((header & (uint)AppraisalProfilePackHeader.Packed_DataIDStats) != 0)
+            {
+                _didStatsTable.contributeToTreeNode(didStatsNode);
+            }
+            TreeNode spellsNode = node.Nodes.Add("_spellBook = ");
+            if ((header & (uint)AppraisalProfilePackHeader.Packed_SpellList) != 0)
+            {
+                _spellsTable.contributeToTreeNode(spellsNode);
+            }
 
-            TreeNode spellStatsNode = node.Nodes.Add("_spellBook = ");
-            _spellsTable.contributeToTreeNode(spellStatsNode);
-
-            TreeNode armorProfileStatsNode = node.Nodes.Add("_armorProfile = ");
+            TreeNode armorProfileNode = node.Nodes.Add("_armorProfile = ");
             if ((header & (uint)AppraisalProfilePackHeader.Packed_ArmorProfile) != 0)
             {
-                _armorProfileTable.contributeToTreeNode(armorProfileStatsNode);
+                _armorProfileTable.contributeToTreeNode(armorProfileNode);
             }
-            TreeNode creatureProfileStatsNode = node.Nodes.Add("_creatureProfile = ");
+            TreeNode creatureProfileNode = node.Nodes.Add("_creatureProfile = ");
             if ((header & (uint)AppraisalProfilePackHeader.Packed_CreatureProfile) != 0)
             {
-                _creatureProfileTable.contributeToTreeNode(creatureProfileStatsNode);
+                _creatureProfileTable.contributeToTreeNode(creatureProfileNode);
             }
-            TreeNode weaponProfileStatsNode = node.Nodes.Add("_weaponProfile = ");
+            TreeNode weaponProfileNode = node.Nodes.Add("_weaponProfile = ");
             if ((header & (uint)AppraisalProfilePackHeader.Packed_WeaponProfile) != 0)
             {
-                _weaponProfileTable.contributeToTreeNode(weaponProfileStatsNode);
+                _weaponProfileTable.contributeToTreeNode(weaponProfileNode);
             }
-            TreeNode hookStatsNode = node.Nodes.Add("_hookProfile = ");
+            TreeNode hooksNode = node.Nodes.Add("_hookProfile = ");
             if ((header & (uint)AppraisalProfilePackHeader.Packed_HookProfile) != 0)
             {
-                _hookProfileTable.contributeToTreeNode(hookStatsNode);
+                _hookProfileTable.contributeToTreeNode(hooksNode);
             }
 
             // TODO - Decode these further using the BFIndex settings up above
-            TreeNode armorEnchantmentStatsNode = node.Nodes.Add("_armorEnchantmentBitField = " + _armorEnchantment);
-            TreeNode weaponEnchantmentStatsNode = node.Nodes.Add("_weaponEnchanmentBitField = " + _weaponEnchantment);
-            TreeNode resistEnchantmentStatsNode = node.Nodes.Add("_resistEnchantmentBitField = " + _resistEnchantment);
+            TreeNode armorEnchantmentNode = node.Nodes.Add("_armorEnchantmentBitField = " + _armorEnchantment);
+            TreeNode weaponEnchantmentNode = node.Nodes.Add("_weaponEnchanmentBitField = " + _weaponEnchantment);
+            TreeNode resistEnchantmentNode = node.Nodes.Add("_resistEnchantmentBitField = " + _resistEnchantment);
 
-            TreeNode armorLevelsStatsNode = node.Nodes.Add("_armorLevels = ");
+            TreeNode armorLevelsNode = node.Nodes.Add("_armorLevels = ");
             if ((header & (uint)AppraisalProfilePackHeader.Packed_ArmorLevels) != 0)
             {
-                _armorLevelsTable.contributeToTreeNode(armorLevelsStatsNode);
+                _armorLevelsTable.contributeToTreeNode(armorLevelsNode);
             }
         }
     }
