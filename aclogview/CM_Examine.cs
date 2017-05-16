@@ -433,7 +433,6 @@ public class CM_Examine : MessageProcessor {
             {
                 newObj._weaponProfileTable = WeaponProfile.read(binaryReader);
             }
-            // TODO: Find an actual example of this to test it!
             if ((newObj.header & (uint)AppraisalProfilePackHeader.Packed_HookProfile) != 0)
             {
                 newObj._hookProfileTable = HookAppraisalProfile.read(binaryReader);
@@ -517,10 +516,47 @@ public class CM_Examine : MessageProcessor {
                 _hookProfileTable.contributeToTreeNode(hooksNode);
             }
 
-            // TODO - Decode these further using the BFIndex settings up above
-            TreeNode armorEnchantmentNode = node.Nodes.Add("_armorEnchantmentBitField = " + _armorEnchantment);
-            TreeNode weaponEnchantmentNode = node.Nodes.Add("_weaponEnchanmentBitField = " + _weaponEnchantment);
-            TreeNode resistEnchantmentNode = node.Nodes.Add("_resistEnchantmentBitField = " + _resistEnchantment);
+            TreeNode armorEnchantmentNode = node.Nodes.Add("_armorEnchantments = ");
+            if ((header & (uint)AppraisalProfilePackHeader.Packed_ArmorEnchant) != 0)
+            {
+                armorEnchantmentNode.Nodes.Add("bitfield = " + _armorEnchantment);
+                // Loop over the enum types and add all the applicable ones
+                foreach (ArmorEnchantment_BFIndex armorEnchantmentType in Enum.GetValues(typeof(ArmorEnchantment_BFIndex)))
+                {
+                    if ((_armorEnchantment & (uint)armorEnchantmentType) != 0)
+                    {
+                        armorEnchantmentNode.Nodes.Add(Enum.GetName(typeof(ArmorEnchantment_BFIndex), armorEnchantmentType));
+                    }
+                }
+            }
+
+            TreeNode weaponEnchantmentNode = node.Nodes.Add("_weaponEnchanments = ");
+            if ((header & (uint)AppraisalProfilePackHeader.Packed_WeaponEnchant) != 0)
+            {
+                weaponEnchantmentNode.Nodes.Add("bitfield = " + _weaponEnchantment);
+                // Loop over the enum types and add all the applicable ones
+                foreach (WeaponEnchantment_BFIndex weaponEnchantmentType in Enum.GetValues(typeof(WeaponEnchantment_BFIndex)))
+                {
+                    if ((_weaponEnchantment & (uint)weaponEnchantmentType) != 0)
+                    {
+                        weaponEnchantmentNode.Nodes.Add(Enum.GetName(typeof(WeaponEnchantment_BFIndex), weaponEnchantmentType));
+                    }
+                }
+            }
+
+            TreeNode resistEnchantmentNode = node.Nodes.Add("_resistEnchantments = ");
+            if ((header & (uint)AppraisalProfilePackHeader.Packed_WeaponEnchant) != 0)
+            {
+                resistEnchantmentNode.Nodes.Add("bitfield = " + _resistEnchantment);
+                // Loop over the enum types and add all the applicable ones
+                foreach (ResistanceEnchantment_BFIndex resistEnchantmentType in Enum.GetValues(typeof(ResistanceEnchantment_BFIndex)))
+                {
+                    if ((_resistEnchantment & (uint)resistEnchantmentType) != 0)
+                    {
+                        resistEnchantmentNode.Nodes.Add(Enum.GetName(typeof(ResistanceEnchantment_BFIndex), resistEnchantmentType));
+                    }
+                }
+            }
 
             TreeNode armorLevelsNode = node.Nodes.Add("_armorLevels = ");
             if ((header & (uint)AppraisalProfilePackHeader.Packed_ArmorLevels) != 0)
