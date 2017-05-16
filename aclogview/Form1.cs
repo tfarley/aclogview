@@ -71,6 +71,7 @@ namespace aclogview
             messageProcessors.Add(new Proto_UI());
             Globals.UseHex = this.checkBoxUseHex.Checked;
             
+            
             if (args != null && args.Length >= 2)
             {
                 int opcode;
@@ -97,8 +98,9 @@ namespace aclogview
         
         private void loadPcap(string fileName, bool asMessages, bool dontList = false) {
             this.Text = "AC Log View - " + Path.GetFileName(fileName);
-            this.toolStripStatus.Text = Path.GetFullPath(fileName);
-
+            this.pcapFilePath = Path.GetFullPath(fileName);
+            this.toolStripStatus.Text = pcapFilePath;
+            btnHighlight.Enabled = true;
             if (opCodesToHighlight.Count > 0)
             {
                 this.Text += "              Highlighted OpCodes: ";
@@ -872,6 +874,18 @@ namespace aclogview
                     listView_Packets.EnsureVisible(prevRow);
                     updateData();
                 }
+            }
+        }
+
+        private void btnHighlight_Click(object sender, EventArgs e)
+        {
+            // currently only supports decimal
+            int opcode;
+            if (int.TryParse(textBox_Search.Text, out opcode))
+            {
+                opCodesToHighlight.Clear();
+                opCodesToHighlight.Add(opcode);
+                this.loadPcap(this.pcapFilePath, loadedAsMessages);
             }
         }
     }

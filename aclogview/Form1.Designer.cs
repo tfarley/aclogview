@@ -59,6 +59,7 @@
             this.textBox_Search = new System.Windows.Forms.TextBox();
             this.pictureBox_Search = new System.Windows.Forms.PictureBox();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.checkBox_HideHeaderOnly = new System.Windows.Forms.CheckBox();
             this.checkBox_useHighlighting = new System.Windows.Forms.CheckBox();
             this.checkBoxUseHex = new System.Windows.Forms.CheckBox();
@@ -66,7 +67,7 @@
             this.cmdforward = new System.Windows.Forms.Button();
             this.cmdbackward = new System.Windows.Forms.Button();
             this.lblTracker = new System.Windows.Forms.Label();
-            this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.btnHighlight = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -340,15 +341,14 @@
             // 
             // textBox_Search
             // 
-            this.textBox_Search.Location = new System.Drawing.Point(566, 0);
+            this.textBox_Search.Location = new System.Drawing.Point(1195, 2);
             this.textBox_Search.Name = "textBox_Search";
             this.textBox_Search.Size = new System.Drawing.Size(165, 20);
             this.textBox_Search.TabIndex = 2;
-            this.textBox_Search.Visible = false;
             // 
             // pictureBox_Search
             // 
-            this.pictureBox_Search.Location = new System.Drawing.Point(539, 0);
+            this.pictureBox_Search.Location = new System.Drawing.Point(711, -1);
             this.pictureBox_Search.Name = "pictureBox_Search";
             this.pictureBox_Search.Size = new System.Drawing.Size(20, 20);
             this.pictureBox_Search.TabIndex = 3;
@@ -364,6 +364,12 @@
             this.statusStrip.Size = new System.Drawing.Size(1520, 22);
             this.statusStrip.TabIndex = 1;
             this.statusStrip.Text = "statusStrip1";
+            // 
+            // toolStripStatus
+            // 
+            this.toolStripStatus.Name = "toolStripStatus";
+            this.toolStripStatus.Size = new System.Drawing.Size(94, 17);
+            this.toolStripStatus.Text = "toolStripFilePath";
             // 
             // checkBox_HideHeaderOnly
             // 
@@ -382,7 +388,7 @@
             this.checkBox_useHighlighting.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_useHighlighting.Location = new System.Drawing.Point(1024, 3);
             this.checkBox_useHighlighting.Name = "checkBox_useHighlighting";
-            this.checkBox_useHighlighting.Size = new System.Drawing.Size(209, 17);
+            this.checkBox_useHighlighting.Size = new System.Drawing.Size(165, 17);
             this.checkBox_useHighlighting.TabIndex = 4;
             this.checkBox_useHighlighting.Text = "Use Highlighting (Slower!)";
             this.checkBox_useHighlighting.UseVisualStyleBackColor = true;
@@ -441,17 +447,23 @@
             this.lblTracker.TabIndex = 8;
             this.lblTracker.Text = "Viewing #0";
             // 
-            // toolStripStatusLabel1
+            // btnHighlight
             // 
-            this.toolStripStatus.Name = "toolStripStatusLabel1";
-            this.toolStripStatus.Size = new System.Drawing.Size(94, 17);
-            this.toolStripStatus.Text = "toolStripFilePath";
+            this.btnHighlight.Enabled = false;
+            this.btnHighlight.Location = new System.Drawing.Point(1366, 1);
+            this.btnHighlight.Name = "btnHighlight";
+            this.btnHighlight.Size = new System.Drawing.Size(75, 22);
+            this.btnHighlight.TabIndex = 9;
+            this.btnHighlight.Text = "Highlight";
+            this.btnHighlight.UseVisualStyleBackColor = true;
+            this.btnHighlight.Click += new System.EventHandler(this.btnHighlight_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1520, 852);
+            this.Controls.Add(this.btnHighlight);
             this.Controls.Add(this.checkBoxUseHex);
             this.Controls.Add(this.lblTracker);
             this.Controls.Add(this.cmdbackward);
@@ -531,6 +543,7 @@
         private System.Windows.Forms.ColumnHeader HexOpCode;
         private System.Windows.Forms.CheckBox checkBoxUseHex;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatus;
+        private System.Windows.Forms.Button btnHighlight;
     }
 }
 
