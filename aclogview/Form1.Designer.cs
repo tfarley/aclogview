@@ -66,6 +66,7 @@
             this.cmdforward = new System.Windows.Forms.Button();
             this.cmdbackward = new System.Windows.Forms.Button();
             this.lblTracker = new System.Windows.Forms.Label();
+            this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -76,6 +77,7 @@
             this.splitContainer_Bottom.SuspendLayout();
             this.parsedContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Search)).BeginInit();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer_Main
@@ -355,6 +357,8 @@
             // 
             // statusStrip
             // 
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatus});
             this.statusStrip.Location = new System.Drawing.Point(0, 830);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(1520, 22);
@@ -396,6 +400,7 @@
             this.checkBoxUseHex.Text = "Display Guid as Hex";
             this.checkBoxUseHex.UseVisualStyleBackColor = true;
             this.checkBoxUseHex.CheckedChanged += new System.EventHandler(this.checkBoxUseHex_CheckedChanged);
+            // 
             // CmdLock
             // 
             this.CmdLock.Location = new System.Drawing.Point(2, 1);
@@ -436,6 +441,12 @@
             this.lblTracker.TabIndex = 8;
             this.lblTracker.Text = "Viewing #0";
             // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatus.Name = "toolStripStatusLabel1";
+            this.toolStripStatus.Size = new System.Drawing.Size(94, 17);
+            this.toolStripStatus.Text = "toolStripFilePath";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -468,6 +479,8 @@
             this.splitContainer_Bottom.ResumeLayout(false);
             this.parsedContextMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Search)).EndInit();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -517,6 +530,7 @@
         private System.Windows.Forms.MenuItem menuItem_OpenAsMessages;
         private System.Windows.Forms.ColumnHeader HexOpCode;
         private System.Windows.Forms.CheckBox checkBoxUseHex;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatus;
     }
 }
 

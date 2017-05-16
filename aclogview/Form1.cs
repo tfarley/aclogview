@@ -32,6 +32,8 @@ namespace aclogview
 
         private StringBuilder strbuilder = new StringBuilder();
 
+        private string pcapFilePath;
+
         public Form1(string[] args)
         {
             InitializeComponent();
@@ -75,8 +77,12 @@ namespace aclogview
                 if (int.TryParse(args[1], out opcode))
                     opCodesToHighlight.Add(opcode);
             }
-            if (args != null && args.Length >= 1)
+            if (args != null && args.Length >= 1) {
                 loadPcap(args[0], false);
+            } else
+            {
+                toolStripStatus.Text = "AC Log View";
+            }
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -91,6 +97,7 @@ namespace aclogview
         
         private void loadPcap(string fileName, bool asMessages, bool dontList = false) {
             this.Text = "AC Log View - " + Path.GetFileName(fileName);
+            this.toolStripStatus.Text = Path.GetFullPath(fileName);
 
             if (opCodesToHighlight.Count > 0)
             {
