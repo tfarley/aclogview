@@ -70,7 +70,7 @@ namespace aclogview
             messageProcessors.Add(new CM_Vendor());
             messageProcessors.Add(new CM_Writing());
             messageProcessors.Add(new Proto_UI());
-            Globals.UseHex = this.checkBoxUseHex.Checked;
+            Globals.UseHex = checkBoxUseHex.Checked;
             
             
             if (args != null && args.Length >= 2)
@@ -98,13 +98,15 @@ namespace aclogview
         List<ListViewItem> listItems = new List<ListViewItem>();
         
         private void loadPcap(string fileName, bool asMessages, bool dontList = false) {
-            this.Text = "AC Log View - " + Path.GetFileName(fileName);
-            this.pcapFilePath = Path.GetFullPath(fileName);
-            this.toolStripStatus.Text = pcapFilePath;
+            Text = "AC Log View - " + Path.GetFileName(fileName);
+            pcapFilePath = Path.GetFullPath(fileName);
+            toolStripStatus.Text = pcapFilePath;
             btnHighlight.Enabled = true;
+            menuItem_ReOpen.Enabled = true;
+            menuItem_ReOpenAsMessages.Enabled = true;
             if (opCodesToHighlight.Count > 0)
             {
-                this.Text += "              Highlighted OpCodes: ";
+                Text += "              Highlighted OpCodes: ";
                 foreach (var opcode in opCodesToHighlight)
                     Text += opcode + " (" + opcode.ToString("X4") + "),";
             }
@@ -829,7 +831,7 @@ namespace aclogview
 
         private void checkBoxUseHex_CheckedChanged(object sender, EventArgs e)
         {
-            Globals.UseHex = this.checkBoxUseHex.Checked;
+            Globals.UseHex = checkBoxUseHex.Checked;
         }
 
 
@@ -928,7 +930,7 @@ namespace aclogview
                 textBox_Search.Text += currentOpcode.ToString("X");
                 opCodesToHighlight.Clear();
                 opCodesToHighlight.Add(currentOpcode);
-                this.loadPcap(this.pcapFilePath, loadedAsMessages);
+                loadPcap(pcapFilePath, loadedAsMessages);
             } else
             {
                 toolStripStatus.Text = "Invalid hex code.";
@@ -943,6 +945,16 @@ namespace aclogview
         public bool HexTest(string test)
         {
             return System.Text.RegularExpressions.Regex.IsMatch(test, @"\A\b[0-9a-fA-F]+\b\Z");
+        }
+
+        private void menuItem_ReOpen_Click(object sender, EventArgs e)
+        {
+            loadPcap(pcapFilePath, false);
+        }
+
+        private void menuItem_ReOpenAsMessages_Click(object sender, EventArgs e)
+        {
+            loadPcap(pcapFilePath, true);
         }
     }
 }

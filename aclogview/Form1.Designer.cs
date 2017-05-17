@@ -68,6 +68,8 @@
             this.cmdbackward = new System.Windows.Forms.Button();
             this.lblTracker = new System.Windows.Forms.Label();
             this.btnHighlight = new System.Windows.Forms.Button();
+            this.menuItem_ReOpen = new System.Windows.Forms.MenuItem();
+            this.menuItem_ReOpenAsMessages = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -234,7 +236,9 @@
             this.menuItem_File.Index = 0;
             this.menuItem_File.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem_Open,
-            this.menuItem_OpenAsMessages});
+            this.menuItem_OpenAsMessages,
+            this.menuItem_ReOpen,
+            this.menuItem_ReOpenAsMessages});
             this.menuItem_File.Text = "File";
             // 
             // menuItem_Open
@@ -459,6 +463,20 @@
             this.btnHighlight.UseVisualStyleBackColor = true;
             this.btnHighlight.Click += new System.EventHandler(this.btnHighlight_Click);
             // 
+            // menuItem_ReOpen
+            // 
+            this.menuItem_ReOpen.Enabled = false;
+            this.menuItem_ReOpen.Index = 2;
+            this.menuItem_ReOpen.Text = "Re-Open";
+            this.menuItem_ReOpen.Click += new System.EventHandler(this.menuItem_ReOpen_Click);
+            // 
+            // menuItem_ReOpenAsMessages
+            // 
+            this.menuItem_ReOpenAsMessages.Enabled = false;
+            this.menuItem_ReOpenAsMessages.Index = 3;
+            this.menuItem_ReOpenAsMessages.Text = "Re-Open As Messages";
+            this.menuItem_ReOpenAsMessages.Click += new System.EventHandler(this.menuItem_ReOpenAsMessages_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -545,6 +563,8 @@
         private System.Windows.Forms.CheckBox checkBoxUseHex;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatus;
         private System.Windows.Forms.Button btnHighlight;
+        private System.Windows.Forms.MenuItem menuItem_ReOpen;
+        private System.Windows.Forms.MenuItem menuItem_ReOpenAsMessages;
     }
 }
 
