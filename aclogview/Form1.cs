@@ -156,8 +156,8 @@ namespace aclogview
             }
             comparer.col = e.Column;
             listItems.Sort(comparer);
-
-            listView_Packets.RedrawItems(0, records.Count - 1, false);
+            if (records.Count>0)
+                listView_Packets.RedrawItems(0, records.Count - 1, false);
             updateData();
         }
 
