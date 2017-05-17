@@ -25,14 +25,13 @@ public class CM_Vendor : MessageProcessor {
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }
+            // TODO: PacketOpcode.Evt_Vendor__RequestVendorInfo_ID - (I could find no instance of this event in logs. Possibly a retired event? - OptimShi)
             case PacketOpcode.VENDOR_INFO_EVENT:
                 {
                     gmVendorUI message = gmVendorUI.read(messageDataReader);
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }
-            // TODO: PacketOpcode.Evt_Vendor__RequestVendorInfo_ID
-            // I could find no instance of this event in logs. Possibly a retired event?
             default: {
                     handled = false;
                     break;

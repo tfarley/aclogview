@@ -457,10 +457,10 @@ public class CM_Physics : MessageProcessor {
             PWD_Packed_Priority = (1 << 18),
             PWD_Packed_TargetType = (1 << 19),
             PWD_Packed_BlipColor = (1 << 20),
-            PWD_Packed_Burden = (1 << 21), // NOTE: May be PWD_Packed_VendorClassID
+            PWD_Packed_Burden = (1 << 21),
             PWD_Packed_SpellID = (1 << 22),
             PWD_Packed_RadarEnum = (1 << 23), 
-            PWD_Packed_Workmanship = (1 << 24), // NOTE: May be PWD_Packed_RadarDistance
+            PWD_Packed_Workmanship = (1 << 24),
             PWD_Packed_HouseOwner = (1 << 25),
             PWD_Packed_HouseRestrictions = (1 << 26),
             PWD_Packed_PScript = (1 << 27),
@@ -513,7 +513,6 @@ public class CM_Physics : MessageProcessor {
         }
 
         public uint header;
-        public uint header2;
         public PStringChar _name;
         public uint _wcid;
         public uint _iconID;
@@ -560,16 +559,12 @@ public class CM_Physics : MessageProcessor {
             PublicWeenieDesc newObj = new PublicWeenieDesc();
             newObj.header = binaryReader.ReadUInt32();
             newObj._name = PStringChar.read(binaryReader);
-            newObj._wcid = Util.readWClassIDCompressed(binaryReader);
-            newObj._iconID = Util.readDataIDOfKnownType(0x6000000, binaryReader);
+            newObj._wcid = binaryReader.ReadUInt16();
+            newObj._iconID = binaryReader.ReadUInt16() | 0x06000000;
             newObj._type = (ITEM_TYPE)binaryReader.ReadUInt32();
             newObj._bitfield = binaryReader.ReadUInt32();
 
             Util.readToAlign(binaryReader);
-
-            if ((newObj._bitfield & (uint)BitfieldIndex.BF_INCLUDES_SECOND_HEADER) != 0) {
-                newObj.header2 = binaryReader.ReadUInt32();
-            }
 
             if ((newObj.header & (uint)PublicWeenieDescPackHeader.PWD_Packed_PluralName) != 0) {
                 newObj._plural_name = PStringChar.read(binaryReader);
@@ -1072,7 +1067,7 @@ public class CM_Physics : MessageProcessor {
 
             if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_RadarDistance) != 0)
             {
-                newObj._obvious_distance = binaryReader.ReadUInt32();
+                newObj._obvious_distance = binaryReader.ReadSingle();
             }
 
             if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_VendorClassID) != 0)
@@ -1138,10 +1133,6 @@ public class CM_Physics : MessageProcessor {
             node.Nodes.Add("_iconID = " + _iconID);
             node.Nodes.Add("_type = " + _type);
             node.Nodes.Add("_bitfield = " + _bitfield);
-            if ((_bitfield & (uint)BitfieldIndex.BF_INCLUDES_SECOND_HEADER) != 0)
-            {
-                node.Nodes.Add("header2 = " + header2);
-            }
             if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_PluralName) != 0)
             {
                 node.Nodes.Add("_plural_name = " + _plural_name);
@@ -1153,10 +1144,6 @@ public class CM_Physics : MessageProcessor {
             if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_ContainersCapacity) != 0)
             {
                 node.Nodes.Add("_containersCapacity = " + _containersCapacity);
-            }
-            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_AmmoType) != 0)
-            {
-                node.Nodes.Add("_ammoType = " + _ammoType);
             }
             if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_Value) != 0)
             {
@@ -1177,6 +1164,10 @@ public class CM_Physics : MessageProcessor {
             if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_UIEffects) != 0)
             {
                 node.Nodes.Add("_effects = " + _effects);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_AmmoType) != 0)
+            {
+                node.Nodes.Add("_ammoType = " + _ammoType);
             }
             if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_CombatUse) != 0)
             {
@@ -1226,9 +1217,13 @@ public class CM_Physics : MessageProcessor {
             {
                 node.Nodes.Add("_radar_enum = " + _radar_enum);
             }
-            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_PScript) != 0)
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_RadarDistance) != 0)
             {
-                node.Nodes.Add("_pscript = " + _pscript);
+                node.Nodes.Add("_obvious_distance = " + _obvious_distance);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_VendorClassID) != 0)
+            {
+                node.Nodes.Add("_vndwcid = " + _vndwcid);
             }
             if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_SpellID) != 0)
             {
@@ -1238,9 +1233,17 @@ public class CM_Physics : MessageProcessor {
             {
                 node.Nodes.Add("_house_owner_iid = " + _house_owner_iid);
             }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_PScript) != 0)
+            {
+                node.Nodes.Add("_pscript = " + _pscript);
+            }
             if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_HouseRestrictions) != 0)
             {
                 //node.Nodes.Add("_db = " + _db); // TODO: Add once implemented
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_HookType) != 0)
+            {
+                node.Nodes.Add("_hook_type = " + _hook_type);
             }
             if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_HookItemTypes) != 0)
             {
@@ -1249,10 +1252,6 @@ public class CM_Physics : MessageProcessor {
             if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_Monarch) != 0)
             {
                 node.Nodes.Add("_monarch = " + _monarch);
-            }
-            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_HookType) != 0)
-            {
-                node.Nodes.Add("_hook_type = " + _hook_type);
             }
             if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_IconOverlay) != 0)
             {
