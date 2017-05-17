@@ -545,7 +545,7 @@ public class CM_Examine : MessageProcessor {
             }
 
             TreeNode resistEnchantmentNode = node.Nodes.Add("_resistEnchantments = ");
-            if ((header & (uint)AppraisalProfilePackHeader.Packed_WeaponEnchant) != 0)
+            if ((header & (uint)AppraisalProfilePackHeader.Packed_ResistEnchant) != 0)
             {
                 resistEnchantmentNode.Nodes.Add("bitfield = " + _resistEnchantment);
                 // Loop over the enum types and add all the applicable ones
