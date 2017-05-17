@@ -47,6 +47,30 @@ public class CM_Combat : MessageProcessor {
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }
+            case PacketOpcode.ATTACKER_NOTIFICATION_EVENT:
+                {
+                    AttackerNotificationEvent message = AttackerNotificationEvent.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.DEFENDER_NOTIFICATION_EVENT:
+                {
+                    DefenderNotificationEvent message = DefenderNotificationEvent.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.EVASION_ATTACKER_NOTIFICATION_EVENT:
+                {
+                    EvasionAttackerNotificationEvent message = EvasionAttackerNotificationEvent.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.EVASION_DEFENDER_NOTIFICATION_EVENT:
+                {
+                    EvasionDefenderNotificationEvent message = EvasionDefenderNotificationEvent.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             default: {
                     handled = false;
                     break;
@@ -158,6 +182,123 @@ public class CM_Combat : MessageProcessor {
             rootNode.Expand();
             rootNode.Nodes.Add("target = " +Utility.FormatGuid(this.target));
             rootNode.Nodes.Add("health = " + health);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class AttackerNotificationEvent : Message
+    {
+        public PStringChar defenders_name;
+        public uint damage_type;
+        public double severity; // 0.0 to 1.0
+        public uint damage;
+        public uint critical;
+        public ulong attack_conditions;
+
+        public static AttackerNotificationEvent read(BinaryReader binaryReader)
+        {
+            AttackerNotificationEvent newObj = new AttackerNotificationEvent();
+            newObj.defenders_name = PStringChar.read(binaryReader);
+            newObj.damage_type = binaryReader.ReadUInt32();
+            newObj.severity = binaryReader.ReadDouble();
+            newObj.damage = binaryReader.ReadUInt32();
+            newObj.critical = binaryReader.ReadUInt32();
+            newObj.attack_conditions = binaryReader.ReadUInt64();
+            Util.readToAlign(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("defenders_name = " + defenders_name);
+            rootNode.Nodes.Add("damage_type = " + (DAMAGE_TYPE)damage_type);
+            rootNode.Nodes.Add("severity = " + severity);
+            rootNode.Nodes.Add("damage = " + damage);
+            rootNode.Nodes.Add("critical = " + critical);
+            rootNode.Nodes.Add("attackConditions = " + attack_conditions);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class DefenderNotificationEvent : Message
+    {
+        public PStringChar attackers_name;
+        public uint damage_type;
+        public double severity; // 0.0 to 1.0
+        public uint damage;
+        public uint part;
+        public uint critical;
+        public ulong attack_conditions;
+
+        public static DefenderNotificationEvent read(BinaryReader binaryReader)
+        {
+            DefenderNotificationEvent newObj = new DefenderNotificationEvent();
+            newObj.attackers_name = PStringChar.read(binaryReader);
+            newObj.damage_type = binaryReader.ReadUInt32();
+            newObj.severity = binaryReader.ReadDouble();
+            newObj.damage = binaryReader.ReadUInt32();
+            newObj.part = binaryReader.ReadUInt32();
+            newObj.critical = binaryReader.ReadUInt32();
+            newObj.attack_conditions = binaryReader.ReadUInt64();
+            Util.readToAlign(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("attackers_name = " + attackers_name);
+            rootNode.Nodes.Add("damage_type = " + (DAMAGE_TYPE)damage_type);
+            rootNode.Nodes.Add("severity = " + severity);
+            rootNode.Nodes.Add("damage = " + damage);
+            rootNode.Nodes.Add("part = " + (BodyPart)part);
+            rootNode.Nodes.Add("critical = " + critical);
+            rootNode.Nodes.Add("attackConditions = " + attack_conditions);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class EvasionAttackerNotificationEvent : Message
+    {
+        public PStringChar defenders_name;
+
+        public static EvasionAttackerNotificationEvent read(BinaryReader binaryReader)
+        {
+            EvasionAttackerNotificationEvent newObj = new EvasionAttackerNotificationEvent();
+            newObj.defenders_name = PStringChar.read(binaryReader);
+            Util.readToAlign(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("defenders_name = " + defenders_name);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class EvasionDefenderNotificationEvent : Message
+    {
+        public PStringChar attackers_name;
+
+        public static EvasionDefenderNotificationEvent read(BinaryReader binaryReader)
+        {
+            EvasionDefenderNotificationEvent newObj = new EvasionDefenderNotificationEvent();
+            newObj.attackers_name = PStringChar.read(binaryReader);
+            Util.readToAlign(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("attackers_name = " + attackers_name);
             treeView.Nodes.Add(rootNode);
         }
     }
