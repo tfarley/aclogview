@@ -880,6 +880,14 @@ namespace aclogview
             }
         }
 
+        private void textBox_Search_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnHighlight_Click(this, new EventArgs());
+            }
+        }
+
         private void btnHighlight_Click(object sender, EventArgs e)
         {
             var searchString = textBox_Search.Text;

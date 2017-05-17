@@ -43,6 +43,8 @@
             this.menuItem_File = new System.Windows.Forms.MenuItem();
             this.menuItem_Open = new System.Windows.Forms.MenuItem();
             this.menuItem_OpenAsMessages = new System.Windows.Forms.MenuItem();
+            this.menuItem_ReOpen = new System.Windows.Forms.MenuItem();
+            this.menuItem_ReOpenAsMessages = new System.Windows.Forms.MenuItem();
             this.menuItem_Edit = new System.Windows.Forms.MenuItem();
             this.mnuItem_EditPreviousHighlightedRow = new System.Windows.Forms.MenuItem();
             this.mnuItem_EditNextHighlightedRow = new System.Windows.Forms.MenuItem();
@@ -68,8 +70,6 @@
             this.cmdbackward = new System.Windows.Forms.Button();
             this.lblTracker = new System.Windows.Forms.Label();
             this.btnHighlight = new System.Windows.Forms.Button();
-            this.menuItem_ReOpen = new System.Windows.Forms.MenuItem();
-            this.menuItem_ReOpenAsMessages = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -253,6 +253,20 @@
             this.menuItem_OpenAsMessages.Text = "Open As Messages";
             this.menuItem_OpenAsMessages.Click += new System.EventHandler(this.menuItem_OpenAsMessages_Click);
             // 
+            // menuItem_ReOpen
+            // 
+            this.menuItem_ReOpen.Enabled = false;
+            this.menuItem_ReOpen.Index = 2;
+            this.menuItem_ReOpen.Text = "Re-Open";
+            this.menuItem_ReOpen.Click += new System.EventHandler(this.menuItem_ReOpen_Click);
+            // 
+            // menuItem_ReOpenAsMessages
+            // 
+            this.menuItem_ReOpenAsMessages.Enabled = false;
+            this.menuItem_ReOpenAsMessages.Index = 3;
+            this.menuItem_ReOpenAsMessages.Text = "Re-Open As Messages";
+            this.menuItem_ReOpenAsMessages.Click += new System.EventHandler(this.menuItem_ReOpenAsMessages_Click);
+            // 
             // menuItem_Edit
             // 
             this.menuItem_Edit.Index = 1;
@@ -350,6 +364,7 @@
             this.textBox_Search.Name = "textBox_Search";
             this.textBox_Search.Size = new System.Drawing.Size(165, 20);
             this.textBox_Search.TabIndex = 2;
+            this.textBox_Search.KeyDown += this.textBox_Search_KeyDown;
             // 
             // pictureBox_Search
             // 
@@ -462,20 +477,6 @@
             this.btnHighlight.Text = "Highlight";
             this.btnHighlight.UseVisualStyleBackColor = true;
             this.btnHighlight.Click += new System.EventHandler(this.btnHighlight_Click);
-            // 
-            // menuItem_ReOpen
-            // 
-            this.menuItem_ReOpen.Enabled = false;
-            this.menuItem_ReOpen.Index = 2;
-            this.menuItem_ReOpen.Text = "Re-Open";
-            this.menuItem_ReOpen.Click += new System.EventHandler(this.menuItem_ReOpen_Click);
-            // 
-            // menuItem_ReOpenAsMessages
-            // 
-            this.menuItem_ReOpenAsMessages.Enabled = false;
-            this.menuItem_ReOpenAsMessages.Index = 3;
-            this.menuItem_ReOpenAsMessages.Text = "Re-Open As Messages";
-            this.menuItem_ReOpenAsMessages.Click += new System.EventHandler(this.menuItem_ReOpenAsMessages_Click);
             // 
             // Form1
             // 
