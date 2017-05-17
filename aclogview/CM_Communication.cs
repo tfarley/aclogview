@@ -279,9 +279,9 @@ public class CM_Communication : MessageProcessor {
 
     public class HearEmote : Message
     {
-        public PStringChar EmoteMessage;
-        public PStringChar SenderName;
         public uint SenderID;
+        public PStringChar SenderName;
+        public PStringChar EmoteMessage;
 
         public static HearEmote read(BinaryReader binaryReader)
         {
@@ -296,9 +296,9 @@ public class CM_Communication : MessageProcessor {
         {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("EmoteMessage = " + EmoteMessage.m_buffer);
-            rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
             rootNode.Nodes.Add("SenderID = " + Utility.FormatGuid(this.SenderID));
+            rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
+            rootNode.Nodes.Add("EmoteMessage = " + EmoteMessage.m_buffer);
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -323,9 +323,9 @@ public class CM_Communication : MessageProcessor {
     }
     public class HearSoulEmote : Message
     {
-        public PStringChar EmoteMessage;
-        public PStringChar SenderName;
         public uint SenderID;
+        public PStringChar SenderName;
+        public PStringChar EmoteMessage;
 
         public static HearSoulEmote read(BinaryReader binaryReader)
         {
@@ -340,9 +340,9 @@ public class CM_Communication : MessageProcessor {
         {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("EmoteMessage = " + EmoteMessage.m_buffer);
-            rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
             rootNode.Nodes.Add("SenderID = " + Utility.FormatGuid(this.SenderID));
+            rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
+            rootNode.Nodes.Add("EmoteMessage = " + EmoteMessage.m_buffer);
             treeView.Nodes.Add(rootNode);
         }
     }
