@@ -341,7 +341,8 @@
             // 
             // textBox_Search
             // 
-            this.textBox_Search.Location = new System.Drawing.Point(1195, 2);
+            this.textBox_Search.Location = new System.Drawing.Point(435, 0);
+            this.textBox_Search.MaxLength = 6;
             this.textBox_Search.Name = "textBox_Search";
             this.textBox_Search.Size = new System.Drawing.Size(165, 20);
             this.textBox_Search.TabIndex = 2;
@@ -450,7 +451,7 @@
             // btnHighlight
             // 
             this.btnHighlight.Enabled = false;
-            this.btnHighlight.Location = new System.Drawing.Point(1366, 1);
+            this.btnHighlight.Location = new System.Drawing.Point(606, 0);
             this.btnHighlight.Name = "btnHighlight";
             this.btnHighlight.Size = new System.Drawing.Size(75, 22);
             this.btnHighlight.TabIndex = 9;

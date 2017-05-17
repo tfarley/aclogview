@@ -33,6 +33,7 @@ namespace aclogview
         private StringBuilder strbuilder = new StringBuilder();
 
         private string pcapFilePath;
+        private int currentOpcode;
 
         public Form1(string[] args)
         {
@@ -879,14 +880,69 @@ namespace aclogview
 
         private void btnHighlight_Click(object sender, EventArgs e)
         {
-            // currently only supports decimal
-            int opcode;
-            if (int.TryParse(textBox_Search.Text, out opcode))
+            var searchString = textBox_Search.Text;
+
+            if (searchString.Length == 0)
             {
-                opCodesToHighlight.Clear();
-                opCodesToHighlight.Add(opcode);
-                this.loadPcap(this.pcapFilePath, loadedAsMessages);
+                return;
             }
+            else if (searchString.Length == 6)
+            {
+                if (searchString.Substring(0, 2).ToLower() == "0x")
+                {
+                    var opcodeString = searchString.Substring(2, 4);
+                    if (HexTest(opcodeString))
+                    {
+                        currentOpcode = Int32.Parse(opcodeString, System.Globalization.NumberStyles.HexNumber);
+                    }
+                }
+            }
+            // decimal
+            if (int.TryParse(searchString, out currentOpcode))
+            {
+                // do nothing currently, currentOpcode should be set
+            }
+            // hex
+            else if (HexTest(searchString))
+            {
+                currentOpcode = Int32.Parse(searchString, System.Globalization.NumberStyles.HexNumber);
+            }
+            // c-style hex check
+            else if(CHexTest(searchString))
+            {
+                currentOpcode = Int32.Parse(searchString.Remove(0,2), System.Globalization.NumberStyles.HexNumber);
+            }
+            // reset
+            else
+            {
+                textBox_Search.Clear();
+            }
+
+            if (currentOpcode != 0)
+            {
+                textBox_Search.Text = "0x";
+                for (int i = currentOpcode.ToString("X").Length; i < 4; i++)
+                {
+                    textBox_Search.Text += "0";
+                }
+                textBox_Search.Text += currentOpcode.ToString("X");
+                opCodesToHighlight.Clear();
+                opCodesToHighlight.Add(currentOpcode);
+                this.loadPcap(this.pcapFilePath, loadedAsMessages);
+            } else
+            {
+                toolStripStatus.Text = "Invalid hex code.";
+            }
+        }
+
+        public bool CHexTest(string test)
+        {
+            return System.Text.RegularExpressions.Regex.IsMatch(test, @"\A\b(0[xX])?[0-9a-fA-F]+\b\Z");
+        }
+
+        public bool HexTest(string test)
+        {
+            return System.Text.RegularExpressions.Regex.IsMatch(test, @"\A\b[0-9a-fA-F]+\b\Z");
         }
     }
 }
