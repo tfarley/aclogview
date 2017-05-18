@@ -14,6 +14,24 @@ public class CM_Communication : MessageProcessor {
 
         PacketOpcode opcode = Util.readOpcode(messageDataReader);
         switch (opcode) {
+            case PacketOpcode.Evt_Communication__Talk_ID: // 0x0015
+                {
+                    var message = Talk.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Communication__PopUpString_ID: // 0x0004
+                {
+                    var message = PopUpString.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Communication__TalkDirect_ID: // 0x0032
+                {
+                    var message = TalkDirect.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Communication__TalkDirectByName_ID: // 0x005D
                 {
                     var message = TalkDirectByName.read(messageDataReader);
@@ -32,6 +50,30 @@ public class CM_Communication : MessageProcessor {
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }*/
+            case PacketOpcode.Evt_Communication__Emote_ID: // 0x01DF
+                {
+                    var message = Emote.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Communication__HearEmote_ID: // 0x01E0
+                {
+                    var message = HearEmote.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Communication__SoulEmote_ID: // 0x01E1
+                {
+                    var message = SoulEmote.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
+            case PacketOpcode.Evt_Communication__HearSoulEmote_ID: // 0x01E2
+                {
+                    var message = HearSoulEmote.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Communication__Recv_ChatRoomTracker_ID: // 0x0295
                 {
                     var message = Recv_ChatRoomTracker.read(messageDataReader);
@@ -68,6 +110,12 @@ public class CM_Communication : MessageProcessor {
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }
+            case PacketOpcode.Evt_Communication__TransientString_ID: // 0x2EB
+                {
+                    var message = TransientString.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Communication__TextboxString_ID: // 0xF7E0
                 {
                     var message = TextBoxString.read(messageDataReader);
@@ -81,6 +129,68 @@ public class CM_Communication : MessageProcessor {
         }
 
         return handled;
+    }
+
+    public class Talk : Message
+    {
+        public PStringChar MessageText;
+
+        public static Talk read(BinaryReader binaryReader)
+        {
+            var newObj = new Talk();
+            newObj.MessageText = PStringChar.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class PopUpString : Message
+    {
+        public PStringChar PopUpMessage;
+        public static PopUpString read(BinaryReader binaryReader)
+        {
+            var newObj = new PopUpString();
+            newObj.PopUpMessage = PStringChar.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("PopUpMessage = " + PopUpMessage.m_buffer);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class TalkDirect : Message
+    {
+        public PStringChar MessageText;
+        public uint TargetID;
+
+        public static TalkDirect read(BinaryReader binaryReader)
+        {
+            var newObj = new TalkDirect();
+            newObj.MessageText = PStringChar.read(binaryReader);
+            newObj.TargetID = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
+            rootNode.Nodes.Add("TargetID = " + Utility.FormatGuid(TargetID));
+            treeView.Nodes.Add(rootNode);
+        }
     }
 
     public class TalkDirectByName : Message
@@ -146,6 +256,96 @@ public class CM_Communication : MessageProcessor {
             throw new NotImplementedException();
         }
     }*/
+
+    public class Emote : Message
+    {
+        public PStringChar emoteMessage;
+
+        public static Emote read(BinaryReader binaryReader)
+        {
+            var newObj = new Emote();
+            newObj.emoteMessage = PStringChar.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("emoteMessage = " + emoteMessage);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class HearEmote : Message
+    {
+        public uint SenderID;
+        public PStringChar SenderName;
+        public PStringChar EmoteMessage;
+
+        public static HearEmote read(BinaryReader binaryReader)
+        {
+            var newObj = new HearEmote();
+            newObj.SenderID = binaryReader.ReadUInt32();
+            newObj.SenderName = PStringChar.read(binaryReader);
+            newObj.EmoteMessage = PStringChar.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("SenderID = " + Utility.FormatGuid(this.SenderID));
+            rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
+            rootNode.Nodes.Add("EmoteMessage = " + EmoteMessage.m_buffer);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+    public class SoulEmote : Message
+    {
+        public PStringChar EmoteMessage;
+
+        public static SoulEmote read(BinaryReader binaryReader)
+        {
+            SoulEmote newObj = new SoulEmote();
+            newObj.EmoteMessage = PStringChar.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("EmoteMessage = " + EmoteMessage.m_buffer);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+    public class HearSoulEmote : Message
+    {
+        public uint SenderID;
+        public PStringChar SenderName;
+        public PStringChar EmoteMessage;
+
+        public static HearSoulEmote read(BinaryReader binaryReader)
+        {
+            var newObj = new HearSoulEmote();
+            newObj.SenderID = binaryReader.ReadUInt32();
+            newObj.SenderName = PStringChar.read(binaryReader);
+            newObj.EmoteMessage = PStringChar.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("SenderID = " + Utility.FormatGuid(this.SenderID));
+            rootNode.Nodes.Add("SenderName = " + SenderName.m_buffer);
+            rootNode.Nodes.Add("EmoteMessage = " + EmoteMessage.m_buffer);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
 
     public class Recv_ChatRoomTracker : Message
     {
@@ -323,6 +523,26 @@ public class CM_Communication : MessageProcessor {
             rootNode.Nodes.Add("TargetID = " + Utility.FormatGuid(this.TargetID));                    
             rootNode.Nodes.Add("ChatMessageType = " + ChatMessageType);
             rootNode.Nodes.Add("Unknown = " + Unknown);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class TransientString : Message
+    {
+        public PStringChar StringMessage;
+
+        public static TransientString read(BinaryReader binaryReader)
+        {
+            var newObj = new TransientString();
+            newObj.StringMessage = PStringChar.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("StringMessage = " + StringMessage.m_buffer);
             treeView.Nodes.Add(rootNode);
         }
     }

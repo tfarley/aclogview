@@ -32,6 +32,9 @@ namespace aclogview
 
         private StringBuilder strbuilder = new StringBuilder();
 
+        private string pcapFilePath;
+        private int currentOpcode;
+
         public Form1(string[] args)
         {
             InitializeComponent();
@@ -67,7 +70,8 @@ namespace aclogview
             messageProcessors.Add(new CM_Vendor());
             messageProcessors.Add(new CM_Writing());
             messageProcessors.Add(new Proto_UI());
-            Globals.UseHex = this.checkBoxUseHex.Checked;
+            Globals.UseHex = checkBoxUseHex.Checked;
+            
             
             if (args != null && args.Length >= 2)
             {
@@ -75,8 +79,12 @@ namespace aclogview
                 if (int.TryParse(args[1], out opcode))
                     opCodesToHighlight.Add(opcode);
             }
-            if (args != null && args.Length >= 1)
+            if (args != null && args.Length >= 1) {
                 loadPcap(args[0], false);
+            } else
+            {
+                toolStripStatus.Text = "AC Log View";
+            }
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -90,11 +98,15 @@ namespace aclogview
         List<ListViewItem> listItems = new List<ListViewItem>();
         
         private void loadPcap(string fileName, bool asMessages, bool dontList = false) {
-            this.Text = "AC Log View - " + Path.GetFileName(fileName);
-
+            Text = "AC Log View - " + Path.GetFileName(fileName);
+            pcapFilePath = Path.GetFullPath(fileName);
+            toolStripStatus.Text = pcapFilePath;
+            btnHighlight.Enabled = true;
+            menuItem_ReOpen.Enabled = true;
+            menuItem_ReOpenAsMessages.Enabled = true;
             if (opCodesToHighlight.Count > 0)
             {
-                this.Text += "              Highlighted OpCodes: ";
+                Text += "              Highlighted OpCodes: ";
                 foreach (var opcode in opCodesToHighlight)
                     Text += opcode + " (" + opcode.ToString("X4") + "),";
             }
@@ -144,8 +156,8 @@ namespace aclogview
             }
             comparer.col = e.Column;
             listItems.Sort(comparer);
-
-            listView_Packets.RedrawItems(0, records.Count - 1, false);
+            if (records.Count>0)
+                listView_Packets.RedrawItems(0, records.Count - 1, false);
             updateData();
         }
 
@@ -819,7 +831,7 @@ namespace aclogview
 
         private void checkBoxUseHex_CheckedChanged(object sender, EventArgs e)
         {
-            Globals.UseHex = this.checkBoxUseHex.Checked;
+            Globals.UseHex = checkBoxUseHex.Checked;
         }
 
 
@@ -866,6 +878,91 @@ namespace aclogview
                     updateData();
                 }
             }
+        }
+
+        private void textBox_Search_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnHighlight_Click(this, new EventArgs());
+            }
+        }
+
+        private void btnHighlight_Click(object sender, EventArgs e)
+        {
+            var searchString = textBox_Search.Text;
+
+            if (searchString.Length == 0)
+            {
+                return;
+            }
+            else if (searchString.Length == 6)
+            {
+                if (searchString.Substring(0, 2).ToLower() == "0x")
+                {
+                    var opcodeString = searchString.Substring(2, 4);
+                    if (HexTest(opcodeString))
+                    {
+                        currentOpcode = Int32.Parse(opcodeString, System.Globalization.NumberStyles.HexNumber);
+                    }
+                }
+            }
+            // decimal
+            if (int.TryParse(searchString, out currentOpcode))
+            {
+                // do nothing currently, currentOpcode should be set
+            }
+            // hex
+            else if (HexTest(searchString))
+            {
+                currentOpcode = Int32.Parse(searchString, System.Globalization.NumberStyles.HexNumber);
+            }
+            // c-style hex check
+            else if(CHexTest(searchString))
+            {
+                currentOpcode = Int32.Parse(searchString.Remove(0,2), System.Globalization.NumberStyles.HexNumber);
+            }
+            // reset
+            else
+            {
+                textBox_Search.Clear();
+            }
+
+            if (currentOpcode != 0)
+            {
+                textBox_Search.Text = "0x";
+                for (int i = currentOpcode.ToString("X").Length; i < 4; i++)
+                {
+                    textBox_Search.Text += "0";
+                }
+                textBox_Search.Text += currentOpcode.ToString("X");
+                opCodesToHighlight.Clear();
+                opCodesToHighlight.Add(currentOpcode);
+                loadPcap(pcapFilePath, loadedAsMessages);
+            } else
+            {
+                toolStripStatus.Text = "Invalid hex code.";
+            }
+        }
+
+        public bool CHexTest(string test)
+        {
+            return System.Text.RegularExpressions.Regex.IsMatch(test, @"\A\b(0[xX])?[0-9a-fA-F]+\b\Z");
+        }
+
+        public bool HexTest(string test)
+        {
+            return System.Text.RegularExpressions.Regex.IsMatch(test, @"\A\b[0-9a-fA-F]+\b\Z");
+        }
+
+        private void menuItem_ReOpen_Click(object sender, EventArgs e)
+        {
+            loadPcap(pcapFilePath, false);
+        }
+
+        private void menuItem_ReOpenAsMessages_Click(object sender, EventArgs e)
+        {
+            loadPcap(pcapFilePath, true);
         }
     }
 }

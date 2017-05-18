@@ -111,3 +111,45 @@ public enum PowerBarMode {
     PBM_JUMP,
     PBM_DDD
 }
+
+public enum BodyPart
+{
+    UNDEFINED = -1,
+    HEAD = 0,
+    CHEST = 1,
+    ABDOMEN = 2,
+    UPPER_ARM = 3,
+    LOWER_ARM = 4,
+    HAND = 5,
+    UPPER_LEG = 6,
+    LOWER_LEG = 7,
+    FOOT = 8,
+    HORN = 9,
+    FRONT_LEG = 10,
+    // Skip 11
+    FRONT_FOOT = 12,
+    REAR_LEG = 13,
+    // Skip 14
+    REAR_FOOT = 15,
+    TORSO = 16,
+    TAIL = 17,
+    ARM = 18,
+    LEG = 19,
+    CLAW = 20,
+    WINGS = 21,
+    BREATH = 22,
+    TENTACLE = 23,
+    UPPER_TENTACLE = 24,
+    LOWER_TENTACLE = 25,
+    CLOAK = 26,
+    NUM = 27
+}
+
+public enum AttackConditions
+{
+    // Could not find these defined as constants, so came up with appropriate names
+    CriticalAugPreventedCritical = (1 << 0), // "Your Critical Protection augmentation allows you to avoid a critical hit!"
+    Reckless = (1 << 1), // "Reckless!"
+    SneakAttack = (1 << 2), // "Sneak Attack!"
+}
+

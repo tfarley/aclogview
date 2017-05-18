@@ -1,4 +1,5 @@
-﻿using System;
+﻿using aclogview;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,13 +19,19 @@ public class CM_Vendor : MessageProcessor {
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }
-            case PacketOpcode.Evt_Vendor__Sell_ID: {
+            case PacketOpcode.Evt_Vendor__Sell_ID:
+                {
                     Sell message = Sell.read(messageDataReader);
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }
-            // TODO: PacketOpcode.Evt_Vendor__RequestVendorInfo_ID
-            // TODO: PacketOpcode.VENDOR_INFO_EVENT:
+            // TODO: PacketOpcode.Evt_Vendor__RequestVendorInfo_ID - (I could find no instance of this event in logs. Possibly a retired event? - OptimShi)
+            case PacketOpcode.VENDOR_INFO_EVENT:
+                {
+                    gmVendorUI message = gmVendorUI.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             default: {
                     handled = false;
                     break;
@@ -34,26 +41,113 @@ public class CM_Vendor : MessageProcessor {
         return handled;
     }
 
+    public class gmVendorUI
+    {
+        public uint shopVendorID;
+        public VendorProfile shopVendorProfile;
+        public PList<ItemProfile> shopItemProfileList;
+
+        public static gmVendorUI read(BinaryReader binaryReader)
+        {
+            gmVendorUI newObj = new gmVendorUI();
+            newObj.shopVendorID = binaryReader.ReadUInt32();
+            newObj.shopVendorProfile = VendorProfile.read(binaryReader);
+            newObj.shopItemProfileList = PList<ItemProfile>.read(binaryReader);
+            return newObj;
+        }
+
+        public void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("shopVendorID = " + Utility.FormatGuid(shopVendorID));
+            TreeNode shopVendorProfileNode = rootNode.Nodes.Add("shopVendorProfile = ");
+            shopVendorProfile.contributeToTreeNode(shopVendorProfileNode);
+            TreeNode shopItemProfilesNode = rootNode.Nodes.Add("shopItemProfileList = ");
+            for (int i = 0; i < shopItemProfileList.list.Count; i++)
+            {
+                TreeNode itemProfileNode = shopItemProfilesNode.Nodes.Add("itemProfile = ");
+                ItemProfile thisProfile = shopItemProfileList.list[i];
+                thisProfile.contributeToTreeNode(itemProfileNode);
+            }
+
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class VendorProfile
+    {
+        public uint item_types;
+        public uint min_value;
+        public uint max_value;
+        public uint magic;
+        public float buy_price;
+        public float sell_price;
+        public uint trade_id;
+        public uint trade_num;
+        public PStringChar trade_name;
+
+        public static VendorProfile read(BinaryReader binaryReader)
+        {
+            VendorProfile newObj = new VendorProfile();
+            newObj.item_types = binaryReader.ReadUInt32();
+            newObj.min_value = binaryReader.ReadUInt32();
+            newObj.max_value = binaryReader.ReadUInt32();
+            newObj.magic = binaryReader.ReadUInt32();
+            newObj.buy_price = binaryReader.ReadSingle();
+            newObj.sell_price = binaryReader.ReadSingle();
+            newObj.trade_id = binaryReader.ReadUInt32();
+            newObj.trade_num = binaryReader.ReadUInt32();
+            newObj.trade_name = PStringChar.read(binaryReader);
+            return newObj;
+        }
+
+        public void contributeToTreeNode(TreeNode node)
+        {
+            node.Nodes.Add("item_types = " + item_types);
+            node.Nodes.Add("min_value = " + min_value);
+            node.Nodes.Add("max_value = " + max_value);
+            node.Nodes.Add("magic = " + magic);
+            node.Nodes.Add("buy_price = " + buy_price);
+            node.Nodes.Add("sell_price = " + sell_price);
+            node.Nodes.Add("trade_id = " + trade_id);
+            node.Nodes.Add("trade_num = " + trade_num);
+            node.Nodes.Add("trade_name = " + trade_name);
+        }
+    }
+
     public class ItemProfile {
-        public uint amount;
+        public int amount;
         public uint iid;
         public CM_Physics.PublicWeenieDesc pwd;
+        public CM_Physics.OldPublicWeenieDesc opwd;
 
         public static ItemProfile read(BinaryReader binaryReader) {
             ItemProfile newObj = new ItemProfile();
-            newObj.amount = binaryReader.ReadUInt32();
+            newObj.amount = binaryReader.ReadInt32();
             newObj.iid = binaryReader.ReadUInt32();
-            // TODO: If (amt & (1 << 24)) != 0, then this should actually read an OldPublicWeenieDesc!
-            newObj.pwd = CM_Physics.PublicWeenieDesc.read(binaryReader);
+            int descType = (newObj.amount >> 24);
+            if (descType == -1)
+                newObj.pwd = CM_Physics.PublicWeenieDesc.read(binaryReader);
+            else if (descType == 1)
+                newObj.opwd = CM_Physics.OldPublicWeenieDesc.read(binaryReader); // NOTE: I've not found an actual instance of this method being used.
             newObj.amount = newObj.amount & 0xFFFFFF;
             return newObj;
         }
 
         public void contributeToTreeNode(TreeNode node) {
             node.Nodes.Add("amount = " + amount);
-            node.Nodes.Add("iid = " + iid);
-            TreeNode pwdNode = node.Nodes.Add("pwd = ");
-            pwd.contributeToTreeNode(pwdNode);
+            node.Nodes.Add("iid = " + Utility.FormatGuid(iid));
+            if (pwd != null)
+            {
+                TreeNode pwdNode = node.Nodes.Add("wdesc = ");
+                pwd.contributeToTreeNode(pwdNode);
+            }
+            if (opwd != null)
+            {
+                TreeNode opwdNode = node.Nodes.Add("oldwdesc = ");
+                opwd.contributeToTreeNode(opwdNode);
+            }
         }
     }
 
@@ -75,10 +169,15 @@ public class CM_Vendor : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_vendorID = " + i_vendorID);
+            rootNode.Nodes.Add("i_vendorID = " + Utility.FormatGuid(i_vendorID));
             TreeNode stuffNode = rootNode.Nodes.Add("i_stuff = ");
-            i_stuff.contributeToTreeNode(stuffNode);
-            rootNode.Nodes.Add("i_alternateCurrencyID = " + i_alternateCurrencyID);
+            for (int i = 0; i < i_stuff.list.Count; i++)
+            {
+                TreeNode itemProfileNode = stuffNode.Nodes.Add("itemProfile = ");
+                ItemProfile thisProfile = i_stuff.list[i];
+                thisProfile.contributeToTreeNode(itemProfileNode);
+            }
+            rootNode.Nodes.Add("i_alternateCurrencyID = " + Utility.FormatGuid(i_alternateCurrencyID));
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -99,9 +198,14 @@ public class CM_Vendor : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_vendorID = " + i_vendorID);
+            rootNode.Nodes.Add("i_vendorID = " + Utility.FormatGuid(i_vendorID));
             TreeNode stuffNode = rootNode.Nodes.Add("i_stuff = ");
-            i_stuff.contributeToTreeNode(stuffNode);
+            for (int i = 0; i < i_stuff.list.Count; i++)
+            {
+                TreeNode itemProfileNode = stuffNode.Nodes.Add("itemProfile = ");
+                ItemProfile thisProfile = i_stuff.list[i];
+                thisProfile.contributeToTreeNode(itemProfileNode);
+            }
             treeView.Nodes.Add(rootNode);
         }
     }

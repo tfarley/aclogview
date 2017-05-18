@@ -457,9 +457,9 @@ public class CM_Physics : MessageProcessor {
             PWD_Packed_Priority = (1 << 18),
             PWD_Packed_TargetType = (1 << 19),
             PWD_Packed_BlipColor = (1 << 20),
-            PWD_Packed_Burden = (1 << 21), // NOTE: May be PWD_Packed_VendorClassID
+            PWD_Packed_Burden = (1 << 21),
             PWD_Packed_SpellID = (1 << 22),
-            PWD_Packed_RadarEnum = (1 << 23), // NOTE: May be PWD_Packed_RadarDistance
+            PWD_Packed_RadarEnum = (1 << 23), 
             PWD_Packed_Workmanship = (1 << 24),
             PWD_Packed_HouseOwner = (1 << 25),
             PWD_Packed_HouseRestrictions = (1 << 26),
@@ -567,7 +567,8 @@ public class CM_Physics : MessageProcessor {
 
             Util.readToAlign(binaryReader);
 
-            if ((newObj._bitfield & (uint)BitfieldIndex.BF_INCLUDES_SECOND_HEADER) != 0) {
+            if ((newObj._bitfield & (uint)BitfieldIndex.BF_INCLUDES_SECOND_HEADER) != 0)
+            {
                 newObj.header2 = binaryReader.ReadUInt32();
             }
 
@@ -837,6 +838,433 @@ public class CM_Physics : MessageProcessor {
             }
             if ((header2 & (uint)PublicWeenieDescPackHeader2.PWD2_Packed_PetOwner) != 0) {
                 node.Nodes.Add("_pet_owner = " + _pet_owner);
+            }
+        }
+    }
+
+    public class OldPublicWeenieDesc
+    {
+        public enum OldPublicWeenieDescPackHeader
+        {
+            PWD_Packed_None = 0,
+            PWD_Packed_PluralName = (1 << 0),
+            PWD_Packed_ItemsCapacity = (1 << 1),
+            PWD_Packed_ContainersCapacity = (1 << 2),
+            PWD_Packed_Value = (1 << 3),
+            PWD_Packed_Useability = (1 << 4),
+            PWD_Packed_UseRadius = (1 << 5),
+            PWD_Packed_Monarch = (1 << 6),
+            PWD_Packed_UIEffects = (1 << 7),
+            PWD_Packed_AmmoType = (1 << 8),
+            PWD_Packed_CombatUse = (1 << 9),
+            PWD_Packed_Structure = (1 << 10),
+            PWD_Packed_MaxStructure = (1 << 11),
+            PWD_Packed_StackSize = (1 << 12),
+            PWD_Packed_MaxStackSize = (1 << 13),
+            PWD_Packed_ContainerID = (1 << 14),
+            PWD_Packed_WielderID = (1 << 15),
+            PWD_Packed_ValidLocations = (1 << 16),
+            PWD_Packed_Location = (1 << 17),
+            PWD_Packed_Priority = (1 << 18),
+            PWD_Packed_TargetType = (1 << 19),
+            PWD_Packed_BlipColor = (1 << 20),
+            PWD_Packed_VendorClassID = (1 << 21),
+            PWD_Packed_SpellID = (1 << 22),
+            PWD_Packed_RadarEnum = (1 << 23), 
+            PWD_Packed_RadarDistance = (1 << 24),
+            PWD_Packed_HouseOwner = (1 << 25),
+            PWD_Packed_HouseRestrictions = (1 << 26),
+            PWD_Packed_PScript = (1 << 27),
+            PWD_Packed_HookType = (1 << 28),
+            PWD_Packed_HookItemTypes = (1 << 29),
+            PWD_Packed_IconOverlay = (1 << 30),
+            PWD_Packed_MaterialType = (1 << 31)
+        }
+
+        public enum BitfieldIndex
+        {
+            BF_OPENABLE = (1 << 0),
+            BF_INSCRIBABLE = (1 << 1),
+            BF_STUCK = (1 << 2),
+            BF_PLAYER = (1 << 3),
+            BF_ATTACKABLE = (1 << 4),
+            BF_PLAYER_KILLER = (1 << 5),
+            BF_HIDDEN_ADMIN = (1 << 6),
+            BF_UI_HIDDEN = (1 << 7),
+            BF_BOOK = (1 << 8),
+            BF_VENDOR = (1 << 9),
+            BF_PKSWITCH = (1 << 10),
+            BF_NPKSWITCH = (1 << 11),
+            BF_DOOR = (1 << 12),
+            BF_CORPSE = (1 << 13),
+            BF_LIFESTONE = (1 << 14),
+            BF_FOOD = (1 << 15),
+            BF_HEALER = (1 << 16),
+            BF_LOCKPICK = (1 << 17),
+            BF_PORTAL = (1 << 18),
+            // NOTE: Skip 1
+            BF_ADMIN = (1 << 20),
+            BF_FREE_PKSTATUS = (1 << 21),
+            BF_IMMUNE_CELL_RESTRICTIONS = (1 << 22),
+            BF_REQUIRES_PACKSLOT = (1 << 23),
+            BF_RETAINED = (1 << 24),
+            BF_PKLITE_PKSTATUS = (1 << 25),
+            BF_INCLUDES_SECOND_HEADER = (1 << 26),
+            BF_BINDSTONE = (1 << 27),
+            BF_VOLATILE_RARE = (1 << 28),
+            BF_WIELD_ON_USE = (1 << 29),
+            BF_WIELD_LEFT = (1 << 30),
+        }
+
+        public uint header;
+        public PStringChar _name;
+        public PStringChar _plural_name;
+        public uint _wcid;
+        public uint _iconID;
+        public uint _iconOverlayID;
+        public uint _containerID;
+        public uint _wielderID;
+        public uint _priority;
+        public uint _valid_locations;
+        public uint _location;
+        public byte _itemsCapacity;
+        public byte _containersCapacity;
+        public ITEM_TYPE _type;
+        public uint _value;
+        public ITEM_USEABLE _useability;
+        public float _useRadius;
+        public ITEM_TYPE _targetType;
+        public uint _effects;
+        public AMMO_TYPE _ammoType;
+        public COMBAT_USE _combatUse;
+        public ushort _structure;
+        public ushort _maxStructure;
+        public ushort _stackSize;
+        public ushort _maxStackSize;
+        public uint _bitfield;
+        public byte _blipColor;
+        public RadarEnum _radar_enum;
+        public float _obvious_distance;
+        public uint _vndwcid;
+        public ushort _spellID;
+        public uint _house_owner_iid;
+        public RestrictionDB _db;
+        public ushort _pscript;
+        public ITEM_TYPE _hook_type;
+        public uint _hook_item_types;
+        public uint _monarch;
+        public MaterialType _material_type;
+
+        public static OldPublicWeenieDesc read(BinaryReader binaryReader)
+        {
+            OldPublicWeenieDesc newObj = new OldPublicWeenieDesc();
+            newObj.header = binaryReader.ReadUInt32();
+            newObj._name = PStringChar.read(binaryReader);
+            newObj._wcid = binaryReader.ReadUInt16();
+            newObj._iconID = binaryReader.ReadUInt16() | 0x6000000u;
+            newObj._type = (ITEM_TYPE)binaryReader.ReadUInt32();
+            newObj._bitfield = binaryReader.ReadUInt32();
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_PluralName) != 0)
+            {
+                newObj._plural_name = PStringChar.read(binaryReader);
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_ItemsCapacity) != 0)
+            {
+                newObj._itemsCapacity = binaryReader.ReadByte();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_ContainersCapacity) != 0)
+            {
+                newObj._containersCapacity = binaryReader.ReadByte();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_Value) != 0)
+            {
+                newObj._value = binaryReader.ReadUInt32();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_Useability) != 0)
+            {
+                newObj._useability = (ITEM_USEABLE)binaryReader.ReadUInt32();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_UseRadius) != 0)
+            {
+                newObj._useRadius = binaryReader.ReadSingle();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_TargetType) != 0)
+            {
+                newObj._targetType = (ITEM_TYPE)binaryReader.ReadUInt32();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_UIEffects) != 0)
+            {
+                newObj._effects = binaryReader.ReadUInt32();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_AmmoType) != 0)
+            {
+                newObj._ammoType = (AMMO_TYPE)binaryReader.ReadByte();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_CombatUse) != 0)
+            {
+                newObj._combatUse = (COMBAT_USE)binaryReader.ReadByte();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_Structure) != 0)
+            {
+                newObj._structure = binaryReader.ReadUInt16();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_MaxStructure) != 0)
+            {
+                newObj._maxStructure = binaryReader.ReadUInt16();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_StackSize) != 0)
+            {
+                newObj._stackSize = binaryReader.ReadUInt16();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_MaxStackSize) != 0)
+            {
+                newObj._maxStackSize = binaryReader.ReadUInt16();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_ContainerID) != 0)
+            {
+                newObj._containerID = binaryReader.ReadUInt32();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_WielderID) != 0)
+            {
+                newObj._wielderID = binaryReader.ReadUInt32();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_ValidLocations) != 0)
+            {
+                newObj._valid_locations = binaryReader.ReadUInt32();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_Location) != 0)
+            {
+                newObj._location = binaryReader.ReadUInt32();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_Priority) != 0)
+            {
+                newObj._priority = binaryReader.ReadUInt32();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_BlipColor) != 0)
+            {
+                newObj._blipColor = binaryReader.ReadByte();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_RadarEnum) != 0)
+            {
+                newObj._radar_enum = (RadarEnum)binaryReader.ReadByte();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_RadarDistance) != 0)
+            {
+                newObj._obvious_distance = binaryReader.ReadSingle();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_VendorClassID) != 0)
+            {
+                newObj._vndwcid = binaryReader.ReadUInt16();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_SpellID) != 0)
+            {
+                newObj._spellID = binaryReader.ReadUInt16();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_HouseOwner) != 0)
+            {
+                newObj._house_owner_iid = binaryReader.ReadUInt32();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_PScript) != 0)
+            {
+                newObj._pscript = binaryReader.ReadUInt16();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_HouseRestrictions) != 0)
+            {
+                // TODO: Read here once you get RestrictedDB read finished
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_HookType) != 0)
+            {
+                newObj._hook_type = (ITEM_TYPE)binaryReader.ReadUInt16();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_HookItemTypes) != 0)
+            {
+                newObj._hook_item_types = binaryReader.ReadUInt32();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_Monarch) != 0)
+            {
+                newObj._monarch = binaryReader.ReadUInt32();
+            }
+
+            if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_IconOverlay) != 0)
+            {
+                newObj._iconOverlayID = binaryReader.ReadUInt16() | 0x6000000u;
+            }
+
+            if ((newObj.header & unchecked((uint)OldPublicWeenieDescPackHeader.PWD_Packed_MaterialType)) != 0)
+            {
+                newObj._material_type = (MaterialType)binaryReader.ReadUInt32();
+            }
+
+            Util.readToAlign(binaryReader);
+
+            return newObj;
+        }
+
+        public void contributeToTreeNode(TreeNode node)
+        {
+            node.Nodes.Add("header = " + header);
+            node.Nodes.Add("_name = " + _name.m_buffer);
+            node.Nodes.Add("_wcid = " + _wcid);
+            node.Nodes.Add("_iconID = " + _iconID);
+            node.Nodes.Add("_type = " + _type);
+            node.Nodes.Add("_bitfield = " + _bitfield);
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_PluralName) != 0)
+            {
+                node.Nodes.Add("_plural_name = " + _plural_name);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_ItemsCapacity) != 0)
+            {
+                node.Nodes.Add("_itemsCapacity = " + _itemsCapacity);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_ContainersCapacity) != 0)
+            {
+                node.Nodes.Add("_containersCapacity = " + _containersCapacity);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_Value) != 0)
+            {
+                node.Nodes.Add("_value = " + _value);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_Useability) != 0)
+            {
+                node.Nodes.Add("_useability = " + _useability);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_UseRadius) != 0)
+            {
+                node.Nodes.Add("_useRadius = " + _useRadius);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_TargetType) != 0)
+            {
+                node.Nodes.Add("_targetType = " + _targetType);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_UIEffects) != 0)
+            {
+                node.Nodes.Add("_effects = " + _effects);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_AmmoType) != 0)
+            {
+                node.Nodes.Add("_ammoType = " + _ammoType);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_CombatUse) != 0)
+            {
+                node.Nodes.Add("_combatUse = " + _combatUse);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_Structure) != 0)
+            {
+                node.Nodes.Add("_structure = " + _structure);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_MaxStructure) != 0)
+            {
+                node.Nodes.Add("_maxStructure = " + _maxStructure);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_StackSize) != 0)
+            {
+                node.Nodes.Add("_stackSize = " + _stackSize);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_MaxStackSize) != 0)
+            {
+                node.Nodes.Add("_maxStackSize = " + _maxStackSize);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_ContainerID) != 0)
+            {
+                node.Nodes.Add("_containerID = " + _containerID);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_WielderID) != 0)
+            {
+                node.Nodes.Add("_wielderID = " + _wielderID);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_ValidLocations) != 0)
+            {
+                node.Nodes.Add("_valid_locations = " + _valid_locations);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_Location) != 0)
+            {
+                node.Nodes.Add("_location = " + _location);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_Priority) != 0)
+            {
+                node.Nodes.Add("_priority = " + _priority);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_BlipColor) != 0)
+            {
+                node.Nodes.Add("_blipColor = " + _blipColor);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_RadarEnum) != 0)
+            {
+                node.Nodes.Add("_radar_enum = " + _radar_enum);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_RadarDistance) != 0)
+            {
+                node.Nodes.Add("_obvious_distance = " + _obvious_distance);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_VendorClassID) != 0)
+            {
+                node.Nodes.Add("_vndwcid = " + _vndwcid);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_SpellID) != 0)
+            {
+                node.Nodes.Add("_spellID = " + _spellID);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_HouseOwner) != 0)
+            {
+                node.Nodes.Add("_house_owner_iid = " + _house_owner_iid);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_PScript) != 0)
+            {
+                node.Nodes.Add("_pscript = " + _pscript);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_HouseRestrictions) != 0)
+            {
+                //node.Nodes.Add("_db = " + _db); // TODO: Add once implemented
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_HookType) != 0)
+            {
+                node.Nodes.Add("_hook_type = " + _hook_type);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_HookItemTypes) != 0)
+            {
+                node.Nodes.Add("_hook_item_types = " + _hook_item_types);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_Monarch) != 0)
+            {
+                node.Nodes.Add("_monarch = " + _monarch);
+            }
+            if ((header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_IconOverlay) != 0)
+            {
+                node.Nodes.Add("_iconOverlayID = " + _iconOverlayID);
+            }
+            if ((header & unchecked((uint)OldPublicWeenieDescPackHeader.PWD_Packed_MaterialType)) != 0)
+            {
+                node.Nodes.Add("_material_type = " + _material_type);
             }
         }
     }

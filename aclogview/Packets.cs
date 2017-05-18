@@ -45,6 +45,7 @@ public class Util {
             readers.Add(typeof(Skill), r => Skill.read(r));
 
             readers.Add(typeof(SpellID), r => (SpellID)r.ReadUInt32());
+            readers.Add(typeof(CM_Vendor.ItemProfile), r => CM_Vendor.ItemProfile.read(r));
         }
     }
 
