@@ -193,7 +193,7 @@ public class CM_Inventory : MessageProcessor {
         public override void contributeToTreeView(TreeView treeView) {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
-            rootNode.Nodes.Add("i_object = " + i_object);
+            rootNode.Nodes.Add("i_object = " + Utility.FormatGuid(i_object));
             treeView.Nodes.Add(rootNode);
         }
     }
