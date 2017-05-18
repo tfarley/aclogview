@@ -513,6 +513,7 @@ public class CM_Physics : MessageProcessor {
         }
 
         public uint header;
+        public uint header2;
         public PStringChar _name;
         public uint _wcid;
         public uint _iconID;
@@ -559,12 +560,17 @@ public class CM_Physics : MessageProcessor {
             PublicWeenieDesc newObj = new PublicWeenieDesc();
             newObj.header = binaryReader.ReadUInt32();
             newObj._name = PStringChar.read(binaryReader);
-            newObj._wcid = binaryReader.ReadUInt16();
-            newObj._iconID = binaryReader.ReadUInt16() | 0x06000000;
+            newObj._wcid = Util.readWClassIDCompressed(binaryReader);
+            newObj._iconID = Util.readDataIDOfKnownType(0x6000000, binaryReader);
             newObj._type = (ITEM_TYPE)binaryReader.ReadUInt32();
             newObj._bitfield = binaryReader.ReadUInt32();
 
             Util.readToAlign(binaryReader);
+
+            if ((newObj._bitfield & (uint)BitfieldIndex.BF_INCLUDES_SECOND_HEADER) != 0)
+            {
+                newObj.header2 = binaryReader.ReadUInt32();
+            }
 
             if ((newObj.header & (uint)PublicWeenieDescPackHeader.PWD_Packed_PluralName) != 0) {
                 newObj._plural_name = PStringChar.read(binaryReader);
@@ -911,7 +917,6 @@ public class CM_Physics : MessageProcessor {
         }
 
         public uint header;
-        public uint header2;
         public PStringChar _name;
         public PStringChar _plural_name;
         public uint _wcid;
@@ -955,7 +960,7 @@ public class CM_Physics : MessageProcessor {
             OldPublicWeenieDesc newObj = new OldPublicWeenieDesc();
             newObj.header = binaryReader.ReadUInt32();
             newObj._name = PStringChar.read(binaryReader);
-            newObj._wcid = Util.readWClassIDCompressed(binaryReader);
+            newObj._wcid = binaryReader.ReadUInt16();
             newObj._iconID = binaryReader.ReadUInt16() | 0x6000000u;
             newObj._type = (ITEM_TYPE)binaryReader.ReadUInt32();
             newObj._bitfield = binaryReader.ReadUInt32();
@@ -1112,7 +1117,7 @@ public class CM_Physics : MessageProcessor {
 
             if ((newObj.header & (uint)OldPublicWeenieDescPackHeader.PWD_Packed_IconOverlay) != 0)
             {
-                newObj._iconOverlayID = Util.readDataIDOfKnownType(0x6000000, binaryReader);
+                newObj._iconOverlayID = binaryReader.ReadUInt16() | 0x6000000u;
             }
 
             if ((newObj.header & unchecked((uint)OldPublicWeenieDescPackHeader.PWD_Packed_MaterialType)) != 0)
