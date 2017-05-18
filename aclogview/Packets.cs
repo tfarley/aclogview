@@ -43,6 +43,8 @@ public class Util {
             readers.Add(typeof(SecondaryAttribute), r => SecondaryAttribute.read(r));
             readers.Add(typeof(Position), r => Position.read(r));
             readers.Add(typeof(Skill), r => Skill.read(r));
+
+            readers.Add(typeof(CM_Vendor.ItemProfile), r => CM_Vendor.ItemProfile.read(r));
         }
     }
 
