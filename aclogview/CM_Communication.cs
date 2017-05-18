@@ -20,6 +20,12 @@ public class CM_Communication : MessageProcessor {
                     message.contributeToTreeView(outputTreeView);
                     break;
                 }
+            case PacketOpcode.Evt_Communication__PopUpString_ID: // 0x0004
+                {
+                    var message = PopUpString.read(messageDataReader);
+                    message.contributeToTreeView(outputTreeView);
+                    break;
+                }
             case PacketOpcode.Evt_Communication__TalkDirect_ID: // 0x0032
                 {
                     var message = TalkDirect.read(messageDataReader);
@@ -141,6 +147,25 @@ public class CM_Communication : MessageProcessor {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
             rootNode.Nodes.Add("MessageText = " + MessageText.m_buffer);
+            treeView.Nodes.Add(rootNode);
+        }
+    }
+
+    public class PopUpString : Message
+    {
+        public PStringChar PopUpMessage;
+        public static PopUpString read(BinaryReader binaryReader)
+        {
+            var newObj = new PopUpString();
+            newObj.PopUpMessage = PStringChar.read(binaryReader);
+            return newObj;
+        }
+
+        public override void contributeToTreeView(TreeView treeView)
+        {
+            TreeNode rootNode = new TreeNode(this.GetType().Name);
+            rootNode.Expand();
+            rootNode.Nodes.Add("PopUpMessage = " + PopUpMessage.m_buffer);
             treeView.Nodes.Add(rootNode);
         }
     }
