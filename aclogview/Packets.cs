@@ -377,7 +377,7 @@ public class Skill {
     public SKILL_ADVANCEMENT_CLASS _sac;
     public uint _pp;
     public uint _init_level;
-    public double _resistance_of_last_check;
+    public uint _resistance_of_last_check;
     public double _last_used_time;
 
     public static Skill read(BinaryReader binaryReader) {
@@ -386,7 +386,8 @@ public class Skill {
         newObj._sac = (SKILL_ADVANCEMENT_CLASS)binaryReader.ReadUInt32();
         newObj._pp = binaryReader.ReadUInt32();
         newObj._init_level = binaryReader.ReadUInt32();
-        newObj._resistance_of_last_check = binaryReader.ReadDouble();
+       // newObj._resistance_of_last_check = binaryReader.ReadDouble();
+        newObj._resistance_of_last_check = binaryReader.ReadUInt32();
         newObj._last_used_time = binaryReader.ReadDouble();
         return newObj;
     }
