@@ -86,6 +86,33 @@ public class CM_Combat : MessageProcessor {
         return handled;
     }
 
+    ///<remarks>
+    /// 0x01A7 is found in many packet captures and it commonly returns a 0.
+    /// TODO:
+    ///     1. Verify/search for the true meaning of this packet and it's contents. The current documentation is too limited to trust that
+    ///     the integer returned from the packet indicates the number of attacks. 
+    ///     Documentation: http://acemulator.org/ProtocolViewer/Protocol.php?stylesheet=Classic.css&frame=frameMsg&type=F7B0&case=0x01A7
+    ///         Supporting Evidence:
+    ///             Here are the results from doing a quick count of the values that come back from ATTACK_DONE, utilizing 2,376 PCAP files:
+    ///                 int value : occurrences total
+    ///                 0 : 255,702
+    ///                 2 : 2,140
+    ///                 14 : 3
+    ///                 29 : 550
+    ///                 31 : 1
+    ///                 35 : 115
+    ///                 54 : 6,698
+    ///                 55 : 4,717
+    ///                 56 : 2,427
+    ///                 57 : 5,795
+    ///                 58 : 50
+    ///                 60 : 1
+    ///                 61 : 203
+    ///                 75 : 47
+    ///                 1016 : 42
+    ///                 1067 : 24
+    ///                 1073 : 7
+    /// </remarks>
     public class AttackDone : Message
     {
         public uint NumberOfAttacks;
