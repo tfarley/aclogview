@@ -259,10 +259,10 @@ public class CM_Login : MessageProcessor {
             Packed_IntStats = (1 << 0),  //0x01
             Packed_BoolStats = (1 << 1), //0x02
             Packed_FloatStats = (1 << 2), //0x04
-            Packed_IIDStats = (1 << 3), //0x08
+            Packed_DataIDStats = (1 << 3), //0x08
             Packed_StringStats = (1 << 4), //0x10
             Packed_PositionHashTable = (1 << 5), //0x20
-            Packed_DataIDStats = (1 << 6), //0x40
+            Packed_IIDStats = (1 << 6), //0x40
             Packed_Int64Stats = (1 << 7), //0x80
         }
 
