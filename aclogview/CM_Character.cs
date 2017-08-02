@@ -274,11 +274,10 @@ public class CM_Character : MessageProcessor {
             }
             if ((newObj.header & (uint)PlayerModulePackHeader.PM_Packed_GameplayOptions) != 0)
             {
-                newObj.m_colGameplayOptions = PackObjPropertyCollection.read(binaryReader);
+                // TODO: Lots more to read here!
+                // newObj.m_colGameplayOptions = PackObjPropertyCollection.read(binaryReader);
             }
 
-
-            // TODO: Lots more to read here!
             return newObj;
         }
 
@@ -314,9 +313,8 @@ public class CM_Character : MessageProcessor {
                 m_pPlayerOptionsData.contributeToTreeNode(playerOptionsDataNode);
 
             TreeNode colGameplayOptionsNode = node.Nodes.Add("m_colGameplayOptions = ");
-            if ((header & (uint)PlayerModulePackHeader.PM_Packed_GameplayOptions) != 0)
-                m_colGameplayOptions.contributeToTreeNode(colGameplayOptionsNode);
-
+            //if ((header & (uint)PlayerModulePackHeader.PM_Packed_GameplayOptions) != 0)
+               // m_colGameplayOptions.contributeToTreeNode(colGameplayOptionsNode);
 
             // TODO: Lots more to read here!
         }
@@ -358,92 +356,39 @@ public class CM_Character : MessageProcessor {
         }
     }
 
+    // TODO: This is a hack to get the data read. Having issues figuring out "correct" structure from client code.
     public class PackObjPropertyCollection
     {
-        public uint header;
-        public PropertyCollection m_hashProperties;
+        public uint unknown_1;
+        public byte m_num_buckets;
+        public List<BaseProperty> PropertyCollection = new List<BaseProperty>();
 
         public static PackObjPropertyCollection read(BinaryReader binaryReader)
         {
             PackObjPropertyCollection newObj = new PackObjPropertyCollection();
-            newObj.header = binaryReader.ReadUInt32();
-            newObj.m_hashProperties = PropertyCollection.read(binaryReader);
-            return newObj;
-        }
+            //newObj.header = binaryReader.ReadUInt32();
+            //newObj.m_hashProperties = PropertyCollection.read(binaryReader);
 
-        public void contributeToTreeNode(TreeNode node)
-        {
-            node.Nodes.Add("header = " + header);
-            TreeNode PropertyCollectionNode = node.Nodes.Add("PropertyCollection = ");
-            m_hashProperties.contributeToTreeNode(PropertyCollectionNode);
-        }
-    }
+            newObj.unknown_1 = binaryReader.ReadUInt32();
+            newObj.m_num_buckets = binaryReader.ReadByte();
 
-    public class PropertyCollection
-    {
-        public static PropertyCollection read(BinaryReader binaryReader)
-        {
-            PropertyCollection newObj = new PropertyCollection();
-            binaryReader.ReadByte(); // buckets?
             uint num_properties = binaryReader.ReadUInt32();
-            return newObj;
-        }
-
-        public void contributeToTreeNode(TreeNode node)
-        {
-            //node.Nodes.Add("header = " + header);
-        }
-    }
-
-    public class PropertyHashTable
-    {
-        public static PropertyHashTable read(BinaryReader binaryReader)
-        {
-            PropertyHashTable newObj = new PropertyHashTable();
-            binaryReader.ReadByte(); // buckets?
-            uint num_properties = binaryReader.ReadUInt32();
-
-
-            return newObj;
-        }
-
-        public void contributeToTreeNode(TreeNode node)
-        {
-           // node.Nodes.Add("header = " + header);
-        }
-    }
-
-    public class ArrayPropertyValue
-    {
-        public static ArrayPropertyValue read(BinaryReader binaryReader)
-        {
-            ArrayPropertyValue newObj = new ArrayPropertyValue();
-            return newObj;
-        }
-        public void contributeToTreeNode(TreeNode node)
-        {
-            //node.Nodes.Add("header = " + header);
-        }
-    }
-
-    public class BaseProperty
-    {
-        //public BasePropertyDesc m_pcPropertyDesc;
-        //public BasePropertyValue m_pcPropertyValue;
-        public static BaseProperty read(BinaryReader binaryReader)
-        {
-            BaseProperty newObj = new BaseProperty();
-            binaryReader.ReadByte(); // buckets?
+            for (uint i = 0; i < num_properties; i++)
+            {
+                BaseProperty thisBaseProperty = BaseProperty.read(binaryReader);
+                newObj.PropertyCollection.Add(thisBaseProperty);
+            }
             
             return newObj;
         }
 
         public void contributeToTreeNode(TreeNode node)
         {
-            //node.Nodes.Add("header = " + header);
+            node.Nodes.Add("unknown = " + unknown_1);
+            node.Nodes.Add("m_num_buckets = " + m_num_buckets);
+            return;
         }
     }
-
 
     public enum OptionProperty
     {
@@ -458,6 +403,26 @@ public class CM_Character : MessageProcessor {
         Option_Placement_Property = 0x1000008b,
         Option_PlacementArray_Property = 0x1000008c,
         Option_Placement_Title_Property = 0x1000008d,
+    }
+
+    public class BaseProperty
+    {
+
+        public OptionProperty key;
+        public uint m_pcPropertyDesc;
+        public uint m_pcPropertyValue;
+
+        public static BaseProperty read(BinaryReader binaryReader)
+        {
+            BaseProperty newObj = new BaseProperty();
+            newObj.key = (OptionProperty)binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public void contributeToTreeNode(TreeNode node)
+        {
+            //node.Nodes.Add("header = " + header);
+        }
     }
 
     public class CharacterOptionsEvent : Message

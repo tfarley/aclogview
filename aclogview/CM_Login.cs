@@ -136,12 +136,16 @@ public class CM_Login : MessageProcessor {
     {
         public CACQualities CACQualities;
         public CM_Character.PlayerModule PlayerModule;
+        public PList<ContentProfile> clist;
+        public PList<InventoryPlacement> ilist;
 
         public static PlayerDescription read(BinaryReader binaryReader)
         {
             PlayerDescription newObj = new PlayerDescription();
             newObj.CACQualities = CACQualities.read(binaryReader);
             newObj.PlayerModule = CM_Character.PlayerModule.read(binaryReader);
+           // newObj.clist = PList<ContentProfile>.read(binaryReader);
+           // newObj.ilist = PList<InventoryPlacement>.read(binaryReader);
             return newObj;
         }
 
@@ -153,7 +157,22 @@ public class CM_Login : MessageProcessor {
             CACQualities.contributeToTreeNode(CACQualitiesNode);
             TreeNode PlayerModuleNode = rootNode.Nodes.Add("PlayerModule = ");
             PlayerModule.contributeToTreeNode(PlayerModuleNode);
+            /*
+            TreeNode ContentProfileNode = rootNode.Nodes.Add("clist = ");
+            foreach (ContentProfile element in clist.list)
+            {
+                TreeNode clistIIDNode = ContentProfileNode.Nodes.Add("m_iid = " + element.m_iid);
+                TreeNode clistContainerNode = ContentProfileNode.Nodes.Add("m_uContainerProperties = " + element.m_uContainerProperties);
+            }
 
+            TreeNode InventoryPlacementProfileNode = rootNode.Nodes.Add("ilist = ");
+            foreach (InventoryPlacement element in ilist.list)
+            {
+                TreeNode ilistIIDNode = InventoryPlacementProfileNode.Nodes.Add("iid_ = " + element.iid_);
+                TreeNode ilistLocNode = InventoryPlacementProfileNode.Nodes.Add("loc_ = " + element.loc_);
+                TreeNode ilistPriorityNode = InventoryPlacementProfileNode.Nodes.Add("priority_ = " + element.priority_);
+            }
+            */
             treeView.Nodes.Add(rootNode);
         }
     }
@@ -179,7 +198,7 @@ public class CM_Login : MessageProcessor {
 
         public CBaseQualities CBaseQualities;
         public uint header;
-        public uint unknown;
+        public WeenieType _weenie_type;
         public AttributeCache _attribCache;
         public PackableHashTable<STypeSkill, Skill> _skillStatsTable = new PackableHashTable<STypeSkill, Skill>();
         public PackableHashTable<SpellID, float> _spell_book = new PackableHashTable<SpellID, float>();
@@ -190,7 +209,7 @@ public class CM_Login : MessageProcessor {
             CACQualities newObj = new CACQualities();
             newObj.CBaseQualities = CBaseQualities.read(binaryReader);
             newObj.header = binaryReader.ReadUInt32();
-            newObj.unknown = binaryReader.ReadUInt32();
+            newObj._weenie_type = (WeenieType)binaryReader.ReadUInt32();
             if ((newObj.header & (uint)QualitiesPackHeader.Packed_AttributeCache) != 0)
             {
                 newObj._attribCache = AttributeCache.read(binaryReader);
@@ -218,7 +237,7 @@ public class CM_Login : MessageProcessor {
             CBaseQualities.contributeToTreeNode(CBaseQualitiesNode);
 
             node.Nodes.Add("header = " + header);
-            node.Nodes.Add("unknown = " + unknown);
+            node.Nodes.Add("_weenie_type = " + _weenie_type);
 
             TreeNode attribCacheNode = node.Nodes.Add("_attribCache = ");
             if ((header & (uint)QualitiesPackHeader.Packed_AttributeCache) != 0)
@@ -501,5 +520,49 @@ public class CM_Login : MessageProcessor {
 
         }
     }
+
+    public class ContentProfile
+    {
+        public uint m_iid;
+        public uint m_uContainerProperties;
+
+        public static ContentProfile read(BinaryReader binaryReader)
+        {
+            ContentProfile newObj = new ContentProfile();
+            newObj.m_iid = binaryReader.ReadUInt32();
+            newObj.m_uContainerProperties = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public void contributeToTreeNode(TreeNode node)
+        {
+            node.Nodes.Add("m_iid = " + m_iid);
+            node.Nodes.Add("m_uContainerProperties = " + m_uContainerProperties);
+        }
+    }
+
+    public class InventoryPlacement
+    {
+        public uint iid_;
+        public uint loc_;
+        public uint priority_;
+
+        public static InventoryPlacement read(BinaryReader binaryReader)
+        {
+            InventoryPlacement newObj = new InventoryPlacement();
+            newObj.iid_ = binaryReader.ReadUInt32();
+            newObj.loc_ = binaryReader.ReadUInt32();
+            newObj.priority_ = binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public void contributeToTreeNode(TreeNode node)
+        {
+            node.Nodes.Add("iid_ = " + iid_);
+            node.Nodes.Add("loc_ = " + loc_);
+            node.Nodes.Add("priority_ = " + priority_);
+        }
+    }
+
 
 }

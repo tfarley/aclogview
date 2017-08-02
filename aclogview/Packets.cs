@@ -46,6 +46,9 @@ public class Util {
 
             readers.Add(typeof(SpellID), r => (SpellID)r.ReadUInt32());
             readers.Add(typeof(CM_Vendor.ItemProfile), r => CM_Vendor.ItemProfile.read(r));
+            readers.Add(typeof(CM_Login.ContentProfile), r => CM_Login.ContentProfile.read(r));
+            readers.Add(typeof(CM_Login.InventoryPlacement), r => CM_Login.InventoryPlacement.read(r));
+            readers.Add(typeof(CM_Character.BaseProperty), r => CM_Character.BaseProperty.read(r));
         }
     }
 
