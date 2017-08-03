@@ -101,8 +101,8 @@
             // 
             this.splitContainer_Main.Panel2.Controls.Add(this.splitContainer_Bottom);
             this.splitContainer_Main.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.splitContainer_Main.Size = new System.Drawing.Size(1520, 806);
-            this.splitContainer_Main.SplitterDistance = 388;
+            this.splitContainer_Main.Size = new System.Drawing.Size(1520, 785);
+            this.splitContainer_Main.SplitterDistance = 367;
             this.splitContainer_Main.TabIndex = 0;
             // 
             // listView_Packets
@@ -122,7 +122,7 @@
             this.listView_Packets.Location = new System.Drawing.Point(0, 0);
             this.listView_Packets.MultiSelect = false;
             this.listView_Packets.Name = "listView_Packets";
-            this.listView_Packets.Size = new System.Drawing.Size(1516, 384);
+            this.listView_Packets.Size = new System.Drawing.Size(1516, 363);
             this.listView_Packets.TabIndex = 0;
             this.listView_Packets.UseCompatibleStateImageBehavior = false;
             this.listView_Packets.View = System.Windows.Forms.View.Details;
@@ -363,8 +363,7 @@
             this.textBox_Search.MaxLength = 6;
             this.textBox_Search.Name = "textBox_Search";
             this.textBox_Search.Size = new System.Drawing.Size(165, 20);
-            this.textBox_Search.TabIndex = 2;
-            this.textBox_Search.KeyDown += this.textBox_Search_KeyDown;
+            this.textBox_Search.TabIndex = 5;
             // 
             // pictureBox_Search
             // 
@@ -379,7 +378,7 @@
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatus});
-            this.statusStrip.Location = new System.Drawing.Point(0, 830);
+            this.statusStrip.Location = new System.Drawing.Point(0, 809);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(1520, 22);
             this.statusStrip.TabIndex = 1;
@@ -396,7 +395,7 @@
             this.checkBox_HideHeaderOnly.Location = new System.Drawing.Point(737, 3);
             this.checkBox_HideHeaderOnly.Name = "checkBox_HideHeaderOnly";
             this.checkBox_HideHeaderOnly.Size = new System.Drawing.Size(154, 17);
-            this.checkBox_HideHeaderOnly.TabIndex = 0;
+            this.checkBox_HideHeaderOnly.TabIndex = 7;
             this.checkBox_HideHeaderOnly.Text = "Hide Header Only";
             this.checkBox_HideHeaderOnly.UseVisualStyleBackColor = true;
             this.checkBox_HideHeaderOnly.Visible = false;
@@ -409,7 +408,7 @@
             this.checkBox_useHighlighting.Location = new System.Drawing.Point(1024, 3);
             this.checkBox_useHighlighting.Name = "checkBox_useHighlighting";
             this.checkBox_useHighlighting.Size = new System.Drawing.Size(165, 17);
-            this.checkBox_useHighlighting.TabIndex = 4;
+            this.checkBox_useHighlighting.TabIndex = 9;
             this.checkBox_useHighlighting.Text = "Use Highlighting (Slower!)";
             this.checkBox_useHighlighting.UseVisualStyleBackColor = true;
             this.checkBox_useHighlighting.CheckedChanged += new System.EventHandler(this.checkBox_useHighlighting_CheckedChanged);
@@ -422,7 +421,7 @@
             this.checkBoxUseHex.Location = new System.Drawing.Point(897, 2);
             this.checkBoxUseHex.Name = "checkBoxUseHex";
             this.checkBoxUseHex.Size = new System.Drawing.Size(121, 17);
-            this.checkBoxUseHex.TabIndex = 5;
+            this.checkBoxUseHex.TabIndex = 8;
             this.checkBoxUseHex.Text = "Display Guid as Hex";
             this.checkBoxUseHex.UseVisualStyleBackColor = true;
             this.checkBoxUseHex.CheckedChanged += new System.EventHandler(this.checkBoxUseHex_CheckedChanged);
@@ -432,7 +431,7 @@
             this.CmdLock.Location = new System.Drawing.Point(2, 1);
             this.CmdLock.Name = "CmdLock";
             this.CmdLock.Size = new System.Drawing.Size(75, 23);
-            this.CmdLock.TabIndex = 5;
+            this.CmdLock.TabIndex = 1;
             this.CmdLock.Text = "Lock";
             this.CmdLock.UseVisualStyleBackColor = true;
             this.CmdLock.Click += new System.EventHandler(this.CmdLock_Click);
@@ -442,7 +441,7 @@
             this.cmdforward.Location = new System.Drawing.Point(83, 1);
             this.cmdforward.Name = "cmdforward";
             this.cmdforward.Size = new System.Drawing.Size(75, 23);
-            this.cmdforward.TabIndex = 6;
+            this.cmdforward.TabIndex = 2;
             this.cmdforward.Text = ">";
             this.cmdforward.UseVisualStyleBackColor = true;
             this.cmdforward.Click += new System.EventHandler(this.cmdforward_Click);
@@ -452,7 +451,7 @@
             this.cmdbackward.Location = new System.Drawing.Point(164, 2);
             this.cmdbackward.Name = "cmdbackward";
             this.cmdbackward.Size = new System.Drawing.Size(75, 23);
-            this.cmdbackward.TabIndex = 7;
+            this.cmdbackward.TabIndex = 3;
             this.cmdbackward.Text = "<";
             this.cmdbackward.UseVisualStyleBackColor = true;
             this.cmdbackward.Click += new System.EventHandler(this.cmdbackward_Click);
@@ -464,7 +463,7 @@
             this.lblTracker.Location = new System.Drawing.Point(245, 3);
             this.lblTracker.Name = "lblTracker";
             this.lblTracker.Size = new System.Drawing.Size(86, 17);
-            this.lblTracker.TabIndex = 8;
+            this.lblTracker.TabIndex = 4;
             this.lblTracker.Text = "Viewing #0";
             // 
             // btnHighlight
@@ -473,7 +472,7 @@
             this.btnHighlight.Location = new System.Drawing.Point(606, 0);
             this.btnHighlight.Name = "btnHighlight";
             this.btnHighlight.Size = new System.Drawing.Size(75, 22);
-            this.btnHighlight.TabIndex = 9;
+            this.btnHighlight.TabIndex = 6;
             this.btnHighlight.Text = "Highlight";
             this.btnHighlight.UseVisualStyleBackColor = true;
             this.btnHighlight.Click += new System.EventHandler(this.btnHighlight_Click);
@@ -482,7 +481,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1520, 852);
+            this.ClientSize = new System.Drawing.Size(1520, 831);
             this.Controls.Add(this.btnHighlight);
             this.Controls.Add(this.checkBoxUseHex);
             this.Controls.Add(this.lblTracker);

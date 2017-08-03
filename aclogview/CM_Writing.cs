@@ -169,8 +169,8 @@ public class CM_Writing : MessageProcessor {
             TreeNode rootNode = new TreeNode("PageData");
             rootNode.Expand();
             rootNode.Nodes.Add("authorID = " + Utility.FormatGuid(authorID));
-            rootNode.Nodes.Add("_authorName = " + authorName);
-            rootNode.Nodes.Add("_authorAccount = " + authorAccount);
+            rootNode.Nodes.Add("authorName = " + authorName);
+            rootNode.Nodes.Add("authorAccount = " + authorAccount);
             rootNode.Nodes.Add("flags = " + flags);
             rootNode.Nodes.Add("textIncluded = " + textIncluded);
             rootNode.Nodes.Add("ignoreAuthor = " + ignoreAuthor);
@@ -225,9 +225,11 @@ public class CM_Writing : MessageProcessor {
         {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
+            rootNode.Nodes.Add("bookID = " + Utility.FormatGuid(bookID));
+            rootNode.Nodes.Add("page = " + page);
             rootNode.Nodes.Add("authorID = " + Utility.FormatGuid(authorID));
-            rootNode.Nodes.Add("_authorName = " + authorName);
-            rootNode.Nodes.Add("_authorAccount = " + authorAccount);
+            rootNode.Nodes.Add("authorName = " + authorName);
+            rootNode.Nodes.Add("authorAccount = " + authorAccount);
             rootNode.Nodes.Add("flags = " + flags);
             rootNode.Nodes.Add("textIncluded = " + textIncluded);
             rootNode.Nodes.Add("ignoreAuthor = " + ignoreAuthor);
