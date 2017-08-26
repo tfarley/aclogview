@@ -312,10 +312,11 @@ public class CM_Character : MessageProcessor {
             if ((header & (uint)PlayerModulePackHeader.PM_Packed_GenericQualitiesData) != 0)
                 m_pPlayerOptionsData.contributeToTreeNode(playerOptionsDataNode);
 
-            TreeNode colGameplayOptionsNode = node.Nodes.Add("m_colGameplayOptions = ");
-            //if ((header & (uint)PlayerModulePackHeader.PM_Packed_GameplayOptions) != 0)
-               // m_colGameplayOptions.contributeToTreeNode(colGameplayOptionsNode);
-
+            // DISABLED TREE NODE FORMATTING
+            // TreeNode colGameplayOptionsNode = node.Nodes.Add("m_colGameplayOptions = ");
+            // if ((header & (uint)PlayerModulePackHeader.PM_Packed_GameplayOptions) != 0)
+            //      m_colGameplayOptions.contributeToTreeNode(colGameplayOptionsNode);
+            TreeNode colGameplayOptionsNode = node.Nodes.Add("m_colGameplayOptions = // TODO");
             // TODO: Lots more to read here!
         }
     }
@@ -359,20 +360,19 @@ public class CM_Character : MessageProcessor {
     // TODO: This is a hack to get the data read. Having issues figuring out "correct" structure from client code.
     public class PackObjPropertyCollection
     {
-        public uint unknown_1;
+        public uint header;
         public byte m_num_buckets;
         public List<BaseProperty> PropertyCollection = new List<BaseProperty>();
 
         public static PackObjPropertyCollection read(BinaryReader binaryReader)
         {
             PackObjPropertyCollection newObj = new PackObjPropertyCollection();
-            //newObj.header = binaryReader.ReadUInt32();
+            newObj.header = binaryReader.ReadUInt32();
             //newObj.m_hashProperties = PropertyCollection.read(binaryReader);
 
-            newObj.unknown_1 = binaryReader.ReadUInt32();
             newObj.m_num_buckets = binaryReader.ReadByte();
 
-            uint num_properties = binaryReader.ReadUInt32();
+            uint num_properties = binaryReader.ReadByte();
             for (uint i = 0; i < num_properties; i++)
             {
                 BaseProperty thisBaseProperty = BaseProperty.read(binaryReader);
@@ -384,7 +384,7 @@ public class CM_Character : MessageProcessor {
 
         public void contributeToTreeNode(TreeNode node)
         {
-            node.Nodes.Add("unknown = " + unknown_1);
+            node.Nodes.Add("header = " + header);
             node.Nodes.Add("m_num_buckets = " + m_num_buckets);
             return;
         }
