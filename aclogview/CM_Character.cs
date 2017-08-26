@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using aclogview;
 
 public class CM_Character : MessageProcessor {
 
@@ -176,7 +177,7 @@ public class CM_Character : MessageProcessor {
 
         public void contributeToTreeNode(TreeNode node) {
             node.Nodes.Add("index_ = " + index_);
-            node.Nodes.Add("objectID_ = " + objectID_);
+            node.Nodes.Add("objectID_ = " + Utility.FormatGuid(objectID_));
             node.Nodes.Add("spellID_ = " + spellID_);
         }
     }
@@ -220,11 +221,13 @@ public class CM_Character : MessageProcessor {
         public uint header;
         public uint options_;
         public ShortCutManager shortcuts_;
-        public PList<uint>[] favorite_spells_ = new PList<uint>[8];
+        public PList<SpellID>[] favorite_spells_ = new PList<SpellID>[8];
         public PackableHashTable<uint, int> desired_comps_ = new PackableHashTable<uint, int>();
         public uint spell_filters_;
         public uint options2;
         public PStringChar m_TimeStampFormat;
+        public GenericQualitiesData m_pPlayerOptionsData;
+        public PackObjPropertyCollection m_colGameplayOptions;
 
         public static PlayerModule read(BinaryReader binaryReader) {
             PlayerModule newObj = new PlayerModule();
@@ -234,18 +237,18 @@ public class CM_Character : MessageProcessor {
                 newObj.shortcuts_ = ShortCutManager.read(binaryReader);
             }
             // TODO: This message often gets fragmented. Need to combine fragments to prevent the reader from creating an exception from trying to read beyond buffer.
-            newObj.favorite_spells_[0] = PList<uint>.read(binaryReader);
+            newObj.favorite_spells_[0] = PList<SpellID>.read(binaryReader);
             if ((newObj.header & (uint)PlayerModulePackHeader.PM_Packed_MultiSpellLists) != 0) {
                 for (int i = 1; i < 5; ++i) {
-                    newObj.favorite_spells_[i] = PList<uint>.read(binaryReader);
+                    newObj.favorite_spells_[i] = PList<SpellID>.read(binaryReader);
                 }
             } else if ((newObj.header & (uint)PlayerModulePackHeader.PM_Packed_ExtendedMultiSpellLists) != 0) {
                 for (int i = 1; i < 7; ++i) {
-                    newObj.favorite_spells_[i] = PList<uint>.read(binaryReader);
+                    newObj.favorite_spells_[i] = PList<SpellID>.read(binaryReader);
                 }
             } else if ((newObj.header & (uint)PlayerModulePackHeader.PM_Packed_8_SpellLists) != 0) {
                 for (int i = 1; i < 8; ++i) {
-                    newObj.favorite_spells_[i] = PList<uint>.read(binaryReader);
+                    newObj.favorite_spells_[i] = PList<SpellID>.read(binaryReader);
                 }
             }
             if ((newObj.header & (uint)PlayerModulePackHeader.PM_Packed_DesiredComps) != 0) {
@@ -261,10 +264,20 @@ public class CM_Character : MessageProcessor {
             } else {
                 newObj.options2 = 0x948700;
             }
-            if ((newObj.header & (uint)PlayerModulePackHeader.PM_Packed_TimeStampFormat) != 0) {
+            if ((newObj.header & (uint)PlayerModulePackHeader.PM_Packed_TimeStampFormat) != 0)
+            {
                 newObj.m_TimeStampFormat = PStringChar.read(binaryReader);
             }
-            // TODO: Lots more to read here!
+            if ((newObj.header & (uint)PlayerModulePackHeader.PM_Packed_GenericQualitiesData) != 0)
+            {
+                newObj.m_pPlayerOptionsData = GenericQualitiesData.read(binaryReader);
+            }
+            if ((newObj.header & (uint)PlayerModulePackHeader.PM_Packed_GameplayOptions) != 0)
+            {
+                // TODO: Lots more to read here!
+                // newObj.m_colGameplayOptions = PackObjPropertyCollection.read(binaryReader);
+            }
+
             return newObj;
         }
 
@@ -276,26 +289,155 @@ public class CM_Character : MessageProcessor {
                 shortcuts_.contributeToTreeNode(shortcutsNode);
             }
             TreeNode favoritesNode = node.Nodes.Add("favorite_spells_ = ");
-            foreach (PList<uint> favoritesList in favorite_spells_) {
-                if (favoritesList != null) {
+            foreach (PList<SpellID> favoritesList in favorite_spells_)
+            {
+                if (favoritesList != null)
+                {
                     TreeNode favoritesSubNode = favoritesNode.Nodes.Add("list = ");
                     favoritesList.contributeToTreeNode(favoritesSubNode);
                 }
             }
+            TreeNode desiredCompsNode = node.Nodes.Add("desired_comps_ = ");
+            if ((header & (uint)PlayerModulePackHeader.PM_Packed_DesiredComps) != 0) {
+                foreach (KeyValuePair<uint, int> element in desired_comps_.hashTable)
+                {
+                    desiredCompsNode.Nodes.Add(element.Key + " = " + element.Value);
+                }
+            }
+            node.Nodes.Add("spell_filters_ = " + spell_filters_);
+            node.Nodes.Add("options2 = " + options2);
+            node.Nodes.Add("m_TimeStampFormat = " + m_TimeStampFormat);
+
+            TreeNode playerOptionsDataNode = node.Nodes.Add("m_pPlayerOptionsData = ");
+            if ((header & (uint)PlayerModulePackHeader.PM_Packed_GenericQualitiesData) != 0)
+                m_pPlayerOptionsData.contributeToTreeNode(playerOptionsDataNode);
+
+            // DISABLED TREE NODE FORMATTING
+            // TreeNode colGameplayOptionsNode = node.Nodes.Add("m_colGameplayOptions = ");
+            // if ((header & (uint)PlayerModulePackHeader.PM_Packed_GameplayOptions) != 0)
+            //      m_colGameplayOptions.contributeToTreeNode(colGameplayOptionsNode);
+            TreeNode colGameplayOptionsNode = node.Nodes.Add("m_colGameplayOptions = // TODO");
             // TODO: Lots more to read here!
         }
     }
 
-    public class CharacterOptionsEvent : Message {
+    public class GenericQualitiesData
+    {
+        public uint header;
+        public PackableHashTable<STypeInt, int> m_pIntStatsTable = new PackableHashTable<STypeInt, int>();
+        public PackableHashTable<STypeBool, int> m_pBoolStatsTable = new PackableHashTable<STypeBool, int>();
+        public PackableHashTable<STypeFloat, double> m_pFloatStatsTable = new PackableHashTable<STypeFloat, double>();
+        public PackableHashTable<uint, PStringChar> m_pStrStatsTable = new PackableHashTable<uint, PStringChar>();
+
+        public static GenericQualitiesData read(BinaryReader binaryReader)
+        {
+            GenericQualitiesData newObj = new GenericQualitiesData();
+            newObj.header = binaryReader.ReadUInt32();
+            if( (newObj.header & 0x01) != 0)
+                newObj.m_pIntStatsTable = PackableHashTable<STypeInt, int>.read(binaryReader);
+            if ((newObj.header & 0x02) != 0)
+                newObj.m_pBoolStatsTable = PackableHashTable<STypeBool, int>.read(binaryReader);
+            if ((newObj.header & 0x04) != 0)
+                newObj.m_pFloatStatsTable = PackableHashTable<STypeFloat, double>.read(binaryReader);
+            if ((newObj.header & 0x08) != 0)
+                newObj.m_pStrStatsTable = PackableHashTable<uint, PStringChar>.read(binaryReader);
+            return newObj;
+        }
+
+        public void contributeToTreeNode(TreeNode node)
+        {
+            TreeNode IntStatsNode = node.Nodes.Add("m_pIntStatsTable = ");
+            m_pIntStatsTable.contributeToTreeNode(IntStatsNode);
+            TreeNode BoolStatsNode = node.Nodes.Add("m_pBoolStatsTable = ");
+            m_pBoolStatsTable.contributeToTreeNode(BoolStatsNode);
+            TreeNode FloatStatsNode = node.Nodes.Add("m_pFloatStatsTable = ");
+            m_pFloatStatsTable.contributeToTreeNode(FloatStatsNode);
+            TreeNode StrStatsNode = node.Nodes.Add("m_pStrStatsTable = ");
+            m_pStrStatsTable.contributeToTreeNode(StrStatsNode);
+        }
+    }
+
+    // TODO: This is a hack to get the data read. Having issues figuring out "correct" structure from client code.
+    public class PackObjPropertyCollection
+    {
+        public uint header;
+        public byte m_num_buckets;
+        public List<BaseProperty> PropertyCollection = new List<BaseProperty>();
+
+        public static PackObjPropertyCollection read(BinaryReader binaryReader)
+        {
+            PackObjPropertyCollection newObj = new PackObjPropertyCollection();
+            newObj.header = binaryReader.ReadUInt32();
+            //newObj.m_hashProperties = PropertyCollection.read(binaryReader);
+
+            newObj.m_num_buckets = binaryReader.ReadByte();
+
+            uint num_properties = binaryReader.ReadByte();
+            for (uint i = 0; i < num_properties; i++)
+            {
+                BaseProperty thisBaseProperty = BaseProperty.read(binaryReader);
+                newObj.PropertyCollection.Add(thisBaseProperty);
+            }
+            
+            return newObj;
+        }
+
+        public void contributeToTreeNode(TreeNode node)
+        {
+            node.Nodes.Add("header = " + header);
+            node.Nodes.Add("m_num_buckets = " + m_num_buckets);
+            return;
+        }
+    }
+
+    public enum OptionProperty
+    {
+        Option_TextType_Property = 0x1000007F,
+        Option_ActiveOpacity_Property = 0x10000081,
+        Option_Placement_X_Property = 0x10000086,
+        Option_Placement_Y_Property = 0x10000087,
+        Option_Placement_Width_Property = 0x10000088,
+        Option_Placement_Height_Property = 0x10000089,
+        Option_DefaultOpacity_Property = 0x10000080,
+        Option_Placement_Visibility_Property = 0x1000008a,
+        Option_Placement_Property = 0x1000008b,
+        Option_PlacementArray_Property = 0x1000008c,
+        Option_Placement_Title_Property = 0x1000008d,
+    }
+
+    public class BaseProperty
+    {
+
+        public OptionProperty key;
+        public uint m_pcPropertyDesc;
+        public uint m_pcPropertyValue;
+
+        public static BaseProperty read(BinaryReader binaryReader)
+        {
+            BaseProperty newObj = new BaseProperty();
+            newObj.key = (OptionProperty)binaryReader.ReadUInt32();
+            return newObj;
+        }
+
+        public void contributeToTreeNode(TreeNode node)
+        {
+            //node.Nodes.Add("header = " + header);
+        }
+    }
+
+    public class CharacterOptionsEvent : Message
+    {
         PlayerModule i_pMod;
 
-        public static CharacterOptionsEvent read(BinaryReader binaryReader) {
+        public static CharacterOptionsEvent read(BinaryReader binaryReader)
+        {
             CharacterOptionsEvent newObj = new CharacterOptionsEvent();
             newObj.i_pMod = PlayerModule.read(binaryReader);
             return newObj;
         }
 
-        public override void contributeToTreeView(TreeView treeView) {
+        public override void contributeToTreeView(TreeView treeView)
+        {
             TreeNode rootNode = new TreeNode(this.GetType().Name);
             rootNode.Expand();
             TreeNode playerModuleNode = rootNode.Nodes.Add("i_pMod = ");
